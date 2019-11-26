@@ -4,9 +4,12 @@
         <div class="sidenav__indicator">Add User</div>
             <ul class="nav">
                 <div class="nav__container">
-                    <nuxt-link to="/admin/users" class="nav__category--link active-menu ">Users<span class="nav__category--icon">&#62;</span>
+                    <nuxt-link to="/admin/users" 
+                        @click.native="toggleSubMenu" 
+                        class="nav__category--link">Users
+                        <span class="nav__category--icon">&#62;</span>
                     </nuxt-link>
-                    <ul class="nav__category--dropdown active">
+                    <ul class="nav__category--dropdown">
                        <nuxt-link v-for="(user, index) in getUsers" 
                             :key="index" 
                             :to="{name: 'admin-users-id', params: {id: user._id}}" 
@@ -45,10 +48,12 @@ export default {
     },
     methods: {
         linkClick(id) {
-            console.log(id)
-            // console.log(ev)
             this.$router.push(`users/${id}`);
-        }
+        },
+        toggleSubMenu(ev) {
+            this.$store.commit('sidenav/toggleSubMenu', ev);
+            // this.$store.commit('admin/setIndicator', ev.target.id);
+        },
     },
     computed: {
         getUsers() {

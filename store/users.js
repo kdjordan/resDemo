@@ -1,32 +1,23 @@
 
 export const state = () => ({
-   activeHomesMenu: [],
-   zeroHomesError: false
+    token: '',
+    isAdmin: false,
+    zeroHomesError: false,
+    userName: ''
+
+    
 });
 
 export const getters  = {
    
 };
 
-export const mutations = {
-    setActiveHomesMenu(state, payload) {
-        state.activeHomesMenu = payload;
+export const mutations = {    
+    updateUserName(state, payload) {
+        state.queriedUser.userName = payload;
     },
-    updateActiveHomesMenu(state, payload) {
-        state.activeHomesMenu.forEach((home) => {
-            if(home[0] == payload) {
-                home[1] = !home[1];
-            }
-        })
-        //error checking and flag
-         let homesCheck = state.activeHomesMenu.filter((home) => {
-          return home[1] == true
-        })
-        if(homesCheck.length == 0) {
-          state.zeroHomesError = true;
-        } else {
-          state.zeroHomesError = false;
-        }
+    setUserName(state, payload) {
+        state.userName = payload;
     }
 };
 
@@ -35,16 +26,19 @@ export const actions = {
         return new Promise((resolve, reject) => {
             this.$axios.$get(`/getUser/${payload}`)
                 .then((response) => {
-                    dispatch('UTIL_setHomesList', response.homesArray)
+                    commit('setUserName', response.userName);
+                    this.commit('userRole/setUserRole', response.role);
+                    // commit('setOGUserName', response.userName);
+                    dispatch('setActiveHomesList', response.homesArray);
                     resolve(response)
-                res.send(response)
+                
                 })
                 .catch((e) => {
                     reject(e)
                 });
-    })
+        })
     },
-    UTIL_setHomesList({ rootState, commit}, payload) {
+    setActiveHomesList({ rootState, commit}, payload) {
         let tmpAllHomes = []
         rootState.sidenav.homesMenu.forEach(home => {
             tmpAllHomes.push([home.homeName, false])
@@ -56,7 +50,7 @@ export const actions = {
             }
           })
         })
-        commit('setActiveHomesMenu', tmpAllHomes)
+        this.commit('userHomes/setActiveHomes', tmpAllHomes)
     }
 
 
