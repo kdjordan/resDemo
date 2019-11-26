@@ -1,0 +1,181 @@
+
+
+//base styles
+*,
+*:before,
+*:after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+    font-family: 'Open sans', sans-serif;
+}
+
+body {
+    font-size: 1.6rem;
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+}
+
+li {
+    list-style-type: none;
+    cursor: pointer;
+}
+
+h1, p {
+    color: $color1;
+}
+
+input {
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid $color1;
+  outline: none;
+  font-size: 1.4rem;
+  color: $colorGdark;
+}
+
+input[type='checkbox'],
+input[type='radio']{
+  cursor: pointer;
+}
+
+::placeholder {
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  font-weight: 300;
+  opacity: .7;
+}
+
+label {
+  margin: 1rem 2rem;
+  color: $color1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.label-sm {
+  font-size: 1.4rem;
+  margin-left: 1rem;
+}
+
+label.invalid {
+  color: $color2;
+  border-bottom: 1px solid $color2;
+}
+
+.flex-items.invalid > div.right-item > input[type=text] {
+  background: $color2;
+  color: white;
+
+}
+
+//form layout elements
+.form-container {
+	width: 50%;
+  width: 40rem;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.flex-items {
+	display: flex;
+	align-items: center;
+  margin-bottom: 3rem;
+  width: 90%;
+    
+  &__spaced {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    ;
+    margin-bottom: 2rem;
+
+    &--edit{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      align-items: baseline;
+    }
+
+    &  .right-item {
+      padding-left: 10rem;
+      
+    }
+  }
+}
+
+.left-item {
+	width: 33.33333%;
+	text-align: right;
+	padding-right: 1rem;
+  white-space: nowrap;
+  flex: 1 0 14rem;
+
+    &__indicator {
+      white-space: nowrap;
+    }
+}
+
+.right-item {
+	width: 66.66667%;
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox-box {
+  margin-bottom: 1rem;
+}
+
+
+
+//indicator elements on form submit
+.error {
+    text-align: center;
+    color: $color2;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    border: 1px solid $color2;
+    width: 100%;
+    padding: .5rem 1rem;
+    border-radius: .25rem;
+}
+
+.success {
+  text-align: center;
+  color: $color1;
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  border: 1px solid $color1;
+  width: 100%;
+  padding: .5rem 1rem;
+  border-radius: .25rem;
+
+}
+
+//transitions between components
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
+
+  
+
+
+
+  

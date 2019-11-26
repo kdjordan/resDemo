@@ -1,0 +1,23 @@
+{
+  "name": "amc-vacation-rentals",
+  "version": "1.0.0",
+  "description": "My extraordinary Nuxt.js project",
+  "author": "kevin jordan",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "nuxt": "^2.0.0",
+    "bcryptjs": "^2.4.3",
+    "@nuxtjs/axios": "^5.3.6"
+  },
+  "devDependencies": {
+    "@nuxtjs/style-resources": "^1.0.0",
+    "node-sass": "^4.13.0",
+    "sass-loader": "^8.0.0"
+  }
+}

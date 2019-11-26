@@ -1,0 +1,39 @@
+.btn {
+    border-radius: .25rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    padding: 1rem 2rem;
+    transition: all .4s;
+    width: 8rem;
+    text-align: center;
+    border:none;
+    outline: none;
+    
+    &-primary{
+      background: $color1;
+      color: white;
+  
+      &:hover,
+      &:active {
+        background: $color3;
+      }
+    }    
+  
+    &-delete {
+      background: $color2;
+      color: white;
+    
+      &:hover {
+        background: $colorG;
+        color: #000;
+      }
+    }
+  }
+  
+  :disabled {
+    background: $colorG;
+  
+    &:hover {
+      background: $colorG;
+    }
+  }

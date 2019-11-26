@@ -1,0 +1,36 @@
+.container {
+    flex: 1 1 auto;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 100%;
+    position: relative;
+    background: $colorWhite2;
+}
+
+.inner_container {
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 8rem;
+}
+
+.wrapper {
+    position: relative;
+    top: 0;
+    height: 100vh;
+
+    &__inner {
+        flex: 1;
+        flex-direction: column;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        z-index: 8;
+        padding-top: 6rem;
+        transition: all .2s;
+        min-width: 76rem;
+    }
+}
