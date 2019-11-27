@@ -1,6 +1,6 @@
 <template>
   <div>
-      <p class="error">{{mssg}}</p>
+      <p class="success">{{mssg}}</p>
   </div>
 </template>
 

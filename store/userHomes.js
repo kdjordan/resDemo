@@ -1,12 +1,18 @@
 
 export const state = () => ({
     allMenuHomes: [],
-    activeHomes: [],
-    userHomes:[]
+    activeHomes: []
+    
 });
 
 export const getters  = {
-   
+    getActiveHomesLength(state) {
+        let sumLength = state.activeHomes.reduce((length, home) => {
+        return home[1] == true ? length+=1 : length
+            }, 0)
+        return sumLength;
+    }
+
 };
 
 export const mutations = {
@@ -16,37 +22,27 @@ export const mutations = {
 };
 
 export const actions = {
-    updateActiveHomes({ state, dispatch, rootState }, payload) {
-        return new Promise((resolve, reject) => {
+    updateActiveHomes({ state, getters, commit, rootState }, payload) {
+            let newActive = []
             state.activeHomes.forEach((home) => {
                 if(home[0] == payload) {
                     home[1] = !home[1];
+                    newActive.push(home)
+                } else {
+                    newActive.push(home)
                 }
             })
-            dispatch('getActiveHomesCount').then((res) => {
-                if(res == 'error') {
-                    reject('home-error');
-                } else if(rootState.userRole.role == 'keeper' && res > 1){
-                    reject('role-error')
-                } else {
-                    resolve();
-                }
-            }).catch((e) => {
-                reject()
-            });
-        })
-    },
-    getActiveHomesCount({ state }) {
-        return new Promise((resolve, reject) => {
-            let homesCheck = state.activeHomes.filter((home) => {
-                 return home[1] == true;
-             })
-             if(homesCheck.length != 0) {
-                 resolve(homesCheck.length)
-             } else {
-                 reject('error')
-             }
-        })
+            commit('setActiveHomes', newActive);
+
+            if(getters.getActiveHomesLength == 0) {
+                this.commit('errors/setHomesError', {status: true, mssg: 'You Must Select a Home'});
+            } else if(rootState.userRole.role == "keeper" && getters.getActiveHomesLength > 1){
+                this.commit('errors/setHomesError', {status: true, mssg: 'Keepers Limitted to 1 Home'});
+            }
+            else {
+                this.commit('errors/setHomesError', {status: false, mssg: ''})
+            }
     }
+    
 }
 
