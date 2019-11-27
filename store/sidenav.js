@@ -7,7 +7,6 @@ export const state = () => ({
  
  export const getters  = {
     getKeepersMenu(state) {
-        console.log('called')
         return state.keepersMenu;
     }
  };

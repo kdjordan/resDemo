@@ -1,7 +1,7 @@
 <template>
   <div>
-      <p v-show="indicatorType == 'error'" :class="indicatorType">{{mssg}}</p>
-      <p v-show="indicatorType == 'success'" :class="indicatorType">{{mssg}}</p>
+      <p v-show="indicatorType == 'error'" class="error">{{mssg}}</p>
+      <p v-show="indicatorType == 'success'" class="success">{{mssg}}</p>
   </div>
 </template>
 
