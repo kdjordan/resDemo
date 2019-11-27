@@ -1,7 +1,7 @@
 <template>
 <div class="flex-items__spaced">
     <div class="left-item">
-        <label :class="{invalid: roleError }">Role</label>   
+        <label :class="{ invalid: roleError }">Role</label>   
     </div>
     <div class="right-item">
         <div class="user-form__radio-input">

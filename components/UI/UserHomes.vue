@@ -3,7 +3,6 @@
     <div class="left-item">
         <label :class="{invalid: homesError }">HOMES</label>   
     </div> 
-
     <div class="right-item">
         <div v-for="(home, index) in getActiveHomes" :key="index">
                 <template>
@@ -45,7 +44,6 @@ export default {
                 this.$emit('throw-error', {status: false, type: 'home'});
                 this.homesError = false;
             }).catch((e) => {
-                console.log(e)
                 if(e == 'role-eror') {
                     this.$emit('throw-error', {status: true, type: 'role'});
                 } else {
