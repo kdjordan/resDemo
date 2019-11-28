@@ -1,6 +1,6 @@
 <template>
     <div class="circle">
-            <div class="circle__content"> {{ cmpTitle }} </div>
+            <div class="circle__content"> {{ title}} </div>
     </div>
 </template>
 
@@ -8,12 +8,6 @@
 
 export default {
     props: ['title'],
-    data() {
-        return {
-            cmpTitle: this.title
-        }
-    }
-
 }
 </script>
 

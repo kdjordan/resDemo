@@ -22,6 +22,11 @@ export const mutations = {
     },
     setOGUserName(state, payload) {
         state.ogUserName = payload;
+    },
+    resetUser(state) {
+        state.ogUserName = '',
+        state.updatedName = '',
+        state.updatedPassword = ''
     }
 };
 

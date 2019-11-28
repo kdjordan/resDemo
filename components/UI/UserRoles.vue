@@ -27,6 +27,7 @@ import { mapGetters, mapMutations } from 'vuex'
 export default {
     methods: {
         updateRole(ev) {
+            this.$store.commit('errors/setInitRoleFalse')
            this.$store.dispatch('userRole/updateRole', ev.srcElement.id)
         }
     },

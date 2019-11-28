@@ -11,6 +11,9 @@ export const getters  = {
         return home[1] == true ? length+=1 : length
             }, 0)
         return sumLength;
+    },
+    getUserHomes(state) {
+        return state.activeHomes;
     }
 
 };
@@ -41,6 +44,7 @@ export const actions = {
             }
             else {
                 this.commit('errors/setHomesError', {status: false, mssg: ''})
+                this.commit('errors/setRoleError', {status: false, mssg: ''});
             }
     }
     

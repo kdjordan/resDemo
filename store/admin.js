@@ -1,29 +1,8 @@
 
-export const state = () => ({
-   
-});
-
-export const getters  = {
-   
-};
-
-export const mutations = {
-  
-};
 export const actions = {
-    checkUserForUpdate({ rootState }, payload) {
+    getUserData({ dispatch }, payload) {
         return new Promise((resolve, reject) => {
-            if(payload.userName == "") {
-                resolve("success")
-            } else {
-                reject('fail')
-            }
-
-        })
-    },
-    getUserData({ commit, dispatch }, payload) {
-        return new Promise((resolve, reject) => {
-            this.$axios.$get(`/getUser/${payload}`)
+            return this.$axios.$get(`/getUser/${payload}`)
                 .then((response) => {
                     this.commit('users/setOGUserName', response.userName);
                     this.commit('userRole/setUserRole', response.role);
@@ -49,6 +28,18 @@ export const actions = {
           })
         })
         this.commit('userHomes/setActiveHomes', tmpAllHomes)
+    },
+    initAddUser({ rootState }) {
+            let tmpAllHomes = []
+            rootState.sidenav.homesMenu.forEach(home => {
+                tmpAllHomes.push([home.homeName, false])
+            });
+            this.commit('userHomes/setActiveHomes', tmpAllHomes);
+            this.commit('userRole/resetRole');
+            this.commit('users/resetUser');
+            this.commit('errors/resetErrors');
+            
+
     }
 
 };

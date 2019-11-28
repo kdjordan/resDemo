@@ -13,7 +13,9 @@ export const mutations = {
     setUserRole(state, payload) {
         state.role = payload;
     },
-    
+    resetRole(state) {
+        state.role = ''
+    }
 };
 
 export const actions = {
@@ -22,6 +24,11 @@ export const actions = {
             this.commit('errors/setRoleError', {status: true, mssg: 'Keppers Limited to 1 Home'});
         } else {
             this.commit('errors/setRoleError', {status: false, mssg: ''});
+            this.commit('errors/setHomesError', {status: false, mssg: ''});
+        }
+
+        if(rootGetters['userHomes/getActiveHomesLength'] == 0) {
+            this.commit('errors/setHomesError', {status: true, mssg: 'You Must Select a Home'});
         }
     }
 }

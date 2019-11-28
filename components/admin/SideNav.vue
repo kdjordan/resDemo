@@ -59,9 +59,6 @@ export default {
         getUsers() {
             return this.$store.state.sidenav.usersMenu;
         }
-    },
-    created() {
-        this.$store.dispatch('sidenav/getMenusData')
     }
 }
 </script>

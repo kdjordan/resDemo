@@ -36,6 +36,7 @@ export default {
     },
     methods: {
         updateHomesArray(homeName) {
+            this.$store.commit('errors/setInitHomesFalse')
             this.$store.dispatch('userHomes/updateActiveHomes', homeName)
       }
     }

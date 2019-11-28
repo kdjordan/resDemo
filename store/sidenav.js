@@ -8,6 +8,9 @@ export const state = () => ({
  export const getters  = {
     getKeepersMenu(state) {
         return state.keepersMenu;
+    },
+    getHomesMenu(state) {
+        return state.homesMenu;
     }
  };
  

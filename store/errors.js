@@ -1,19 +1,30 @@
 
 export const state = () => ({
    userNameError: false,
-   userNameErrorMssg: 'userNameError',
+   userNameErrorMssg: '',
    passwordError: false,
-   passwordErrorMssg: 'passwordError',
+   passwordErrorMssg: '',
    homesError: false,
-   homesErrorMssg: 'homeError',
+   homesErrorMssg: '',
    roleError: false,
-   roleErrorMssg: 'roleError'
+   roleErrorMssg: '',
+   initUserNameError: true,
+   initPasswordError: true,
+   initHomesError: true,
+   initRoleError: true
    
 });
 
 export const getters  = {
     getErrorState(state) {
         if(state.passwordError || state.userNameError || state.roleError || state.homesError) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    gettInitAddErrorState(state){
+        if(state.initUserNameError || state.initPasswordError || state.initHomesError || state.initRoleError) {
             return true;
         } else {
             return false;
@@ -41,6 +52,9 @@ export const getters  = {
     },
     getHomesError(state) {
         return state.homesError;
+    },
+    getInitAddError(state) {
+        return state.initAddError;
     },
     getUserNameErrorMssg(state) {
         if(state.userNameError) {
@@ -71,10 +85,35 @@ export const mutations = {
     setRoleError(state, payload) {
         state.roleErrorMssg = payload.mssg;
         state.roleError = payload.status
+    },
+    setInitUserNameFalse(state) {
+       state.initUserNameError = false;
+    },
+    setInitPasswordFalse(state) {
+        state.initPasswordError = false;
+     },
+     setInitHomesFalse(state) {
+        state.initHomesError = false;
+     },
+     setInitRoleFalse(state) {
+        state.initRoleError = false;
+     },
+    resetErrors(state) {
+        state.userNameError = false,
+        state.userNameErrorMssg = '',
+        state.passwordError = false,
+        state.passwordErrorMssg = '',
+        state.homesError = false,
+        state.homesErrorMssg = '',
+        state.roleError = false,
+        state.roleErrorMssg = '',
+        state.initUserNameError = true,
+        state.initPasswordError = true,
+        state.initHomesError = true,
+        state.initRoleError = true
     }
 };
 
 export const actions = {
-    
 }
 
