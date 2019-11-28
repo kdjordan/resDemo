@@ -1,12 +1,12 @@
 <template>
   <div class="inner_container">
       <CircleText title="Edit User" />
-    <form  @submit.prevent="checkUpdateOK" class="form-container">
+    <form  @submit.prevent="" class="form-container">
 
-      <Input  type="text" label="Username" labelFor="username" id="username"
+      <FormInput  type="text" label="Username" labelFor="username" id="username"
               :errorValidator="getUserNameError"/>
 
-      <Input  type="password" label="Password" labelFor="password" id="password"
+      <FormInput  type="password" label="Password" labelFor="password" id="password"
               placeholder="Enter New or Leave Blank" :errorValidator="getPasswordError"/>
 
       <UserHomes />
@@ -28,7 +28,7 @@
 <script>
 import CircleText from '@/components/UI/CircleText'
 import Messages from '@/components/UI/Messages'
-import Input from '@/components/UI/Input'
+import FormInput from '@/components/UI/FormInput'
 import UserRole from '@/components/UI/UserRoles'
 import UserHomes from '@/components/UI/UserHomes'
 import Buttons from '@/components/UI/AdminButtons'
@@ -39,7 +39,7 @@ export default {
     components: {
       CircleText,
       Messages,
-      Input,
+      FormInput,
       UserRole,
       UserHomes,
       Buttons
@@ -54,33 +54,12 @@ export default {
           getNotificationMssg: 'notifications/getNotificationMssg'
       })
     },
-    methods: {
-      deleteUser() {
-        console.log(this.$route.params.id)
-        this.$axios.$post(`/deleteUser/${this.$route.params.id}`)
-                .then((response) => {
-                   console.log(response)
-                   //remove from menu
-                   //throw notification
-                
-                })
-                .catch((e) => {
-                    console.logt(e)
-                });
-
-      },
-      hideNotification() {
-        setTimeout(() => {
-         this.$store.commit('notifications/setNotification', {status: false, mssg: ''})
-        }, 1000)
-      }
-    },
     mounted() {
         this.$store.commit('errors/resetErrors');
         this.$store.dispatch('admin/getUserData', this.$route.params.id)
         .then(() => {
           this.$store.commit('notifications/setNotification', {status: true, mssg: 'User Loaded'})
-          this.hideNotification();
+          this.$store.dispatch('notifications/hideNotification');
         }).catch((e) => {
           console.log(e);
         });

@@ -24,6 +24,11 @@ export const state = () => ({
     addKeeper(state, payload) {
         state.keepersMenu.push(payload);
     },
+    removeUser(state, payload) {
+        state.usersMenu = state.usersMenu.filter((el) => {
+            return el._id != payload;
+        })
+    },
     toggleSubMenu(state, payload) {
         //FN :: open and close submenus based on clicks in SideNav
         // statements for menu click

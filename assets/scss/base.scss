@@ -147,6 +147,8 @@ label.invalid {
     text-transform: uppercase;
     font-size: 1.2rem;
     margin-bottom: 2rem;
+    background: $color2;
+    color: white;
     border: 1px solid $color2;
     width: 100%;
     padding: .5rem 1rem;

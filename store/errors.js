@@ -1,23 +1,24 @@
 
 export const state = () => ({
-   userNameError: false,
-   userNameErrorMssg: '',
-   passwordError: false,
-   passwordErrorMssg: '',
-   homesError: false,
-   homesErrorMssg: '',
-   roleError: false,
-   roleErrorMssg: '',
-   initUserNameError: true,
-   initPasswordError: true,
-   initHomesError: true,
-   initRoleError: true
-   
+    adminError: false,
+    adminErrorMssg: '',
+    userNameError: false,
+    userNameErrorMssg: '',
+    passwordError: false,
+    passwordErrorMssg: '',
+    homesError: false,
+    homesErrorMssg: '',
+    roleError: false,
+    roleErrorMssg: '',
+    initUserNameError: true,
+    initPasswordError: true,
+    initHomesError: true,
+    initRoleError: true
 });
 
 export const getters  = {
     getErrorState(state) {
-        if(state.passwordError || state.userNameError || state.roleError || state.homesError) {
+        if(state.passwordError || state.userNameError || state.roleError || state.homesError || state.adminError) {
             return true;
         } else {
             return false;
@@ -39,6 +40,8 @@ export const getters  = {
             return state.roleErrorMssg;
         } else if (state.homesError) {
             return state.homesErrorMssg;
+        } else if(state.adminError) {
+            return state.adminErrorMssg;
         } else {return ''}
     },
     getUserNameError(state) {
@@ -70,6 +73,10 @@ export const getters  = {
 };
 
 export const mutations = {
+    setAdminError(state, payload) {
+        state.adminErrorMssg = payload.mssg;
+        state.adminError = payload.status;
+    },
    setUserNameError(state, payload) {
         state.userNameErrorMssg = payload.mssg;
         state.userNameError = payload.status;
@@ -99,6 +106,7 @@ export const mutations = {
         state.initRoleError = false;
      },
     resetErrors(state) {
+        state.adminError =  false,
         state.userNameError = false,
         state.userNameErrorMssg = '',
         state.passwordError = false,

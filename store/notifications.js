@@ -28,7 +28,11 @@ export const state = () => ({
  }
  
  export const actions = {
-     
+    hideNotification({ commit }) {
+        setTimeout(() => {
+         commit('setNotification', {status: false, mssg: ''})
+        }, 1000)
+      }
  }
  
  

@@ -4,7 +4,7 @@ export const state = () => ({
 });
 
 export const getters  = {
-   getUserRole() {
+    getUpdatedRole(state) {
        return state.role;
    }
 };

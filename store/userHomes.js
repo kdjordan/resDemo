@@ -12,8 +12,14 @@ export const getters  = {
             }, 0)
         return sumLength;
     },
-    getUserHomes(state) {
-        return state.activeHomes;
+    getUpdatedHomes(state) {
+        let flatHomesArr = [];
+        state.activeHomes.forEach((home) => {
+            if(home[1] == true) {
+                flatHomesArr.push(home[0])
+            }
+        })
+        return flatHomesArr;
     }
 
 };

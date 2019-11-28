@@ -43,7 +43,7 @@ export default {
           } else if(this.updatedName.length < 6) {
             this.$store.commit('errors/setUserNameError', {status: true, mssg: 'User Name < 6'})
           } else {
-            this.$store.commit('users/updateUserName', this.updatedName);
+            this.$store.commit('users/setUserName', this.updatedName);
           }
         }
       },
@@ -61,7 +61,7 @@ export default {
           } else if(this.updatedPassword.length < 8) {
            this.$store.commit('errors/setPasswordError', {status: true, mssg: 'Password < 8'})
           } else {
-            this.$store.commit('users/updateUserPassword', this.updatedPassword);
+            this.$store.commit('users/setUserPassword', this.updatedPassword);
           }
         } 
       }

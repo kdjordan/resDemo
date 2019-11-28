@@ -1,4 +1,5 @@
 
+
 export const actions = {
     getUserData({ dispatch }, payload) {
         return new Promise((resolve, reject) => {

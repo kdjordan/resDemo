@@ -1,12 +1,12 @@
 <template>
   <div class="inner_container">
     <CircleText title="Add User" />
-    <form  @submit.prevent="checkUpdateOK" class="form-container">
+    <form  @submit.prevent="addUser" class="form-container">
 
-      <Input  type="text" label="Username" labelFor="username" id="username"
+      <FormInput  type="text" label="Username" labelFor="username" id="username"
               :errorValidator="getUserNameError" caller="addUser"/>
 
-      <Input  type="password" label="Password" labelFor="password" id="password"
+      <FormInput  type="password" label="Password" labelFor="password" id="password"
               placeholder="" :errorValidator="getPasswordError" caller="addUser"/>
 
       <UserHomes />
@@ -26,18 +26,18 @@
 
 <script>
 import CircleText from '@/components/UI/CircleText'
-import Input from '@/components/UI/Input'
+import FormInput from '@/components/UI/FormInput'
 import Buttons from '@/components/UI/AdminButtons'
 import Messages from '@/components/UI/Messages'
 import UserRole from '@/components/UI/UserRoles'
 import UserHomes from '@/components/UI/UserHomes'
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   layout: 'admin',
   components: {
     CircleText,
-    Input,
+    FormInput,
     UserRole,
     UserHomes,
     Messages,
@@ -47,14 +47,35 @@ export default {
       ...mapGetters({
           getUserNameError: 'errors/getUserNameError',
           getPasswordError: 'errors/getPasswordError',
+          getUpdatedName: 'users/getUpdatedName',
+          getUpdatedPassword: 'users/getUpdatedPassword',
+          getUpdatedHomes: 'userHomes/getUpdatedHomes',
+          getUpdatedRole: 'userRole/getUpdatedRole'
       })
     },
     methods: {
-      hideNotification() {
-          setTimeout(() => {
-          this.$store.commit('notifications/setNotification', {status: false, mssg: ''})
-          }, 1000)
-      }
+      addUser() {
+        this.$store.dispatch('users/addUser', {
+          userName: this.getUpdatedName,
+          userPassword: this.getUpdatedPassword,
+          homesArray: this.getUpdatedHomes,
+          role: this.getUpdatedRole})
+        .then((res) => {
+          if(res == 'success') {
+            this.$store.commit('notifications/setNotification', {status: true, mssg: 'User Added'});
+            this.$store.dispatch('notifications/hideNotification');
+            this.$store.commit('users/resetUser')
+            this.$store.commit('errors/resetErrors')
+          } else {
+            this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Adding User'});
+          }
+        })
+        .catch((e) => {
+          //TODO : push router to error page
+          console.log(e)
+        });
+        },
+      
     },
     created() {
         this.$store.dispatch('admin/initAddUser');
