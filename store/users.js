@@ -62,7 +62,7 @@ export const actions = {
             return this.$axios.$post(`/deleteUser/${payload}`)
                 .then((res) => {
                     this.commit('sidenav/removeUser', res)
-                    this.commit('notifications/setNotification', {status: true, mssg: 'User Deleted'})
+                    this.dispatch('notifications/doNotification', {status: true, mssg: 'User Deleted'})
                     resolve('success')
                 })
                 .catch((e) => {
