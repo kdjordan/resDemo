@@ -1,7 +1,8 @@
 
 export const state = () => ({
     allMenuHomes: [],
-    activeHomes: []
+    activeHomes: [],
+    queriedHome:[]
     
 });
 
@@ -27,6 +28,9 @@ export const getters  = {
 export const mutations = {
     setActiveHomes(state, payload) {
         state.activeHomes = payload;
+    },
+    setQueriedHome(state, payload) {
+        state.queriedHome = payload;
     }
 };
 

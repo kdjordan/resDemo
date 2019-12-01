@@ -1,17 +1,17 @@
 <template>
   <div class="inner_container">
-    <CircleText title="Add User" />
-    <form  @submit.prevent="addUser" class="form-container">
+    <CircleText title="Add Keeper" />
+    <form  @submit.prevent="addKeeper" class="form-container">
 
-      <FormInput  type="text" label="Username" labelFor="username" id="username"
-              :errorValidator="getUserNameError" caller="addUser"/>
+        <FormInput  type="text" label="Keepername" labelFor="homename" id="homename"
+              caller="add"/>
 
-      <FormInput  type="password" label="Password" labelFor="password" id="password"
+        <FormInput  type="password" label="Password" labelFor="password" id="password"
               placeholder="" :errorValidator="getPasswordError" caller="addUser"/>
 
-      <UserHomes />
+     
 
-      <UserRole  />
+      <UserHomes caller="addKeeper"/>
 
       <div class="flex-items__spaced--edit">
 
@@ -48,14 +48,12 @@ export default {
           getUserNameError: 'errors/getUserNameError',
           getPasswordError: 'errors/getPasswordError',
           getUpdatedName: 'users/getUpdatedName',
-          getUpdatedPassword: 'users/getUpdatedPassword',
           getUpdatedHomes: 'userHomes/getUpdatedHomes',
-          getUpdatedRole: 'userRole/getUpdatedRole'
       })
     },
     methods: {
-      addUser() {
-        this.$store.dispatch('users/addUser', {
+        addKeeper() {
+            this.$store.dispatch('users/addUser', {
           userName: this.getUpdatedName,
           userPassword: this.getUpdatedPassword,
           homesArray: this.getUpdatedHomes,
@@ -74,12 +72,11 @@ export default {
           console.log(e)
         });
         },
-      
     },
     created() {
         this.$store.dispatch('admin/initAddUser');
     }
-
+    
 }
 </script>
 

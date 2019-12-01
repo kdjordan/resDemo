@@ -16,6 +16,23 @@ export const actions = {
                 });
         })
     },
+    getHomeData({ dispatch }, payload) {
+        return new Promise((resolve, reject) => {
+            return this.$axios.$get(`/getHome/${payload}`)
+                .then((data) => {
+                    console.log(data)
+                    this.commit('userHomes/setQueriedHome', data)
+                    // this.commit('users/setOGUserName', response.userName);
+                    // this.commit('userRole/setUserRole', response.role);
+                    // dispatch('setActiveHomesList', response.homesArray);
+                    resolve()
+                
+                })
+                .catch((e) => {
+                    reject(e)
+                });
+        })
+    },
     setActiveHomesList({ rootState }, payload) {
         let tmpAllHomes = []
         rootState.sidenav.homesMenu.forEach(home => {

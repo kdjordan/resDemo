@@ -30,7 +30,6 @@ export const mutations = {
         state.ogUserName = payload;
     },
     resetUser(state) {
-        console.log('called reset')
         state.ogUserName = '',
         state.updatedName = '',
         state.updatedPassword = ''
@@ -44,16 +43,10 @@ export const actions = {
             console.log(payload)
             let salt = bcrypt.genSaltSync(10);
             payload.userPassword = bcrypt.hashSync(payload.userPassword, salt)
-            console.log(payload.userPassword)
-            let keeperFlag = false;
-            if(payload.role == 'keeper') { keeperFlag = true}
+            
             return this.$axios.$post(`/addUser/`, payload)
-                .then((response) => {
-                    if(keeperFlag == true) {
-                        this.commit('sidenav/addKeeper', response) 
-                    } else {
-                        this.commit('sidenav/addUser', response);
-                    }
+                .then((data) => {
+                   this.commit('sidenav/addUser', {_id: data._id, userName:data.userName })
                     resolve('success')
                     
                 })
@@ -69,6 +62,7 @@ export const actions = {
             return this.$axios.$post(`/deleteUser/${payload}`)
                 .then((res) => {
                     this.commit('sidenav/removeUser', res)
+                    this.commit('notifications/setNotification', {status: true, mssg: 'User Deleted'})
                     resolve('success')
                 })
                 .catch((e) => {
@@ -77,6 +71,48 @@ export const actions = {
                 });
         });
     },
+    updateUser({dispatch, commit}, payload) {
+        return new Promise((resolve, reject) => {
+            
+            dispatch('formatUpdatedUser', payload);
+            //salt and encrypt userPassword before posting to API
+            if(payload.userPassword != '') {
+                let salt = bcrypt.genSaltSync(10);
+                payload.userPassword = bcrypt.hashSync(payload.userPassword, salt)
+            } 
+            let keeperFlag = false;
+            if(payload.role == 'keeper') {
+                keeperFlag = true
+            }
+            this.$axios.$post(`/updateUser/${payload.userid}`, payload)
+                .then((data) => {
+                   if(keeperFlag) {
+                    this.commit('sidenav/removeUser', data._id)
+                    this.commit('sidenav/addKeeper', {_id: data._id, keeperName: data.userName})
+                   } else {
+                    resolve('success');
+                   }
+                   
+                
+                })
+                .catch((e) => {
+                    console.log(e);e
+                    reject(e);
+                });
+        })
+    },
+    formatUpdatedUser(_, payload) {
+        if(payload.userName.length < 2) { 
+            payload.userName = "";
+            
+        }
+        if(payload.userPassword == undefined) { 
+            payload.userPassword = "";
+            
+        } else if(payload.userPassword.length < 2) {
+            payload.userPassword = "";
+        }
+    }
     
 
 }

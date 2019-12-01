@@ -4,48 +4,48 @@
         <div class="sidenav__indicator">Add User</div>
             <ul class="nav">
                 <div class="nav__container">
-                    <nuxt-link to="/admin/users" 
-                        @click.native="toggleSubMenu" 
-                        class="nav__category--link">Users
+                     <nuxt-link to="/admin/users" class="nav__category--link"
+                        @click.native="toggleSubMenu">Users
                         <span class="nav__category--icon">&#62;</span>
                     </nuxt-link>
                     <ul class="nav__category--dropdown">
-                       <nuxt-link v-for="(user, index) in getUsers" 
-                            :key="index" 
-                            :to="{name: 'admin-users-id', params: {id: user._id}}" 
-                            class="links">
+                       <nuxt-link v-for="(user, index) in getUsers" :key="index" class="links"
+                            :to="{name: 'admin-users-id', params: {id: user._id}}">
                         {{user.userName}}
                         </nuxt-link>   
                     </ul>
 
-                    
-                    <a class="nav__category--link" @click="toggleSubMenu($event)" id="Add-Home">Homes
+                    <nuxt-link to="/admin/homes" class="nav__category--link"
+                        @click.native="toggleSubMenu">Homes
                         <span class="nav__category--icon">&#62;</span>
-                    </a>
+                    </nuxt-link>
                     <ul class="nav__category--dropdown">
-                        
-                    </ul>
-                    
-                    <a class="nav__category--link" @click="toggleSubMenu($event)" id="Add-Keeper">Keepers
-                        <span class="nav__category--icon" >&#62;</span>
-                    </a>
+                        <nuxt-link v-for="(home, index) in getHomes" :key="index" class="links"
+                            :to="{name: 'admin-homes-id', params: {id: home._id}}">
+                            {{home.homeName}}
+                        </nuxt-link>
+                    </ul> 
+
+                    <nuxt-link to="/admin/keepers" class="nav__category--link"
+                        @click.native="toggleSubMenu">Keepers
+                        <span class="nav__category--icon">&#62;</span>
+                    </nuxt-link>
                     <ul class="nav__category--dropdown">
-                        
-                    </ul>
-                </div>
+                        <nuxt-link v-for="(keeper, index) in getKeepers" :key="index" class="links"
+                            :to="{name: 'admin-keepers-id', params: {id: keeper._id}}">
+                            {{keeper.keeperName}}
+                        </nuxt-link>
+                    </ul> 
+                </div> 
             </ul>
         </div>
+        
     </div> 
-    
+        
 </template>
 <script>
 
 export default {
-    data() {
-        return {
-            usersMenu: []
-        }
-    },
     methods: {
         linkClick(id) {
             this.$router.push(`users/${id}`);
@@ -58,6 +58,12 @@ export default {
     computed: {
         getUsers() {
             return this.$store.state.sidenav.usersMenu;
+        },
+        getHomes() {
+            return this.$store.state.sidenav.homesMenu;
+        },
+        getKeepers() {
+            return this.$store.state.sidenav.keepersMenu;
         }
     }
 }

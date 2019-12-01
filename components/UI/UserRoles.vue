@@ -31,7 +31,7 @@ export default {
     methods: {
         updateRole(ev) {
             this.$store.commit('errors/setInitRoleFalse')
-           this.$store.dispatch('userRole/updateRole', ev.srcElement.id)
+            this.$store.dispatch('userRole/updateRole', ev.srcElement.id)
         }
     },
     computed: {

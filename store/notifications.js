@@ -20,6 +20,7 @@ export const state = () => ({
      setNotification(state, payload) {
         state.notificationState = payload.status;
         state.notificationMssg = payload.mssg;
+        
      },
      removeNotification(state, payload){
         state.notificationState = payload.status;
@@ -28,6 +29,10 @@ export const state = () => ({
  }
  
  export const actions = {
+     doNotification({ commit, dispatch }, payload) {
+        commit('setNotification', payload);
+        dispatch('hideNotification');
+     },
     hideNotification({ commit }) {
         setTimeout(() => {
          commit('setNotification', {status: false, mssg: ''})

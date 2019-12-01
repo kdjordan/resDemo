@@ -26,7 +26,7 @@ export default {
         if(confirm(`Are You Sure You Want to Delete ${this.$route.params.id}`)){
             this.$store.dispatch('users/deleteUser', this.$route.params.id)
             .then((res) => {
-                this.$store.commit('notifications/setNotification', {status: true, mssg:'User Deleted'})
+                this.$store.commit('notifications/doNotification', {status: true, mssg:'User Deleted'})
                 this.$router.push('/admin/users')
             })
             .catch((e) => {

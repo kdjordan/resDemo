@@ -24,10 +24,12 @@
 import { mapGetters, mapMutations } from 'vuex'
 
 export default {
+    props:['caller'],
     computed: {
         ...mapGetters({
             getHomesError: 'errors/getHomesError',
-            getActiveHomes: 'userHomes/getActiveHomes'
+            getUpdatedHomes: 'userHomes/getUpdatedHomes',
+            getActiveHomesLength: 'userHomes/getActiveHomesLength'
             
         }),
         getActiveHomes() {
@@ -36,8 +38,19 @@ export default {
     },
     methods: {
         updateHomesArray(homeName) {
-            this.$store.commit('errors/setInitHomesFalse')
-            this.$store.dispatch('userHomes/updateActiveHomes', homeName)
+            this.$store.commit('errors/setInitHomesFalse');
+            if(this.caller == 'addKeeper') {
+                console.log('keeper')
+                this.$store.commit('errors/setInitRoleFalse');
+                this.$store.commit('userRole/setUserRole', 'keeper');
+                this.$store.dispatch('userHomes/updateActiveHomes', homeName);
+            console.log(this.getActiveHomesLength)
+
+            } else {
+                this.$store.dispatch('userHomes/updateActiveHomes', homeName);
+            }
+            
+            
       }
     }
 

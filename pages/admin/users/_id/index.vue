@@ -1,7 +1,7 @@
 <template>
   <div class="inner_container">
       <CircleText title="Edit User" />
-    <form  @submit.prevent="" class="form-container">
+    <form  @submit.prevent="updateUser" class="form-container">
 
       <FormInput  type="text" label="Username" labelFor="username" id="username"
               :errorValidator="getUserNameError"/>
@@ -46,20 +46,40 @@ export default {
     },
     computed: {
       ...mapGetters({
-          getErrorState: 'errors/getErrorState',
-          getErrorMssg: 'errors/getErrorMssg',
           getUserNameError: 'errors/getUserNameError',
           getPasswordError: 'errors/getPasswordError',
-          getNotificationState: 'notifications/getNotificationState',
-          getNotificationMssg: 'notifications/getNotificationMssg'
+          getUpdatedName: 'users/getUpdatedName',
+          getUpdatedPassword: 'users/getUpdatedPassword',
+          getUpdatedHomes: 'userHomes/getUpdatedHomes',
+          getUpdatedRole: 'userRole/getUpdatedRole'
       })
+    },
+    methods: {
+      updateUser() {
+        this.$store.dispatch('users/updateUser',{
+          userid: this.$route.params.id,
+          userName: this.getUpdatedName,
+          userPassword: this.getUpdatedPassword,
+          homesArray: this.getUpdatedHomes,
+          role: this.getUpdatedRole
+        })
+        .then((res) => {
+          if(res == 'success') {
+            this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'User Updated'})
+          } else {
+            this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Updating User'})
+          }
+        }).catch((e) => {
+          console.log(e);
+        });
+          
+      }
     },
     mounted() {
         this.$store.commit('errors/resetErrors');
         this.$store.dispatch('admin/getUserData', this.$route.params.id)
         .then(() => {
-          this.$store.commit('notifications/setNotification', {status: true, mssg: 'User Loaded'})
-          this.$store.dispatch('notifications/hideNotification');
+          this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'User Loaded'})
         }).catch((e) => {
           console.log(e);
         });

@@ -38,13 +38,12 @@ export default {
             }
         }
         if(this.updatedName != '') {
+          this.$store.commit('users/setUserName', this.updatedName);
           if(!this.updatedName.match(/^[0-9a-zA-Z]+$/)) {
             this.$store.commit('errors/setUserNameError', {status: true, mssg: 'Invalid Character'})
           } else if(this.updatedName.length < 6) {
             this.$store.commit('errors/setUserNameError', {status: true, mssg: 'User Name < 6'})
-          } else {
-            this.$store.commit('users/setUserName', this.updatedName);
-          }
+          } 
         }
       },
       updatedPassword() {
@@ -56,12 +55,11 @@ export default {
             }
         }
         if(this.updatedPassword != '') {
+          this.$store.commit('users/setUserPassword', this.updatedPassword);
           if(!this.updatedPassword.match(/^[0-9a-zA-Z]+$/)) {
             this.$store.commit('errors/setPasswordError', {status: true, mssg: 'Invalid Character'})
           } else if(this.updatedPassword.length < 8) {
            this.$store.commit('errors/setPasswordError', {status: true, mssg: 'Password < 8'})
-          } else {
-            this.$store.commit('users/setUserPassword', this.updatedPassword);
           }
         } 
       }
