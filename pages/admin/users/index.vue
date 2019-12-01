@@ -63,8 +63,8 @@ export default {
         .then((res) => {
           if(res == 'success') {
             this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'User Added'});
-            this.$store.commit('users/resetUser')
-            this.$store.commit('errors/resetErrors')
+            // this.$store.dispatch('admin/initAddUser');
+            this.$router.push('/admin/users')
           } else {
             this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Adding User'});
           }

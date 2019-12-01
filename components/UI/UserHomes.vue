@@ -28,9 +28,7 @@ export default {
     computed: {
         ...mapGetters({
             getHomesError: 'errors/getHomesError',
-            getUpdatedHomes: 'userHomes/getUpdatedHomes',
-            getActiveHomesLength: 'userHomes/getActiveHomesLength'
-            
+            getUpdatedHomes: 'userHomes/getUpdatedHomes'            
         }),
         getActiveHomes() {
             return this.$store.state.userHomes.activeHomes;
@@ -40,12 +38,9 @@ export default {
         updateHomesArray(homeName) {
             this.$store.commit('errors/setInitHomesFalse');
             if(this.caller == 'addKeeper') {
-                console.log('keeper')
                 this.$store.commit('errors/setInitRoleFalse');
                 this.$store.commit('userRole/setUserRole', 'keeper');
                 this.$store.dispatch('userHomes/updateActiveHomes', homeName);
-            console.log(this.getActiveHomesLength)
-
             } else {
                 this.$store.dispatch('userHomes/updateActiveHomes', homeName);
             }

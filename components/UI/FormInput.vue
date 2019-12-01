@@ -7,7 +7,7 @@
         <input :type="type" 
                 v-model.trim="updatedName"
                 :id="id"
-                :placeholder="getOGUserName"> 
+                :placeholder="getOGuserName"> 
     </div>
     <div v-else class="right-item">
         <input :type="type" 
@@ -15,10 +15,12 @@
                 :id="id"
                 :placeholder="placeholder"> 
     </div>
+    US:{{getOGuserName}}
 </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     props:['type', 'errorValidator', 'label', 'labelFor', 'id', 'placeholder', 'caller'],
     data() {
@@ -27,6 +29,11 @@ export default {
              updatedPassword: '',
              theCaller: this.caller
         }
+    },
+    computed: {
+      ...mapGetters({
+          getOGuserName: 'users/getOGuserName'
+      })
     },
     watch: {
       updatedName() {
@@ -62,11 +69,6 @@ export default {
            this.$store.commit('errors/setPasswordError', {status: true, mssg: 'Password < 8'})
           }
         } 
-      }
-    },
-    computed: {
-        getOGUserName(){
-            return this.$store.state.users.ogUserName;
       }
     }
 }
