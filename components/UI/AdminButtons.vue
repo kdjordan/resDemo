@@ -19,14 +19,15 @@ export default {
       ...mapGetters({
           getErrorState: 'errors/getErrorState',
           gettInitAddErrorState: 'errors/gettInitAddErrorState',
+          getOguserName: 'users/getOguserName'
       })
     },
     methods: {
        deleteUser() {
-        if(confirm(`Are You Sure You Want to Delete ${this.$route.params.id}`)){
+        if(confirm(`Are You Sure You Want to Delete ${this.getOguserName}`)){
             this.$store.dispatch('users/deleteUser', this.$route.params.id)
             .then((res) => {
-                this.$store.commit('notifications/doNotification', {status: true, mssg:'User Deleted'})
+                this.$store.dispatch('notifications/doNotification', {status: true, mssg:'User Deleted'})
                 this.$router.push('/admin/users')
             })
             .catch((e) => {

@@ -43,6 +43,7 @@ export default {
     Messages,
     Buttons
   },
+
   computed: {
       ...mapGetters({
           getUserNameError: 'errors/getUserNameError',
@@ -63,7 +64,7 @@ export default {
         .then((res) => {
           if(res == 'success') {
             this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'User Added'});
-            this.$store.commit('users/resetUser')
+            this.$store.dispatch('admin/initAddUser');
             this.$store.commit('errors/resetErrors')
           } else {
             this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Adding User'});

@@ -16,6 +16,9 @@ export const getters  = {
     },
     getUpdatedPassword(state) {
         return state.updatedPassword;
+    },
+    getOguserName(state) {
+        return state.ogUserName;
     }
 };
 
