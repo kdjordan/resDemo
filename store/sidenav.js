@@ -11,6 +11,9 @@ export const state = () => ({
     },
     getHomesMenu(state) {
         return state.homesMenu;
+    },
+    getUsersMenu(state) {
+        return state.usersMenu
     }
  };
  

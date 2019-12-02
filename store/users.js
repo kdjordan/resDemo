@@ -6,8 +6,6 @@ export const state = () => ({
     ogUserName: '',
     updatedName: '',
     updatedPassword: ''
-
-    
 });
 
 export const getters  = {
@@ -45,13 +43,10 @@ export const actions = {
             //salt and encrypt userPassword before posting to API
             let salt = bcrypt.genSaltSync(10);
             payload.userPassword = bcrypt.hashSync(payload.userPassword, salt)
-            let keeperFlag = false;
-            if(payload.role == 'keeper') {
-                keeperFlag = true
-            }
+            
             return this.$axios.$post(`/addUser/`, payload)
                 .then((data) => {
-                    if(keeperFlag) {
+                    if(payload.role == 'keeper') {
                         this.commit('sidenav/addKeeper', {_id: data._id, keeperName: data.userName})
                         this.dispatch('notifications/doNotification', {status: true, mssg: 'Keeper Added'});
                         resolve('success');
@@ -100,13 +95,10 @@ export const actions = {
                 let salt = bcrypt.genSaltSync(10);
                 payload.userPassword = bcrypt.hashSync(payload.userPassword, salt)
             } 
-            let keeperFlag = false;
-            if(payload.role == 'keeper') {
-                keeperFlag = true
-            }
+           
             this.$axios.$post(`/updateUser/${payload.userid}`, payload)
                 .then((data) => {
-                   if(keeperFlag) {
+                   if(payload.role == 'keeper') {
                     this.commit('sidenav/removeUser', data._id);
                     this.commit('users/setOGUserName', data.userName)
                     this.commit('sidenav/addKeeper', {_id: data._id, keeperName: data.userName});
@@ -134,7 +126,8 @@ export const actions = {
         } else if(payload.userPassword.length < 2) {
             payload.userPassword = "";
         }
-    }
+    },
+    
     
 
 }
