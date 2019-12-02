@@ -13,10 +13,27 @@
                     id="homeName"
                     placeholder="Enter Home Name"> 
         </div>
-        
-        <!-- {{getQueriedHomeName}} -->
     </div>
+      <div class="flex-items__spaced">
+         <div class="left-item">
+            <label for="activeUsers">Active Users</label>
+        </div>
+        <div class="right-item">
+          <div class="activeUsersList" v-for="(user, index) in getUsersMenu" :key="index">
+            <template>
+                <div class="checkbox-box">
+                    <input type="checkbox"  
+                        :checked="user.homesArray.find((el) => homeName)" :id="`${user.userName}`" 
+                        @change="updateHomesArray(user.userName)">
+                    <label :for="`${user.userName}`" 
+                        class="label-sm" :value="`${user.userName}`">
+                        {{ user.userName }}</label>
+                </div>
+            </template>
+          </div>
+        </div>
 
+      </div>
 
       <div class="flex-items__spaced--edit">
 
@@ -25,7 +42,7 @@
        <div class="right-item__indicator--edit">
         <button class="btn btn-primary" :disabled="homeNameInvalid || initHomeError">ADD</button>  
       </div>
-
+            
       </div>
     </form>
   </div>
@@ -50,6 +67,11 @@ export default {
     CircleText,
     Messages,
     Buttons
+  },
+  computed: {
+    ...mapGetters({
+        getUsersMenu: 'sidenav/getUsersMenu'
+    })
   },
   watch: {
     homeName() {

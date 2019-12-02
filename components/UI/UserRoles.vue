@@ -9,10 +9,10 @@
                 <input type="radio" v-model="getUpdatedRole" @change="updateRole" value="user" id="user">
                 <label for="user" class="label-sm">User</label>
             </div>
-            <div class="checkbox-box">
+            <!-- <div class="checkbox-box">
                 <input type="radio" v-model="getUpdatedRole" @change="updateRole" value="keeper" id="keeper">
                 <label for="keeper" class="label-sm">Keeper</label> 
-            </div>
+            </div> -->
             <div class="checkbox-box">    
                 <input type="radio" v-model="getUpdatedRole" @change="updateRole" value="admin" id="admin"> 
                 <label for="admin" class="label-sm">Administrator</label>

@@ -14,7 +14,7 @@
       <UserRole  />
 
       <div class="flex-items__spaced--edit">
-
+        
         <Messages />
 
         <Buttons state="add" />
@@ -58,7 +58,6 @@ export default {
     },
     methods: {
       addUser(ev) {
-
         //check to see if username is available
         if(this.checkUserName({userName: this.getUpdatedName , role: this.getUpdatedRole})) {
           this.$store.dispatch('users/addUser', {

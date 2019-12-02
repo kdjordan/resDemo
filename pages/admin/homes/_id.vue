@@ -17,6 +17,25 @@
         <!-- {{getQueriedHomeName}} -->
     </div>
 
+    <div class="flex-items__spaced">
+         <div class="left-item">
+            <label for="activeUsers">Active Users</label>
+        </div>
+        <div class="right-item">
+          <div class="activeUsersList" v-for="(user, index) in getUsersMenu" :key="index">
+            <template>
+                <div class="checkbox-box">
+                    <input type="checkbox"  
+                        :checked="user.homesArray.find((el) => homeName)" :id="`${user.userName}`" 
+                        @change="updateActiveUsers({userName: user.userName, _id: user._id})">
+                    <label :for="`${user.userName}`" 
+                        class="label-sm" :value="`${user.userName}`">
+                        {{ user.userName }}</label>
+                </div>
+            </template>
+          </div>
+        </div>
+    </div>
 
       <div class="flex-items__spaced--edit">
 
@@ -42,7 +61,8 @@ export default {
   data() {
     return {
       homeName: '',
-      homeNameInvalid: false
+      homeNameInvalid: false,
+      activeUsers: []
     }
   },
   components: {
@@ -51,7 +71,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getQueriedHomeName: 'userHomes/getQueriedHomeName'
+      getQueriedHomeName: 'userHomes/getQueriedHomeName',
+      getUsersMenu: 'sidenav/getUsersMenu'
     })
   },
   methods: {
@@ -80,6 +101,20 @@ export default {
         return {_id: this.$route.params.id, homeName: this.getQueriedHomeName}
       } else {
         return {_id: this.$route.params.id, homeName: this.homeName}
+      }
+    },
+    updateActiveUsers(user) {
+      let active = this.activeUsers.filter(activeUser => activeUser._id == user._id)
+      console.log(active.length)
+      if(active.length == 1) {
+        this.activeUsers.forEach(element => {
+          if(element._id == user._id){
+            let index = this.activeUsers.indexOf(element)
+            this.activeUsers.splice(index, 1)
+          }     
+        });
+      } else {
+        this.activeUsers.push(user)
       }
     }
   },
