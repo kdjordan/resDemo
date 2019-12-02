@@ -20,7 +20,6 @@ export const actions = {
         return new Promise((resolve, reject) => {
             return this.$axios.$get(`/getHome/${payload}`)
                 .then((data) => {
-                    
                     this.commit('userHomes/setQueriedHome', data)
                     // this.commit('users/setOGUserName', response.userName);
                     // this.commit('userRole/setUserRole', response.role);
@@ -53,7 +52,7 @@ export const actions = {
                 tmpAllHomes.push([home.homeName, false])
             });
             this.commit('userHomes/setActiveHomes', tmpAllHomes);
-            this.commit('userHomes/resetQuerierdHome');
+            this.commit('userHomes/resetQueriedHome');
             this.commit('userRole/resetRole');
             this.commit('users/resetUser');
             this.commit('errors/resetErrors');

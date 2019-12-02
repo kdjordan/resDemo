@@ -1,61 +1,95 @@
 <template>
   <div class="inner_container">
     <CircleText title="Edit Home" />
-    <form  @submit.prevent="editHome" class="form-container">
+    <form  @submit.prevent="updateHome" class="form-container">
 
-      <FormInput  type="text" label="Homename" labelFor="homename" id="homename"
-              caller="editHome"/>
+      <div class="flex-items">
+        <div class="left-item">
+            <label for="homeName" :class="{invalid: homeNameInvalid}">HomeName</label>
+        </div>
+        <div class="right-item">
+            <input type="text" 
+            v-model.trim="homeName"
+                    id="homeName"
+                    :placeholder="getQueriedHomeName"> 
+        </div>
+        
+        <!-- {{getQueriedHomeName}} -->
+    </div>
 
-     
-
-      <UserHomes />
 
       <div class="flex-items__spaced--edit">
 
         <Messages />
 
-        <Buttons state="edit" caller="editHome"/>
-
+        <div class="right-item__indicator--edit">
+            <button @click.prevent="deleteHome" class="btn btn-delete">DELETE</button>
+            <button class="btn btn-primary">UPDATE</button>
+        </div>
       </div>
     </form>
   </div>
 </template>
 
+
 <script>
 import CircleText from '@/components/UI/CircleText'
-import FormInput from '@/components/UI/FormInput'
-import Buttons from '@/components/UI/AdminButtons'
 import Messages from '@/components/UI/Messages'
-import UserRole from '@/components/UI/UserRoles'
-import UserHomes from '@/components/UI/UserHomes'
 import { mapGetters } from 'vuex'
 
 export default {
   layout: 'admin',
+  data() {
+    return {
+      homeName: '',
+      homeNameInvalid: false
+    }
+  },
   components: {
     CircleText,
-    FormInput,
-    UserRole,
-    UserHomes,
-    Messages,
-    Buttons
+    Messages
   },
   computed: {
-     
+    ...mapGetters({
+      getQueriedHomeName: 'userHomes/getQueriedHomeName'
+    })
+  },
+  methods: {
+    deleteHome() {
+      const payload = this.getPayload();
+       if(confirm(`Are You Sure You want to DELETE ${payload.homeName}`)) {
+         this.$store.dispatch('userHomes/deleteHome', payload)
+         .then((res) => {
+           this.$store.commit('userHomes/resetQueriedHome');
+           this.$router.push('/admin/keepers')
+         }).catch((e) => {
+           console.log(e);
+         });
+      }
+      
     },
-    methods: {
+    updateHome() {
+      const payload = this.getPayload();
+      console.log(payload)
     },
-    created() {
-        this.$store.commit('errors/resetErrors');
-        this.$store.dispatch('admin/initAddUser')
-        this.$store.dispatch('admin/getHomeData', this.$route.params.id)
-        .then(() => {
-            console.log('back')
-          this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'Home Loaded'})
-        }).catch((e) => {
-          console.log(e);
-        });
+    getPayload() {
+      if (this.homeName == "") {
+        return {_id: this.$route.params.id, homeName: this.getQueriedHomeName}
+      } else {
+        return {_id: this.$route.params.id, homeName: this.homeName}
+      }
     }
+  },
+  created() {
+      this.$store.commit('errors/resetErrors');
+      this.$store.dispatch('admin/initAddUser')
+      this.$store.dispatch('admin/getHomeData', this.$route.params.id)
+      .then(() => {
+        this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'Home Loaded'})
+      }).catch((e) => {
+        console.log(e);
+      });
+  }
     
 }
 </script>

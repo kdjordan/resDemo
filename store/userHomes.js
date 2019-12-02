@@ -1,3 +1,4 @@
+import { thistle } from "color-name";
 
 export const state = () => ({
     allMenuHomes: [],
@@ -33,29 +34,37 @@ export const mutations = {
         state.activeHomes = payload;
     },
     setQueriedHome(state, payload) {
-        console.log('setting home')
         state.queriedHome = payload;
     },
-    resetQuerierdHome(state) {
+    resetQueriedHome(state) {
         state.queriedHome = []
     }
 };
 
 export const actions = {
     addHome(_, payload) {
-        console.log(payload)
-    },
-    deleteHome(_, payload) {
         return new Promise((resolve, reject) => {
-            this.$axios.$post(`/deleteHome/${payload}`)
+            this.$axios.$post('/addHome/', {homeName: payload, homeUrl: null})
+            .then((res) => {
+                this.commit('sidenav/addHome', res);
+                this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Added'})
+                resolve('success')
+            }).catch((e) => {
+                console.log(e)
+            });
+        })
+    },
+    deleteHome({ commit }, payload) {
+        return new Promise((resolve, reject) => {
+            this.$axios.$post(`/deleteHome/${payload._id}`)
             .then((res) => {
                 this.commit('sidenav/removeHome', res)
-                this.commit('resetQuerierdHome')
+                commit('resetQueriedHome')
                 resolve({status: 'success', role: null})
-                
             })
             .catch((e) => {
                 console.log(e)
+                reject(e);
             });
         })
     },

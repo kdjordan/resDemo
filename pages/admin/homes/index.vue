@@ -5,13 +5,13 @@
 
       <div class="flex-items">
         <div class="left-item">
-            <label :for="labelFor" :class="{invalid: errorValidator }">HomeName</label>
+            <label for="homeName" :class="{invalid: homeNameInvalid}">HomeName</label>
         </div>
         <div class="right-item">
-            <input :type="type" 
-                    v-model.trim="updatedName"
-                    :id="id"
-                    :placeholder="getOGuserName || getQueriedHomeName"> 
+            <input type="text" 
+            v-model.trim="homeName"
+                    id="homeName"
+                    placeholder="Enter Home Name"> 
         </div>
         
         <!-- {{getQueriedHomeName}} -->
@@ -22,7 +22,9 @@
 
         <Messages />
 
-        <Buttons state="add" caller="addHome"/>
+       <div class="right-item__indicator--edit">
+        <button class="btn btn-primary" :disabled="homeNameInvalid || initHomeError">ADD</button>  
+      </div>
 
       </div>
     </form>
@@ -37,18 +39,41 @@ import { mapGetters } from 'vuex'
 
 export default {
   layout: 'admin',
+  data() {
+    return {
+      homeName: '',
+      homeNameInvalid: false,
+      initHomeError: true
+    }
+  },
   components: {
     CircleText,
     Messages,
     Buttons
   },
-  computed: {
-    },
-    methods: {
-      addHome() {
-        console.log('adding Home')
+  watch: {
+    homeName() {
+      this.initHomeError = false;
+      if(this.homeName == '' ) {
+        this.$store.commit('errors/setUserNameError', {status: true, mssg: 'Home Name Cannot be blank'})
+        this.homeNameInvalid = true;
+      } else {
+        this.$store.commit('errors/setUserNameError', {status: false, mssg: ''})
+        this.homeNameInvalid = false;
       }
-    },
+    }
+  },
+  methods: {
+    addHome(ev) {
+      this.$store.dispatch('userHomes/addHome', this.homeName)
+      .then((res) => {
+        ev.target.reset();
+        this.$store.commit('userHomes/resetQueriedHome');
+      }).catch((e) => {
+        console.log(e)
+      });
+    }
+  },
     
 }
 </script>

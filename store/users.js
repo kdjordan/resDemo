@@ -17,7 +17,7 @@ export const getters  = {
     getUpdatedPassword(state) {
         return state.updatedPassword;
     },
-    getOguserName(state) {
+    getOGuserName(state) {
         return state.ogUserName;
     }
 };
@@ -54,14 +54,14 @@ export const actions = {
                     if(keeperFlag) {
                         this.commit('sidenav/addKeeper', {_id: data._id, keeperName: data.userName})
                         this.dispatch('notifications/doNotification', {status: true, mssg: 'Keeper Added'});
-                        this.dispatch('admin/initAddUser')
                         resolve('success');
                        } else {
                         this.commit('sidenav/addUser', {_id: data._id, userName:data.userName })
                         this.dispatch('notifications/doNotification', {status: true, mssg: 'User Added'});
-                        this.dispatch('admin/initAddUser')
                         resolve('success');
                        }  
+                       this.dispatch('admin/initAddUser')
+                       this.commit('errors/resetErrors')
                 })
                 .catch((e) => {
                     console.log(e);
@@ -72,15 +72,19 @@ export const actions = {
     },
     deleteUser(_, payload) {
         return new Promise((resolve, reject) => {
-            let keeperFlag = false;
-            if(payload.role == 'keeper') {
-                keeperFlag = true;
-            }
             this.$axios.$post(`/deleteUser/${payload._id}`)
                 .then((res) => {
-                    this.commit('sidenav/removeUser', res)
-                    this.dispatch('notifications/doNotification', {status: true, mssg: 'User Deleted'})
-                    resolve('success')
+                    if(payload.role == 'keeper') {
+                        this.commit('sidenav/removeKeeper', res)
+                        this.dispatch('notifications/doNotification', {status: true, mssg: 'Keeper Deleted'})
+                        resolve({status: 'success', role: payload.role})
+                    } else if(payload.role == 'user') {
+                        this.commit('sidenav/removeUser', res)
+                        this.dispatch('notifications/doNotification', {status: true, mssg: 'User Deleted'})
+                        resolve({status: 'success', role: payload.role})
+                    } else {
+                        reject('error')
+                    }
                 })
                 .catch((e) => {
                     console.log(e);

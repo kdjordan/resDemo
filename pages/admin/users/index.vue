@@ -63,9 +63,7 @@ export default {
           role: this.getUpdatedRole})
         .then((res) => {
           if(res == 'success') {
-            this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'User Added'});
-            this.$store.dispatch('admin/initAddUser');
-            this.$store.commit('errors/resetErrors')
+            ev.target.reset();
           } else {
             this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Adding User'});
           }
