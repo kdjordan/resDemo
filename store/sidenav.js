@@ -34,15 +34,15 @@ export const state = () => ({
             return el._id != payload;
         })
     },
-    toggleSubMenu(state, payload) {
-        //FN :: open and close submenus based on clicks in SideNav
-        // statements for menu click
-        if(payload.srcElement.classList.contains('active-menu')) {
-            payload.srcElement.classList.remove('active-menu');
-        } else {
-            payload.srcElement.classList.add('active-menu');
-        }
+    removeHome(state, payload) {
+        state.homesMenu = state.homesMenu.filter((el) => {
+            return el._id != payload;
+        })
+    },
+    toggleSubMenu(_, payload) {
+        //FN :: open and close submenus based on clicks in SideNav    
         //statements for submenu clicks
+        this.dispatch('admin/initAddUser')
         if(payload.srcElement.nextSibling.nextSibling.classList.contains('active')){
             payload.srcElement.nextSibling.nextSibling.classList.remove('active')
         } else {

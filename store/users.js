@@ -36,10 +36,6 @@ export const mutations = {
         state.ogUserName = '';
         state.updatedName = '';
         state.updatedPassword = '';
-        console.log('after reset')
-        console.log(state.ogUserName)
-        console.log(state.updatedName)
-        console.log(state.updatedPassword)
     }
 };
 
@@ -57,9 +53,13 @@ export const actions = {
                 .then((data) => {
                     if(keeperFlag) {
                         this.commit('sidenav/addKeeper', {_id: data._id, keeperName: data.userName})
+                        this.dispatch('notifications/doNotification', {status: true, mssg: 'Keeper Added'});
+                        this.dispatch('admin/initAddUser')
                         resolve('success');
                        } else {
                         this.commit('sidenav/addUser', {_id: data._id, userName:data.userName })
+                        this.dispatch('notifications/doNotification', {status: true, mssg: 'User Added'});
+                        this.dispatch('admin/initAddUser')
                         resolve('success');
                        }  
                 })
@@ -79,16 +79,12 @@ export const actions = {
             this.$axios.$post(`/deleteUser/${payload._id}`)
                 .then((res) => {
                     if(keeperFlag) {
-                        console.log('removing keeper')
                         this.commit('sidenav/removeKeeper', res)
-                        this.dispatch('notifications/doNotification', {status: true, mssg: 'Keeper Deleted'})
                         resolve({status: 'success', role: 'keeper'})
                     } else {
-                        this.commit('sidenav/removeUser', res)
-                        this.dispatch('notifications/doNotification', {status: true, mssg: 'User Deleted'})
+                        this.commit('sidenav/removeUser', res) 
                         resolve({status: 'success', role: 'user'})
                     }
-                    resolve({status: 'success', role: 'user'})
                 })
                 .catch((e) => {
                     console.log(e);
@@ -96,7 +92,7 @@ export const actions = {
                 });
         });
     },
-    updateUser({dispatch, commit}, payload) {
+    updateUser({ dispatch, state }, payload) {
         return new Promise((resolve, reject) => {
             dispatch('formatUpdatedUser', payload);
             //salt and encrypt userPassword before posting to API
@@ -111,9 +107,14 @@ export const actions = {
             this.$axios.$post(`/updateUser/${payload.userid}`, payload)
                 .then((data) => {
                    if(keeperFlag) {
-                    this.commit('sidenav/removeUser', data._id)
-                    this.commit('sidenav/addKeeper', {_id: data._id, keeperName: data.userName})
+                    this.commit('sidenav/removeUser', data._id);
+                    this.commit('users/setOGUserName', data.userName)
+                    this.commit('sidenav/addKeeper', {_id: data._id, keeperName: data.userName});
+                    resolve('success');
                    } else {
+                    this.commit('sidenav/removeUser', data._id);
+                    this.commit('users/setOGUserName', data.userName)
+                    this.commit('sidenav/addUser', {_id: data._id, userName: state.updatedName});
                     resolve('success');
                    }
                 })
@@ -126,7 +127,6 @@ export const actions = {
     formatUpdatedUser(_, payload) {
         if(payload.userName.length < 2) { 
             payload.userName = "";
-            
         }
         if(payload.userPassword == undefined) { 
             payload.userPassword = "";

@@ -18,12 +18,13 @@
 
         <Messages  />
 
-        <Buttons state="edit" />
+        <Buttons state="edit" caller="editUser"/>
 
       </div> 
     </form>
   </div>
 </template>
+
 
 <script>
 import CircleText from '@/components/UI/CircleText'

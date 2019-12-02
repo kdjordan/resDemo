@@ -7,7 +7,7 @@
         <input :type="type" 
                 v-model.trim="updatedName"
                 :id="id"
-                :placeholder="getOGuserName"> 
+                :placeholder="getOGuserName || getQueriedHomeName"> 
     </div>
     <div v-else class="right-item">
         <input :type="type" 
@@ -15,7 +15,8 @@
                 :id="id"
                 :placeholder="placeholder"> 
     </div>
-    US:{{getOGuserName}}
+    <!-- {{getQueriedHomeName}} -->
+    
 </div>
 </template>
 
@@ -32,7 +33,8 @@ export default {
     },
     computed: {
       ...mapGetters({
-          getOGuserName: 'users/getOGuserName'
+          getOGuserName: 'users/getOGuserName',
+          getQueriedHomeName: 'userHomes/getQueriedHomeName'
       })
     },
     watch: {

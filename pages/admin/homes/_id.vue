@@ -4,7 +4,7 @@
     <form  @submit.prevent="editHome" class="form-container">
 
       <FormInput  type="text" label="Homename" labelFor="homename" id="homename"
-              caller="addHome"/>
+              caller="editHome"/>
 
      
 
@@ -14,7 +14,7 @@
 
         <Messages />
 
-        <Buttons state="add" />
+        <Buttons state="edit" caller="editHome"/>
 
       </div>
     </form>
@@ -45,8 +45,9 @@ export default {
     },
     methods: {
     },
-    mounted() {
+    created() {
         this.$store.commit('errors/resetErrors');
+        this.$store.dispatch('admin/initAddUser')
         this.$store.dispatch('admin/getHomeData', this.$route.params.id)
         .then(() => {
             console.log('back')

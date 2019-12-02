@@ -54,7 +54,7 @@ export default {
       })
     },
     methods: {
-        addKeeper() {
+        addKeeper(ev) {
             this.$store.dispatch('users/addUser', {
                 userName: this.getUpdatedName,
                 userPassword: this.getUpdatedPassword,
@@ -62,9 +62,7 @@ export default {
                 role: this.getUpdatedRole})
             .then((res) => {
             if(res == 'success') {
-                this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'Keeper Added'});
-                this.$store.commit('users/resetUser')
-                this.$store.commit('errors/resetErrors')
+                ev.target.reset();
             } else {
                 this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Adding User'});
             }

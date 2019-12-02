@@ -4,7 +4,7 @@
     <form  @submit.prevent="addUser" class="form-container">
 
       <FormInput  type="text" label="Username" labelFor="username" id="username"
-              :errorValidator="getUserNameError" caller="addUser"/>
+              :errorValidator="getUserNameError" caller="addUser" />
 
       <FormInput  type="password" label="Password" labelFor="password" id="password"
               placeholder="" :errorValidator="getPasswordError" caller="addUser"/>
@@ -54,7 +54,7 @@ export default {
       })
     },
     methods: {
-      addUser() {
+      addUser(ev) {
         this.$store.dispatch('users/addUser', {
           userName: this.getUpdatedName,
           userPassword: this.getUpdatedPassword,
@@ -62,9 +62,7 @@ export default {
           role: this.getUpdatedRole})
         .then((res) => {
           if(res == 'success') {
-            this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'User Added'});
-            // this.$store.dispatch('admin/initAddUser');
-            this.$router.push('/admin/users')
+            ev.target.reset();
           } else {
             this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Adding User'});
           }
