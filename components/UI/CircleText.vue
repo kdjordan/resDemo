@@ -28,7 +28,7 @@ export default {
     &__content {
         color: white;
         text-transform: uppercase;
-        font-size: 2.5rem;
+        font-size: 2rem;
     }
     
 }

@@ -7,7 +7,7 @@
         <input :type="type" 
                 v-model.trim="updatedName"
                 :id="id"
-                :placeholder="getOGuserName || getQueriedHomeName"> 
+                :placeholder="getOGuserName"> 
     </div>
     <div v-else class="right-item">
         <input :type="type" 

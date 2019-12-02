@@ -60,8 +60,11 @@ export default {
        if(confirm(`Are You Sure You want to DELETE ${payload.homeName}`)) {
          this.$store.dispatch('userHomes/deleteHome', payload)
          .then((res) => {
-           this.$store.commit('userHomes/resetQueriedHome');
-           this.$router.push('/admin/keepers')
+           if(res == 'success') {
+             this.$router.push('/admin/homes')
+           } else {
+             this.$store.dispatch('errors/setAdminError', {status: true, mssg:'Error Deleting Home'})
+           }
          }).catch((e) => {
            console.log(e);
          });

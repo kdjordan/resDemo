@@ -161,6 +161,7 @@ span {
 
 .links {
     color: $color1;
+    // margin: .3rem 0;
     padding: .3rem 0;
     display: block;
     border-radius: .25rem;

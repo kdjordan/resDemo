@@ -47,7 +47,7 @@ export const actions = {
             this.$axios.$post('/addHome/', {homeName: payload, homeUrl: null})
             .then((res) => {
                 this.commit('sidenav/addHome', res);
-                this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Added'})
+                this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Added'});
                 resolve('success')
             }).catch((e) => {
                 console.log(e)
@@ -58,9 +58,10 @@ export const actions = {
         return new Promise((resolve, reject) => {
             this.$axios.$post(`/deleteHome/${payload._id}`)
             .then((res) => {
-                this.commit('sidenav/removeHome', res)
-                commit('resetQueriedHome')
-                resolve({status: 'success', role: null})
+                this.commit('sidenav/removeHome', res);
+                this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Deleted'});
+                commit('resetQueriedHome');
+                resolve('success');
             })
             .catch((e) => {
                 console.log(e)
