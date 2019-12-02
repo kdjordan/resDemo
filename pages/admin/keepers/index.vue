@@ -48,30 +48,30 @@ export default {
           getUserNameError: 'errors/getUserNameError',
           getPasswordError: 'errors/getPasswordError',
           getUpdatedName: 'users/getUpdatedName',
+          getUpdatedPassword: 'users/getUpdatedPassword',
           getUpdatedHomes: 'userHomes/getUpdatedHomes',
+          getUpdatedRole: 'userRole/getUpdatedRole'
       })
     },
     methods: {
-        addKeeper() {
+        addKeeper(ev) {
             this.$store.dispatch('users/addUser', {
-          userName: this.getUpdatedName,
-          userPassword: this.getUpdatedPassword,
-          homesArray: this.getUpdatedHomes,
-          role: this.getUpdatedRole})
-        .then((res) => {
-          if(res == 'success') {
-            this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'User Added'});
-            this.$store.commit('users/resetUser')
-            this.$store.commit('errors/resetErrors')
-          } else {
-            this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Adding User'});
-          }
-        })
-        .catch((e) => {
-          //TODO : push router to error page
-          console.log(e)
-        });
-        },
+                userName: this.getUpdatedName,
+                userPassword: this.getUpdatedPassword,
+                homesArray: this.getUpdatedHomes,
+                role: this.getUpdatedRole})
+            .then((res) => {
+            if(res == 'success') {
+                ev.target.reset();
+            } else {
+                this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Adding User'});
+            }
+            })
+            .catch((e) => {
+            //TODO : push router to error page
+            console.log(e)
+            });
+        }
     },
     created() {
         this.$store.dispatch('admin/initAddUser');

@@ -3,18 +3,26 @@
     <CircleText title="Add Home" />
     <form  @submit.prevent="addHome" class="form-container">
 
-      <FormInput  type="text" label="Homename" labelFor="homename" id="homename"
-              caller="addHome"/>
+      <div class="flex-items">
+        <div class="left-item">
+            <label :for="labelFor" :class="{invalid: errorValidator }">HomeName</label>
+        </div>
+        <div class="right-item">
+            <input :type="type" 
+                    v-model.trim="updatedName"
+                    :id="id"
+                    :placeholder="getOGuserName || getQueriedHomeName"> 
+        </div>
+        
+        <!-- {{getQueriedHomeName}} -->
+    </div>
 
-     
-
-      <UserHomes />
 
       <div class="flex-items__spaced--edit">
 
         <Messages />
 
-        <Buttons state="add" />
+        <Buttons state="add" caller="addHome"/>
 
       </div>
     </form>
@@ -23,26 +31,23 @@
 
 <script>
 import CircleText from '@/components/UI/CircleText'
-import FormInput from '@/components/UI/FormInput'
 import Buttons from '@/components/UI/AdminButtons'
 import Messages from '@/components/UI/Messages'
-import UserRole from '@/components/UI/UserRoles'
-import UserHomes from '@/components/UI/UserHomes'
 import { mapGetters } from 'vuex'
 
 export default {
   layout: 'admin',
   components: {
     CircleText,
-    FormInput,
-    UserRole,
-    UserHomes,
     Messages,
     Buttons
   },
   computed: {
     },
     methods: {
+      addHome() {
+        console.log('adding Home')
+      }
     },
     
 }

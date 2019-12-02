@@ -4,7 +4,7 @@
     <form  @submit.prevent="addUser" class="form-container">
 
       <FormInput  type="text" label="Username" labelFor="username" id="username"
-              :errorValidator="getUserNameError" caller="addUser"/>
+              :errorValidator="getUserNameError" caller="addUser" />
 
       <FormInput  type="password" label="Password" labelFor="password" id="password"
               placeholder="" :errorValidator="getPasswordError" caller="addUser"/>
@@ -55,7 +55,7 @@ export default {
       })
     },
     methods: {
-      addUser() {
+      addUser(ev) {
         this.$store.dispatch('users/addUser', {
           userName: this.getUpdatedName,
           userPassword: this.getUpdatedPassword,

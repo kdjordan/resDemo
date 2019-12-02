@@ -1,12 +1,13 @@
 <template>
   <div class="inner_container">
-    <CircleText title="Edit Home" />
-    <form  @submit.prevent="editHome" class="form-container">
+    <CircleText title="Edit Keeper" />
+    <form  @submit.prevent="addHome" class="form-container">
 
-      <FormInput  type="text" label="Homename" labelFor="homename" id="homename"
-              caller="editHome"/>
+      <FormInput  type="text" label="Username" labelFor="username" id="username"
+              :errorValidator="getUserNameError"/>
 
-     
+      <FormInput  type="password" label="Password" labelFor="password" id="password"
+              placeholder="Enter New or Leave Blank" :errorValidator="getPasswordError"/>
 
       <UserHomes />
 
@@ -14,7 +15,7 @@
 
         <Messages />
 
-        <Buttons state="edit" caller="editHome"/>
+        <Buttons  caller="editKeeper" state="edit" />
 
       </div>
     </form>
@@ -30,6 +31,7 @@ import UserRole from '@/components/UI/UserRoles'
 import UserHomes from '@/components/UI/UserHomes'
 import { mapGetters } from 'vuex'
 
+
 export default {
   layout: 'admin',
   components: {
@@ -41,17 +43,19 @@ export default {
     Buttons
   },
   computed: {
-     
+       ...mapGetters({
+          getPasswordError: 'errors/getPasswordError',
+          getUserNameError: 'errors/getUserNameError',
+          getOGuserName: 'users/getOGuserName'
+      })
     },
     methods: {
     },
-    created() {
+    mounted() {
         this.$store.commit('errors/resetErrors');
-        this.$store.dispatch('admin/initAddUser')
-        this.$store.dispatch('admin/getHomeData', this.$route.params.id)
+        this.$store.dispatch('admin/getUserData', this.$route.params.id)
         .then(() => {
-            console.log('back')
-          this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'Home Loaded'})
+          this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'Keeper Loaded'})
         }).catch((e) => {
           console.log(e);
         });

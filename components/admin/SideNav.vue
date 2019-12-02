@@ -174,7 +174,7 @@ span {
    
 }
 
-.active-menu {
+.nuxt-link-exact-active {
     background: $color1;
     border-radius: 3px; 
     color: white;

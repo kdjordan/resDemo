@@ -32,6 +32,7 @@ export const getters  = {
         }
     },
     getErrorMssg(state) {
+        
         if(state.userNameError){
             return state.userNameErrorMssg;
         } else if(state.passwordError){
@@ -123,5 +124,6 @@ export const mutations = {
 };
 
 export const actions = {
+    
 }
 

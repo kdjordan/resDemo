@@ -33,9 +33,9 @@ export const mutations = {
         state.ogUserName = payload;
     },
     resetUser(state) {
-        state.ogUserName = '',
-        state.updatedName = '',
-        state.updatedPassword = ''
+        state.ogUserName = '';
+        state.updatedName = '';
+        state.updatedPassword = '';
     }
 };
 
@@ -43,15 +43,25 @@ export const actions = {
     addUser( _ , payload) {
         return new Promise((resolve, reject) => {
             //salt and encrypt userPassword before posting to API
-            console.log(payload)
             let salt = bcrypt.genSaltSync(10);
             payload.userPassword = bcrypt.hashSync(payload.userPassword, salt)
-            
+            let keeperFlag = false;
+            if(payload.role == 'keeper') {
+                keeperFlag = true
+            }
             return this.$axios.$post(`/addUser/`, payload)
                 .then((data) => {
-                   this.commit('sidenav/addUser', {_id: data._id, userName:data.userName })
-                    resolve('success')
-                    
+                    if(keeperFlag) {
+                        this.commit('sidenav/addKeeper', {_id: data._id, keeperName: data.userName})
+                        this.dispatch('notifications/doNotification', {status: true, mssg: 'Keeper Added'});
+                        this.dispatch('admin/initAddUser')
+                        resolve('success');
+                       } else {
+                        this.commit('sidenav/addUser', {_id: data._id, userName:data.userName })
+                        this.dispatch('notifications/doNotification', {status: true, mssg: 'User Added'});
+                        this.dispatch('admin/initAddUser')
+                        resolve('success');
+                       }  
                 })
                 .catch((e) => {
                     console.log(e);
@@ -62,7 +72,11 @@ export const actions = {
     },
     deleteUser(_, payload) {
         return new Promise((resolve, reject) => {
-            return this.$axios.$post(`/deleteUser/${payload}`)
+            let keeperFlag = false;
+            if(payload.role == 'keeper') {
+                keeperFlag = true;
+            }
+            this.$axios.$post(`/deleteUser/${payload._id}`)
                 .then((res) => {
                     this.commit('sidenav/removeUser', res)
                     this.dispatch('notifications/doNotification', {status: true, mssg: 'User Deleted'})
@@ -74,9 +88,8 @@ export const actions = {
                 });
         });
     },
-    updateUser({dispatch, commit}, payload) {
+    updateUser({ dispatch, state }, payload) {
         return new Promise((resolve, reject) => {
-            
             dispatch('formatUpdatedUser', payload);
             //salt and encrypt userPassword before posting to API
             if(payload.userPassword != '') {
@@ -90,13 +103,16 @@ export const actions = {
             this.$axios.$post(`/updateUser/${payload.userid}`, payload)
                 .then((data) => {
                    if(keeperFlag) {
-                    this.commit('sidenav/removeUser', data._id)
-                    this.commit('sidenav/addKeeper', {_id: data._id, keeperName: data.userName})
+                    this.commit('sidenav/removeUser', data._id);
+                    this.commit('users/setOGUserName', data.userName)
+                    this.commit('sidenav/addKeeper', {_id: data._id, keeperName: data.userName});
+                    resolve('success');
                    } else {
+                    this.commit('sidenav/removeUser', data._id);
+                    this.commit('users/setOGUserName', data.userName)
+                    this.commit('sidenav/addUser', {_id: data._id, userName: state.updatedName});
                     resolve('success');
                    }
-                   
-                
                 })
                 .catch((e) => {
                     console.log(e);e
@@ -107,7 +123,6 @@ export const actions = {
     formatUpdatedUser(_, payload) {
         if(payload.userName.length < 2) { 
             payload.userName = "";
-            
         }
         if(payload.userPassword == undefined) { 
             payload.userPassword = "";
