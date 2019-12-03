@@ -42,15 +42,17 @@ export const mutations = {
 };
 
 export const actions = {
-    addHome(_, payload) {
+    addHome({ dispatch }, payload) {
         return new Promise((resolve, reject) => {
-            this.$axios.$post('/addHome/', {homeName: payload, homeUrl: null})
+            dispatch('updateUserHomesById', {activeUsers: payload.activeUsers, homeName: payload.homeName});
+            this.$axios.$post('/addHome/', {homeName: payload.homeName, homeUrl: null})
             .then((res) => {
                 this.commit('sidenav/addHome', res);
                 this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Added'});
                 resolve('success')
             }).catch((e) => {
                 console.log(e)
+                reject(e)
             });
         })
     },
@@ -90,6 +92,11 @@ export const actions = {
                 this.commit('errors/setHomesError', {status: false, mssg: ''})
                 this.commit('errors/setRoleError', {status: false, mssg: ''});
             }
+    },
+    updateUserHomesById(_, payload) {
+        payload.activeUsers.forEach(user => {
+           this.commit('sidenav/addUserHomeToArray', {_id: user._id, userName: user.userName, homeName: payload.homeName})
+        })
     }
     
 }

@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } from 'constants';
 
 export const state = () => ({
     token: '',
@@ -126,9 +127,6 @@ export const actions = {
         } else if(payload.userPassword.length < 2) {
             payload.userPassword = "";
         }
-    },
-    
-    
-
+    }
 }
 

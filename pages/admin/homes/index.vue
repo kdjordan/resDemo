@@ -22,17 +22,16 @@
           <div class="activeUsersList" v-for="(user, index) in getUsersMenu" :key="index">
             <template>
                 <div class="checkbox-box">
-                    <input type="checkbox"  
-                        :checked="user.homesArray.find((el) => homeName)" :id="`${user.userName}`" 
-                        @change="updateHomesArray(user.userName)">
+                    <input type="checkbox"  :id="`${user.userName}`" 
+                        @change="updateActiveUsers({userName: user.userName, _id: user._id})">
                     <label :for="`${user.userName}`" 
                         class="label-sm" :value="`${user.userName}`">
                         {{ user.userName }}</label>
                 </div>
             </template>
           </div>
+          {{activeUsers}}
         </div>
-
       </div>
 
       <div class="flex-items__spaced--edit">
@@ -60,7 +59,8 @@ export default {
     return {
       homeName: '',
       homeNameInvalid: false,
-      initHomeError: true
+      initHomeError: true,
+      activeUsers: []
     }
   },
   components: {
@@ -87,13 +87,26 @@ export default {
   },
   methods: {
     addHome(ev) {
-      this.$store.dispatch('userHomes/addHome', this.homeName)
+      this.$store.dispatch('userHomes/addHome', {homeName: this.homeName, activeUsers: this.activeUsers})
       .then((res) => {
         ev.target.reset();
         this.$store.commit('userHomes/resetQueriedHome');
       }).catch((e) => {
         console.log(e)
       });
+    },
+    updateActiveUsers(user) {
+      let active = this.activeUsers.filter(activeUser => activeUser._id == user._id)
+      if(active.length == 1) {
+        this.activeUsers.forEach(element => {
+          if(element._id == user._id){
+            let index = this.activeUsers.indexOf(element)
+            this.activeUsers.splice(index, 1)
+          }     
+        });
+      } else {
+        this.activeUsers.push(user)
+      }
     }
   },
     

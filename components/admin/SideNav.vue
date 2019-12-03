@@ -39,7 +39,7 @@
                 </div> 
             </ul>
         </div>
-        
+        {{getUsers}}
     </div> 
         
 </template>

@@ -42,6 +42,36 @@ export const state = () => ({
             return el._id != payload;
         })
     },
+    addUserHomeToArray(state,  payload) {
+        console.log(payload)
+        state.usersMenu.forEach(user => {
+            if(user._id == payload._id) {
+                if(user.homesArray.indexOf(payload.homeName) >= 0 ){
+                    console.log(user.homesArray.indexOf(payload.homeName));
+                   return
+                } else {
+                    console.log(user.homesArray.indexOf(payload.homeName));
+                    user.homesArray.push(payload.homeName)
+                }
+            } else {
+                user.homesArray = user.homesArray.filter(home => {
+                    return home != payload.homeName
+                })
+            }
+        })
+        
+    },
+    subtractUserHomeFromArray(state, payload) {
+        state.usersMenu.forEach(user => {
+            if(user._id == payload._id) {
+                if(user.homesArray.indexOf(payload.homeName) >= 0 ){
+                    user.homesArray = user.homesArray.filter(home => {
+                        return home != payload.homeName
+                    })
+                }
+            }
+        });
+    },
     toggleSubMenu(_, payload) {
         //FN :: open and close submenus based on clicks in SideNav    
         //statements for submenu clicks

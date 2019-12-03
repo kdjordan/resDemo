@@ -103,20 +103,7 @@ export default {
         return {_id: this.$route.params.id, homeName: this.homeName}
       }
     },
-    updateActiveUsers(user) {
-      let active = this.activeUsers.filter(activeUser => activeUser._id == user._id)
-      console.log(active.length)
-      if(active.length == 1) {
-        this.activeUsers.forEach(element => {
-          if(element._id == user._id){
-            let index = this.activeUsers.indexOf(element)
-            this.activeUsers.splice(index, 1)
-          }     
-        });
-      } else {
-        this.activeUsers.push(user)
-      }
-    }
+    
   },
   created() {
       this.$store.commit('errors/resetErrors');
