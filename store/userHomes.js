@@ -1,4 +1,4 @@
-import { thistle } from "color-name";
+import utilities from '@/assets/js/utilities.js'
 
 export const state = () => ({
     allMenuHomes: [],
@@ -10,8 +10,8 @@ export const state = () => ({
 export const getters  = {
     getActiveHomesLength(state) {
         let sumLength = state.activeHomes.reduce((length, home) => {
-        return home[1] == true ? length+=1 : length
-            }, 0)
+            return home[1] == true ? length+=1 : length
+        }, 0)
         return sumLength;
     },
     getUpdatedHomes(state) {
@@ -42,13 +42,16 @@ export const mutations = {
 };
 
 export const actions = {
-    addHome({ dispatch }, payload) {
+    addHome({ dispatch, rootState }, payload) {
         return new Promise((resolve, reject) => {
-            dispatch('updateUserHomesById', {activeUsers: payload.activeUsers, homeName: payload.homeName});
-            this.$axios.$post('/addHome/', {homeName: payload.homeName, homeUrl: null})
+            dispatch('updateUserHomesArray', {activeUsers: payload.activeUsers, homeName: payload.homeName});
+            const userUpdateArr = utilities.getActiveUsersHomesArrays(payload.activeUsers, rootState.sidenav.usersMenu)
+            //before adding newHome to DB make sure active Users of Home are updated and in sync
+            this.$axios.$post('/addHome/', {homeName: payload.homeName, homeUrl: null, activeUsersArr: userUpdateArr})
             .then((res) => {
                 this.commit('sidenav/addHome', res);
                 this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Added'});
+                this.commit('userHomes/resetQueriedHome');
                 resolve('success')
             }).catch((e) => {
                 console.log(e)
@@ -62,6 +65,7 @@ export const actions = {
             .then((res) => {
                 this.commit('sidenav/removeHome', res);
                 this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Deleted'});
+                console.log('got hrere')
                 commit('resetQueriedHome');
                 resolve('success');
             })
@@ -93,10 +97,11 @@ export const actions = {
                 this.commit('errors/setRoleError', {status: false, mssg: ''});
             }
     },
-    updateUserHomesById(_, payload) {
+    updateUserHomesArray(_, payload) {
         payload.activeUsers.forEach(user => {
            this.commit('sidenav/addUserHomeToArray', {_id: user._id, userName: user.userName, homeName: payload.homeName})
         })
+        return;
     }
     
 }

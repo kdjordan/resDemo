@@ -32,6 +32,7 @@ import Messages from '@/components/UI/Messages'
 import UserRole from '@/components/UI/UserRoles'
 import UserHomes from '@/components/UI/UserHomes'
 import { mapGetters } from 'vuex'
+import utilities from '@/assets/js/utilities.js'
 
 export default {
   layout: 'admin',
@@ -52,54 +53,35 @@ export default {
           getUpdatedPassword: 'users/getUpdatedPassword',
           getUpdatedHomes: 'userHomes/getUpdatedHomes',
           getUpdatedRole: 'userRole/getUpdatedRole',
-          getUsersMenu: 'sidenav/getUsersMenu',
-          getKeepersMenu: 'sidenav/getKeepersMenu',
+          getUsers: 'sidenav/getUsersMenu'
       })
     },
     methods: {
-      addUser(ev) {
-        //check to see if username is available
-        if(this.checkUserName({userName: this.getUpdatedName , role: this.getUpdatedRole})) {
+     addUser(ev) {
+        //check to see if keeper name is available
+        //if so dispatch object to addUser with role defined as keeper
+        if (utilities.checkIfAvailable(this.getUpdatedName, this.getUsers)) {
           this.$store.dispatch('users/addUser', {
-            userName: this.getUpdatedName,
-            userPassword: this.getUpdatedPassword,
-            homesArray: this.getUpdatedHomes,
-            role: this.getUpdatedRole})
+              userName: this.getUpdatedName,
+              userPassword: this.getUpdatedPassword,
+              homesArray: this.getUpdatedHomes,
+              role: this.getUpdatedRole})
           .then((res) => {
-            if(res == 'success') {
-              ev.target.reset();
-            } else {
-              this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Adding User'});
-            }
-          })
-          .catch((e) => {
-            //TODO : push router to error page
-            console.log(e)
-          });
+              if(res == 'success') {
+                  ev.target.reset();
+              } else {
+                  this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Adding User'});
+              }
+            })
+            .catch((e) => {
+              //TODO : push router to error page
+              console.log(e)
+            });
+        } else {
+              this.$store.commit('errors/setUserNameError', {status: true, mssg: 'User Name Taken'})
         }
-        },
-        checkUserName(payload) {
-          let nameAvailable = true;
-          if(payload.role == 'user') {
-              this.getUsersMenu.forEach((el) => {
-                  if(el.userName == payload.userName) {
-                      nameAvailable = false;
-                      this.$store.commit('errors/setUserNameError', {status: true, mssg:'User Name Taken'})
-                  }
-              })
-          } else {
-              this.getKeepersMenu.forEach((el) => {
-                  if(el.keeperName == payload.userName) {
-                      nameAvailable = false;
-                      this.$store.commit('errors/setUserNameError', {status: true, mssg:'Keeper Name Taken'})
-                  }
-              })
-          }
-          return nameAvailable;   
-    }
-      
+      }
     },
-
     created() {
         this.$store.dispatch('admin/initAddUser');
     }

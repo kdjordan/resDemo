@@ -32,7 +32,7 @@
           </div>
           {{activeUsers}}
         </div>
-      </div>
+      </div>  
 
       <div class="flex-items__spaced--edit">
 
@@ -43,6 +43,7 @@
       </div>
             
       </div>
+      {{getUsersMenu}}
     </form>
   </div>
 </template>
@@ -52,6 +53,7 @@ import CircleText from '@/components/UI/CircleText'
 import Buttons from '@/components/UI/AdminButtons'
 import Messages from '@/components/UI/Messages'
 import { mapGetters } from 'vuex'
+import utilities from '@/assets/js/utilities.js'
 
 export default {
   layout: 'admin',
@@ -70,7 +72,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-        getUsersMenu: 'sidenav/getUsersMenu'
+        getUsersMenu: 'sidenav/getUsersMenu',
+        getHomesMenu: 'sidenav/getHomesMenu'
     })
   },
   watch: {
@@ -87,13 +90,19 @@ export default {
   },
   methods: {
     addHome(ev) {
-      this.$store.dispatch('userHomes/addHome', {homeName: this.homeName, activeUsers: this.activeUsers})
-      .then((res) => {
-        ev.target.reset();
-        this.$store.commit('userHomes/resetQueriedHome');
-      }).catch((e) => {
-        console.log(e)
-      });
+
+      //check to see if homeName is available
+      //if name is available dispatch addHome to userHomes.js for DB call
+      if(utilities.checkIfAvailable(this.homeName, this.getHomesMenu)) {
+        this.$store.dispatch('userHomes/addHome', {homeName: this.homeName, activeUsers: this.activeUsers})
+        .then((res) => {
+          ev.target.reset();
+        }).catch((e) => {
+          console.log(e)
+        });
+      } else {
+        this.$store.commit('errors/setUserNameError', {status: true, mssg: 'Home Name Taken'})
+      }
     },
     updateActiveUsers(user) {
       let active = this.activeUsers.filter(activeUser => activeUser._id == user._id)
@@ -108,6 +117,7 @@ export default {
         this.activeUsers.push(user)
       }
     }
+    
   },
     
 }

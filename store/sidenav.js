@@ -43,23 +43,13 @@ export const state = () => ({
         })
     },
     addUserHomeToArray(state,  payload) {
-        console.log(payload)
         state.usersMenu.forEach(user => {
             if(user._id == payload._id) {
-                if(user.homesArray.indexOf(payload.homeName) >= 0 ){
-                    console.log(user.homesArray.indexOf(payload.homeName));
-                   return
-                } else {
-                    console.log(user.homesArray.indexOf(payload.homeName));
+                if(user.homesArray.indexOf(payload.homeName) <= 0 ){
                     user.homesArray.push(payload.homeName)
-                }
-            } else {
-                user.homesArray = user.homesArray.filter(home => {
-                    return home != payload.homeName
-                })
-            }
+                } 
+            } 
         })
-        
     },
     subtractUserHomeFromArray(state, payload) {
         state.usersMenu.forEach(user => {

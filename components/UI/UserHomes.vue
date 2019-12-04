@@ -7,8 +7,7 @@
         <div v-for="(home, index) in getActiveHomes" :key="index">
                 <template>
                 <div class="checkbox-box">
-                    <input type="checkbox"  
-                        :checked="home[1]" :id="`${home[0]}`" 
+                    <input type="checkbox" :checked="home[1]" :id="`${home[0]}`" 
                         @change="updateHomesArray(`${home[0]}`)">
                     <label :for="`${home[0]}`" 
                         class="label-sm" :value="`${home[0]}`">

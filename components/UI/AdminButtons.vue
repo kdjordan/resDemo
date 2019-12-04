@@ -42,7 +42,6 @@ export default {
                         this.$router.push('/admin/users');
                     } else {
                         this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Deleting !!'})
-                        this.$router.push('/admin/homes');
                     }
                 } else {
                     this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Deleting'})

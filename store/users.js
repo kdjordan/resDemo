@@ -1,5 +1,4 @@
 import bcrypt from 'bcryptjs';
-import { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } from 'constants';
 
 export const state = () => ({
     token: '',
@@ -39,25 +38,28 @@ export const mutations = {
 };
 
 export const actions = {
-    addUser( _ , payload) {
+    addUser( _, payload) {
+        console.log(payload)
         return new Promise((resolve, reject) => {
             //salt and encrypt userPassword before posting to API
             let salt = bcrypt.genSaltSync(10);
             payload.userPassword = bcrypt.hashSync(payload.userPassword, salt)
-            
-            return this.$axios.$post(`/addUser/`, payload)
+            this.$axios.$post(`/addUser/`, payload)
                 .then((data) => {
                     if(payload.role == 'keeper') {
-                        this.commit('sidenav/addKeeper', {_id: data._id, keeperName: data.userName})
+                        console.log('gooot a keeper')
+                        this.commit('sidenav/addKeeper', {_id: data._id, keeperName:data.userName })
                         this.dispatch('notifications/doNotification', {status: true, mssg: 'Keeper Added'});
+                        this.dispatch('admin/initAddUser')
+                        this.commit('errors/resetErrors')
                         resolve('success');
-                       } else {
+                    } else {
                         this.commit('sidenav/addUser', {_id: data._id, userName:data.userName })
                         this.dispatch('notifications/doNotification', {status: true, mssg: 'User Added'});
-                        resolve('success');
-                       }  
-                       this.dispatch('admin/initAddUser')
-                       this.commit('errors/resetErrors')
+                        this.dispatch('admin/initAddUser')
+                        this.commit('errors/resetErrors')
+                        resolve('success')
+                    }
                 })
                 .catch((e) => {
                     console.log(e);
@@ -88,45 +90,35 @@ export const actions = {
                 });
         });
     },
-    updateUser({ dispatch, state }, payload) {
+    updateUser(_, payload) {
         return new Promise((resolve, reject) => {
-            dispatch('formatUpdatedUser', payload);
+            const newPayload = payload.updateObj;
             //salt and encrypt userPassword before posting to API
-            if(payload.userPassword != '') {
+            if(newPayload.userPassword != undefined) {
                 let salt = bcrypt.genSaltSync(10);
-                payload.userPassword = bcrypt.hashSync(payload.userPassword, salt)
+                newPayload.userPassword = bcrypt.hashSync(newPayload.userPassword, salt)
             } 
-           
-            this.$axios.$post(`/updateUser/${payload.userid}`, payload)
+            this.$axios.$post(`/updateUser/${payload.userid}`, newPayload)
                 .then((data) => {
-                   if(payload.role == 'keeper') {
-                    this.commit('sidenav/removeUser', data._id);
-                    this.commit('users/setOGUserName', data.userName)
-                    this.commit('sidenav/addKeeper', {_id: data._id, keeperName: data.userName});
+                    let updateObj = data;
+                    if(data.userName == undefined) {
+                        updateObj = {
+                            _id: data._id,
+                            userName: this.state.users.ogUserName,
+                            homesArray: payload.updateObj.homesArray
+                        }
+                    }
+                    this.commit('sidenav/removeUser', updateObj._id);
+                    this.commit('users/setOGUserName', updateObj.userName)
+                    this.commit('sidenav/addUser', updateObj)
                     resolve('success');
-                   } else {
-                    this.commit('sidenav/removeUser', data._id);
-                    this.commit('users/setOGUserName', data.userName)
-                    this.commit('sidenav/addUser', {_id: data._id, userName: state.updatedName});
-                    resolve('success');
-                   }
                 })
                 .catch((e) => {
                     console.log(e);e
                     reject(e);
-                });
-        })
-    },
-    formatUpdatedUser(_, payload) {
-        if(payload.userName.length < 2) { 
-            payload.userName = "";
-        }
-        if(payload.userPassword == undefined) { 
-            payload.userPassword = "";
-            
-        } else if(payload.userPassword.length < 2) {
-            payload.userPassword = "";
-        }
+                });  
+            })
     }
 }
+
 

@@ -12,15 +12,14 @@
       <UserHomes />
 
       <UserRole  />
-          
-      
+                
       <div class="flex-items__spaced--edit">
 
         <Messages  />
 
         <Buttons state="edit" caller="editUser"/>
 
-      </div> 
+      </div>
     </form>
   </div>
 </template>
@@ -34,6 +33,7 @@ import UserRole from '@/components/UI/UserRoles'
 import UserHomes from '@/components/UI/UserHomes'
 import Buttons from '@/components/UI/AdminButtons'
 import { mapGetters } from 'vuex'
+import utilities from '@/assets/js/utilities.js'
 
 export default {
     layout: 'admin',
@@ -52,28 +52,31 @@ export default {
           getUpdatedName: 'users/getUpdatedName',
           getUpdatedPassword: 'users/getUpdatedPassword',
           getUpdatedHomes: 'userHomes/getUpdatedHomes',
-          getUpdatedRole: 'userRole/getUpdatedRole'
+          getUpdatedRole: 'userRole/getUpdatedRole',
+          getUsers: 'sidenav/getUsersMenu'
       })
     },
     methods: {
-      updateUser() {
-        this.$store.dispatch('users/updateUser',{
-          userid: this.$route.params.id,
-          userName: this.getUpdatedName,
-          userPassword: this.getUpdatedPassword,
-          homesArray: this.getUpdatedHomes,
-          role: this.getUpdatedRole
-        })
-        .then((res) => {
-          if(res == 'success') {
-            this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'User Updated'})
-          } else {
-            this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Updating User'})
-          }
-        }).catch((e) => {
-          console.log(e);
-        });
-          
+       updateUser() {
+
+        //check to see if updated name is available
+        // if yes - make object and dispatch updateUser to users.js for DB call
+
+        if(utilities.checkIfAvailable(this.getUpdatedName, this.getUsers)) {
+          const updateUserObj = utilities.formatUserForDispatch(this.getUpdatedName, this.getUpdatedPassword, this.getUpdatedHomes, this.getUpdatedRole);
+          this.$store.dispatch('users/updateUser', {updateObj: updateUserObj, userid: this.$route.params.id})
+          .then((res) => {
+            if(res == 'success') {
+              this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'User Updated'})
+            } else {
+              this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Updating User'})
+            }
+          }).catch((e) => {
+            console.log(e);
+          });
+        } else {
+          this.$store.commit('errors/setUserNameError', {status: true, mssg: 'User Name Taken'})
+        }
       }
     },
     mounted() {

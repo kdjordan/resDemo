@@ -1,4 +1,4 @@
-
+import utilities from '@/assets/js/utilities.js'
 
 export const actions = {
     getUserData({ dispatch }, payload) {
@@ -9,17 +9,18 @@ export const actions = {
                     this.commit('userRole/setUserRole', response.role);
                     dispatch('setActiveHomesList', response.homesArray);
                     resolve(response)
-                
                 })
                 .catch((e) => {
                     reject(e)
                 });
         })
     },
-    getHomeData({ dispatch }, payload) {
+    getHomeData({ dispatch, rootState }, payload) {
         return new Promise((resolve, reject) => {
             return this.$axios.$get(`/getHome/${payload}`)
                 .then((data) => {
+                    
+                    utilities.makeTFArray(data.homeName, rootState.sidenav.usersMenu)
                     this.commit('userHomes/setQueriedHome', data)
                     // this.commit('users/setOGUserName', response.userName);
                     // this.commit('userRole/setUserRole', response.role);
