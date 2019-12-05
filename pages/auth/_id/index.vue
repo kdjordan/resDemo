@@ -1,0 +1,55 @@
+<template>
+  <div>
+      <Header :userName="this.$route.params.id"/>
+        <div class="container">
+            <div class="container__top">
+                <CircleImg imageUrl="sunriver-sm.png" alt="sunriver home" homeName="Sunriver"/>
+            </div>
+            <div class="container__bottom">
+                <div class="container__bottom--left">
+                    <MakeResForm />
+                </div>
+                <div class="container__bottom--right">
+                    <ResList />
+                </div>
+            </div>
+
+      </div>
+    
+  </div>
+</template>
+
+<script>
+import Header from '@/components/Header'
+import CircleImg from '@/components/HomesCircle'
+import ResList from '@/components/ReservationList'
+import MakeResForm from '@/components/MakeReservation'
+export default {
+    components: {
+        Header,
+        CircleImg,
+        ResList,
+        MakeResForm
+
+    }
+}
+</script>
+<style lang="scss">
+.container {
+    padding-top: 15rem;
+    display: flex;
+    flex-direction: column;
+    align-items: top;
+
+
+    &__bottom {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin: 0 auto;
+        width: 60%;
+        align-items: center;
+        margin-top: 4rem;
+    }
+}
+</style>

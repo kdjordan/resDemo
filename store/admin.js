@@ -18,6 +18,25 @@ export const mutations = {
 }
 
 export const actions = {
+    loginUser(vuexContext, authData) {
+        return new Promise((rersolve, reject) => {
+            this.$axios.$post('login', authData)
+            .then((res) => {
+                const admin = false;
+                if(res.data.role == 'admin') {
+                    admin = true;
+                } 
+                const payload = {
+                    token: res.data.token,
+                    isAdmin: admin
+                }
+                vuexContext.commit('setUserState', payload);
+            }).catch((e) => {
+                return Promise.reject(e.response.status);
+                
+            });
+        });
+    },
     getUserData({ dispatch }, payload) {
         return new Promise((resolve, reject) => {
             return this.$axios.$get(`/getUser/${payload}`)
