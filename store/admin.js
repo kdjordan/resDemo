@@ -19,12 +19,9 @@ export const actions = {
         return new Promise((resolve, reject) => {
             return this.$axios.$get(`/getHome/${payload}`)
                 .then((data) => {
-                    
-                    utilities.makeTFArray(data.homeName, rootState.sidenav.usersMenu)
+                    let homeUpdateUsersList = utilities.makeTFArray(data.homeName, rootState.sidenav.usersMenu)
+                    this.commit('userHomes/setHomeUpdateUsersList', homeUpdateUsersList)
                     this.commit('userHomes/setQueriedHome', data)
-                    // this.commit('users/setOGUserName', response.userName);
-                    // this.commit('userRole/setUserRole', response.role);
-                    // dispatch('setActiveHomesList', response.homesArray);
                     resolve()
                 
                 })

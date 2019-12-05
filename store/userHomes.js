@@ -3,7 +3,8 @@ import utilities from '@/assets/js/utilities.js'
 export const state = () => ({
     allMenuHomes: [],
     activeHomes: [],
-    queriedHome:[]
+    queriedHome:[],
+    homeUpdateUsersList: []
     
 });
 
@@ -25,7 +26,10 @@ export const getters  = {
     },
     getQueriedHomeName(state) {
         return state.queriedHome.homeName;
-    } 
+    },
+    getHomeUpdateUsersList(state) {
+        return state.homeUpdateUsersList;
+    }
 
 };
 
@@ -38,20 +42,60 @@ export const mutations = {
     },
     resetQueriedHome(state) {
         state.queriedHome = []
+    },
+    setHomeUpdateUsersList(state, payload) {
+        // console.log(payload)
+        state.homeUpdateUsersList = payload
+    },
+    updateHomesUsersList(state, payload) {
+        let updatedUsersList = []
+         state.homeUpdateUsersList.forEach((home) => {
+            if(home.userName == payload) {
+                home.isActive = ! home.isActive
+                updatedUsersList.push(home)
+            } else {
+                updatedUsersList.push(home)
+            }
+        })
+        state.homeUpdateUsersList = updatedUsersList;
+    },
+    addNewUserHomesUserList(state, payload) {
+        state.homeUpdateUsersList = [...state.homeUpdateUsersList, payload]
     }
+
 };
 
 export const actions = {
     addHome({ dispatch, rootState }, payload) {
         return new Promise((resolve, reject) => {
-            dispatch('updateUserHomesArray', {activeUsers: payload.activeUsers, homeName: payload.homeName});
+            
+            dispatch('addUserHomeToArray', {activeUsers: payload.activeUsers, homeName: payload.homeName});
             const userUpdateArr = utilities.getActiveUsersHomesArrays(payload.activeUsers, rootState.sidenav.usersMenu)
-            //before adding newHome to DB make sure active Users of Home are updated and in sync
+           
+            // before adding newHome to DB make sure active Users of Home are updated and in sync
             this.$axios.$post('/addHome/', {homeName: payload.homeName, homeUrl: null, activeUsersArr: userUpdateArr})
             .then((res) => {
                 this.commit('sidenav/addHome', res);
                 this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Added'});
                 this.commit('userHomes/resetQueriedHome');
+                resolve('success')
+            }).catch((e) => {
+                console.log(e)
+                reject(e)
+            });
+        })
+    },
+    updateHome({ rootState, dispatch }, payload) {
+        return new Promise((resolve, reject) => {
+            
+            dispatch('addUserHomeToArray', {activeUsers: payload.activeUsers, homeName: payload.homeName});
+            dispatch('subtractUserHomeFromArray', {activeUsers: payload.inActiveUsers, homeName: payload.homeName});
+            let allUsersUpdate = [...payload.activeUsers, ...payload.inActiveUsers];
+            
+            this.$axios.$post((`/updateHome/${payload._id}`), {homeName: payload.homeName, homeUrl: null, activeUsersArr: allUsersUpdate})
+            .then((res) => {
+                this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Updated'});
+                this.commit('sidenav/updateHome', {_id:payload._id, homeName: payload.homeName});
                 resolve('success')
             }).catch((e) => {
                 console.log(e)
@@ -75,6 +119,10 @@ export const actions = {
             });
         })
     },
+    updateHomesUsersListByCommit({state, commit}, payload) {
+        commit('updateHomesUsersList', payload)
+
+    },
     updateActiveHomes({ state, getters, commit, rootState }, payload) {
             let newActive = []
             state.activeHomes.forEach((home) => {
@@ -97,9 +145,15 @@ export const actions = {
                 this.commit('errors/setRoleError', {status: false, mssg: ''});
             }
     },
-    updateUserHomesArray(_, payload) {
+    addUserHomeToArray(_, payload) {
         payload.activeUsers.forEach(user => {
            this.commit('sidenav/addUserHomeToArray', {_id: user._id, userName: user.userName, homeName: payload.homeName})
+        })
+        return;
+    },
+    subtractUserHomeFromArray(_, payload) {
+        payload.activeUsers.forEach(user => {
+           this.commit('sidenav/subtractUserHomeFromArray', {_id: user._id, userName: user.userName, homeName: payload.homeName})
         })
         return;
     }

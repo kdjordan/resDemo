@@ -18,14 +18,14 @@ export const state = () => ({
  };
  
  export const mutations = {
-     addUser(state, payload) {
+    addUser(state, payload) {
         state.usersMenu.push(payload);
     },
     addHome(state, payload) {
         state.homesMenu.push(payload);
     },
     addKeeper(state, payload) {
-        state.keepersMenu.push(payload);
+        state.keepersMenu.push(payload)
     },
     removeUser(state, payload) {
         state.usersMenu = state.usersMenu.filter((el) => {
@@ -42,23 +42,45 @@ export const state = () => ({
             return el._id != payload;
         })
     },
+    updateKeeper(state, payload) {
+        state.keepersMenu.forEach(keeper => {
+            if(keeper._id == payload._id) {
+                keeper.keeperName = payload.userName;
+                keeper.homesArray = payload.homesArray;
+            }
+        })
+    },
+    updateUser(state, payload) {
+        state.usersMenu.forEach(user => {
+            if(user._id == payload._id) {
+            user.userName = payload.userName,
+            user.homesArray = payload.homesArray
+            }
+        });
+    },
+    updateHome(state, payload) {
+        state.homesMenu.forEach(home => {
+            if(home._id == payload._id) {
+                home.homeName = payload.homeName
+            }
+        })
+    },
     addUserHomeToArray(state,  payload) {
         state.usersMenu.forEach(user => {
             if(user._id == payload._id) {
-                if(user.homesArray.indexOf(payload.homeName) <= 0 ){
-                    user.homesArray.push(payload.homeName)
-                } 
-            } 
-        })
+               if(!user.homesArray.includes(payload.homeName)){
+                user.homesArray.push(payload.homeName)
+               } 
+            }
+        });
     },
     subtractUserHomeFromArray(state, payload) {
+        // console.log(payload)
         state.usersMenu.forEach(user => {
             if(user._id == payload._id) {
-                if(user.homesArray.indexOf(payload.homeName) >= 0 ){
-                    user.homesArray = user.homesArray.filter(home => {
-                        return home != payload.homeName
-                    })
-                }
+               if(user.homesArray.includes(payload.homeName)){
+                user.homesArray.splice(user.homesArray.indexOf(payload.homeName), 1)
+               } 
             }
         });
     },

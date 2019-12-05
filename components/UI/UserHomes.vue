@@ -15,7 +15,9 @@
                 </div>
             </template>
         </div>
+    <!-- {{getActiveHomes}}     -->
     </div>
+    <!-- {{getHomeUpdateUsersList}} -->
 </div>
 </template>
 
@@ -27,7 +29,8 @@ export default {
     computed: {
         ...mapGetters({
             getHomesError: 'errors/getHomesError',
-            getUpdatedHomes: 'userHomes/getUpdatedHomes'            
+            getUpdatedHomes: 'userHomes/getUpdatedHomes',   
+            getHomeUpdateUsersList: 'userHomes/getHomeUpdateUsersList'         
         }),
         getActiveHomes() {
             return this.$store.state.userHomes.activeHomes;

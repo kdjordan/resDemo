@@ -22,15 +22,15 @@
             <label for="activeUsers">Active Users</label>
         </div>
         <div class="right-item">
-          <div class="activeUsersList" v-for="(user, index) in getUsersMenu" :key="index">
+          <div class="activeUsersList" v-for="(user, index) in getHomeUpdateUsersList" :key="index">
             <template>
                 <div class="checkbox-box">
                     <input type="checkbox"  
-                        :checked="user.homesArray.find((el) => homeName)" :id="`${user.userName}`" 
-                        @change="updateActiveUsers({userName: user.userName, _id: user._id})">
+                        :checked="user.isActive" :id="`${user.userName}`" 
+                        @change="updateHomeUsersList(`${user.userName}`)">
                     <label :for="`${user.userName}`" 
                         class="label-sm" :value="`${user.userName}`">
-                        {{ user.userName }}</label>
+                        {{ user.userName}}</label>
                 </div>
             </template>
           </div>
@@ -72,10 +72,14 @@ export default {
   computed: {
     ...mapGetters({
       getQueriedHomeName: 'userHomes/getQueriedHomeName',
-      getUsersMenu: 'sidenav/getUsersMenu'
+      getUsersMenu: 'sidenav/getUsersMenu',
+      getHomeUpdateUsersList: 'userHomes/getHomeUpdateUsersList'
     })
   },
   methods: {
+    updateHomeUsersList(user) {
+      this.$store.dispatch('userHomes/updateHomesUsersListByCommit', user);
+    },
     deleteHome() {
       const payload = this.getPayload();
        if(confirm(`Are You Sure You want to DELETE ${payload.homeName}`)) {
@@ -94,16 +98,28 @@ export default {
     },
     updateHome() {
       const payload = this.getPayload();
-      console.log(payload)
+      
+      this.$store.dispatch('userHomes/updateHome', payload)
+      .then(res => {
+          console.log(res)
+        }).catch(e => {
+          console.log(e)
+        });
     },
     getPayload() {
+      let payload = {}
       if (this.homeName == "") {
-        return {_id: this.$route.params.id, homeName: this.getQueriedHomeName}
+        payload = {_id: this.$route.params.id, homeName: this.getQueriedHomeName}
       } else {
-        return {_id: this.$route.params.id, homeName: this.homeName}
+        payload = {_id: this.$route.params.id, homeName: this.homeName}
       }
-    },
-    
+      let newActiveUsers = this.getHomeUpdateUsersList.filter(user => {return user.isActive == true});
+      let newInActiveUsers = this.getHomeUpdateUsersList.filter(user => {return user.isActive == false});
+      payload.activeUsers = newActiveUsers;
+      payload.inActiveUsers = newInActiveUsers;
+      
+      return payload;
+    }
   },
   created() {
       this.$store.commit('errors/resetErrors');

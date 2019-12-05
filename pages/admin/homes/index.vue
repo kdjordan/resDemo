@@ -30,7 +30,6 @@
                 </div>
             </template>
           </div>
-          {{activeUsers}}
         </div>
       </div>  
 
@@ -43,7 +42,6 @@
       </div>
             
       </div>
-      {{getUsersMenu}}
     </form>
   </div>
 </template>

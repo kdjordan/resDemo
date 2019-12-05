@@ -39,22 +39,19 @@ export const mutations = {
 
 export const actions = {
     addUser( _, payload) {
-        console.log(payload)
         return new Promise((resolve, reject) => {
             //salt and encrypt userPassword before posting to API
             let salt = bcrypt.genSaltSync(10);
             payload.userPassword = bcrypt.hashSync(payload.userPassword, salt)
             this.$axios.$post(`/addUser/`, payload)
                 .then((data) => {
-                    if(payload.role == 'keeper') {
-                        console.log('gooot a keeper')
-                        this.commit('sidenav/addKeeper', {_id: data._id, keeperName:data.userName })
-                        this.dispatch('notifications/doNotification', {status: true, mssg: 'Keeper Added'});
-                        this.dispatch('admin/initAddUser')
-                        this.commit('errors/resetErrors')
-                        resolve('success');
+                    if(data.role == 'keeper') {
+                        this.commit('sidenav/addKeeper', {_id: data._id, keeperName: data.userName})
+                        this.dispatch('notifications/doNotification', {status: true, mssg: 'Keeper Added'})
+                        resolve('success')
                     } else {
-                        this.commit('sidenav/addUser', {_id: data._id, userName:data.userName })
+                        this.commit('userHomes/addNewUserHomesUserList', {...data, homesArray: payload.homesArray, isActive: true})
+                        this.commit('sidenav/addUser', {_id: data._id, userName:data.userName, homesArray: payload.homesArray })
                         this.dispatch('notifications/doNotification', {status: true, mssg: 'User Added'});
                         this.dispatch('admin/initAddUser')
                         this.commit('errors/resetErrors')
@@ -108,10 +105,17 @@ export const actions = {
                             homesArray: payload.updateObj.homesArray
                         }
                     }
-                    this.commit('sidenav/removeUser', updateObj._id);
-                    this.commit('users/setOGUserName', updateObj.userName)
-                    this.commit('sidenav/addUser', updateObj)
-                    resolve('success');
+                    if(data.role == 'keeper') {
+                        this.commit('sidenav/updateKeeper', updateObj);
+                        this.commit('users/setOGUserName', updateObj.userName)
+                        this.commit('errors/resetErrors');
+                        resolve('success');
+                    } else {
+                        this.commit('sidenav/updateUser', updateObj);
+                        this.commit('users/setOGUserName', updateObj.userName)
+                        this.commit('errors/resetErrors');
+                        resolve('success');
+                    }
                 })
                 .catch((e) => {
                     console.log(e);e

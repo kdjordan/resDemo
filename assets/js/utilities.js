@@ -57,33 +57,35 @@ exports.getActiveUsersHomesArrays = (usersArr, usersMenu) => {
     })
     return usersActiveHomesArr;
 } 
-
-exports.makeTFArray = (homeName, allUsers) => {
-    // console.log(homeName)
-    // console.log(allUsers)
-    let usersFlat = allUsers.map(user => [user.userName, false]);
-    let userHasHome = [];
-    //map all users that have home in homesArray
-    allUsers.forEach(user => {
-       user.homesArray.forEach(home => {
-           if(home == homeName) {
-               userHasHome.push(user);
-           }
-       })
-    })
-    //update usersFlat to make array based on which users have home
-    usersFlat.forEach(user => {
-        userHasHome.forEach(activeUser => {
-            // console.log(activeUser)
-            console.log(user)
-            if(user[0] == activeUser.userName) {
-                user[1] = !user[1]
+exports.getUpdateUsersHomesArrays = (usersArr, usersMenu) => {
+    let updateActiveHomesArr = [];
+    usersMenu.forEach(menuUser => {
+        usersArr.forEach(user => {
+            if(user._id == menuUser._id){
+                menuUser.isActive = true;
+                updateActiveHomesArr.push(menuUser);
+            } else {
+                menuUser.isActive = false;
+                updateActiveHomesArr.push(menuUser);
             }
         })
-        
-        return usersFlat;
     })
+    return updateActiveHomesArr;
+} 
 
+exports.makeTFArray = (homeName, allUsers) => {
+    allUsers.forEach(user => {
+        user.isActive = false;
+    })
+    // map all users that have home in homesArray
+    allUsers.forEach(user => {
+            user.homesArray.forEach(home => {    
+                if(home == homeName) {
+                    user.isActive = !user.isActive
+                }
+            })
+    })
+    return allUsers;
 
 }
 

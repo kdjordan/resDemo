@@ -1,7 +1,9 @@
 <template>
   <div>
       <Header />
-      <SideNav />
+      <no-ssr>
+        <SideNav />
+      </no-ssr>
       <Nuxt />
   </div>
 </template>
