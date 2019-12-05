@@ -80,13 +80,9 @@ export default {
         }
       }
     },
-    created() {
+    mounted() {
+        this.$store.commit('admin/setIndicator', 'Add Keeper')
         this.$store.dispatch('admin/initAddUser');
     }
-    
 }
 </script>
-
-<style>
-
-</style>

@@ -121,7 +121,8 @@ export default {
       return payload;
     }
   },
-  created() {
+  mounted() {
+      this.$store.commit('admin/setIndicator', 'Edit Home')
       this.$store.commit('errors/resetErrors');
       this.$store.dispatch('admin/initAddUser')
       this.$store.dispatch('admin/getHomeData', this.$route.params.id)
@@ -131,10 +132,5 @@ export default {
         console.log(e);
       });
   }
-    
 }
 </script>
-
-<style>
-
-</style>

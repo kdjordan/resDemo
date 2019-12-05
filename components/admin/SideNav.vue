@@ -1,7 +1,7 @@
 <template>
     <div class="sidenav">
         <div class="mainmenu__container">
-        <div class="sidenav__indicator">Add User</div>
+        <div class="sidenav__indicator">{{getIndicator}}</div>
             <ul class="nav">
                 <div class="nav__container">
                      <nuxt-link to="/admin/users" class="nav__category--link"
@@ -43,6 +43,7 @@
         
 </template>
 <script>
+import { mapGetters } from 'vuex';
 
 export default {
     methods: {
@@ -55,6 +56,9 @@ export default {
         },
     },
     computed: {
+        ...mapGetters({
+            getIndicator: 'admin/getIndicator'
+        }),
         getUsers() {
             return this.$store.state.sidenav.usersMenu;
         },

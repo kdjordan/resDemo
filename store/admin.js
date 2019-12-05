@@ -1,5 +1,22 @@
 import utilities from '@/assets/js/utilities.js'
 
+export const state = () => ({
+    indicator: 'Welcome'
+})
+
+export const getters = {
+    getIndicator(state) {
+        return state.indicator
+    }
+}
+
+
+export const mutations = {
+    setIndicator(state, payload) {
+        state.indicator = payload
+    }
+}
+
 export const actions = {
     getUserData({ dispatch }, payload) {
         return new Promise((resolve, reject) => {
@@ -8,6 +25,7 @@ export const actions = {
                     this.commit('users/setOGUserName', response.userName);
                     this.commit('userRole/setUserRole', response.role);
                     dispatch('setActiveHomesList', response.homesArray);
+                    
                     resolve(response)
                 })
                 .catch((e) => {
@@ -15,13 +33,14 @@ export const actions = {
                 });
         })
     },
-    getHomeData({ dispatch, rootState }, payload) {
+    getHomeData({ rootState }, payload) {
         return new Promise((resolve, reject) => {
             return this.$axios.$get(`/getHome/${payload}`)
                 .then((data) => {
                     let homeUpdateUsersList = utilities.makeTFArray(data.homeName, rootState.sidenav.usersMenu)
                     this.commit('userHomes/setHomeUpdateUsersList', homeUpdateUsersList)
                     this.commit('userHomes/setQueriedHome', data)
+                    
                     resolve()
                 
                 })

@@ -80,6 +80,7 @@ export default {
       }
     },
     mounted() {
+      this.$store.commit('admin/setIndicator', 'Edit User')
         this.$store.commit('errors/resetErrors');
         this.$store.dispatch('admin/getUserData', this.$route.params.id)
         .then(() => {
@@ -89,7 +90,6 @@ export default {
         });
     }
 }
-
 </script>
 
 

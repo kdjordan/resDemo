@@ -117,10 +117,8 @@ export default {
     }
     
   },
-    
+  mounted() {
+    this.$store.commit('admin/setIndicator', 'Add Home')
+  }
 }
 </script>
-
-<style>
-
-</style>

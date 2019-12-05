@@ -78,6 +78,7 @@ export default {
       }
     },
     mounted() {
+      this.$store.commit('admin/setIndicator', 'Edit Keeper')
         this.$store.commit('errors/resetErrors');
         this.$store.dispatch('admin/getUserData', this.$route.params.id)
         .then(() => {
@@ -86,10 +87,5 @@ export default {
           console.log(e);
         });
     }
-    
 }
 </script>
-
-<style>
-
-</style>

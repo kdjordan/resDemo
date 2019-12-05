@@ -82,13 +82,11 @@ export default {
         }
       }
     },
-    created() {
+    mounted() {
+      this.$store.commit('admin/setIndicator', 'Add User')
         this.$store.dispatch('admin/initAddUser');
     }
 
 }
 </script>
 
-<style>
-
-</style>
