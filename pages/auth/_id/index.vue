@@ -24,6 +24,7 @@ import Header from '@/components/Header'
 import CircleImg from '@/components/HomesCircle'
 import ResList from '@/components/ReservationList'
 import MakeResForm from '@/components/MakeReservation'
+
 export default {
     components: {
         Header,
@@ -33,13 +34,18 @@ export default {
 
     }
 }
+
 </script>
 <style lang="scss">
 .container {
+    background: white;
+    max-width: 120rem;
+    margin: 0 auto;
     padding-top: 15rem;
     display: flex;
     flex-direction: column;
     align-items: top;
+    height: 100vh;
 
 
     &__bottom {
@@ -47,9 +53,15 @@ export default {
         flex-direction: row;
         justify-content: space-between;
         margin: 0 auto;
-        width: 60%;
-        align-items: center;
+        width: 80%;
+        align-items: top;
         margin-top: 4rem;
+
+        &--left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
     }
 }
 </style>
