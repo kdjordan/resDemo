@@ -51,9 +51,9 @@ export default {
     &__bottom {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: space-evenly;
         margin: 0 auto;
-        width: 80%;
+        width: 100%;
         align-items: top;
         margin-top: 4rem;
 

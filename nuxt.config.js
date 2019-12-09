@@ -29,6 +29,8 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+      
+    
   ],
   /*
   ** Nuxt.js dev-modules
@@ -44,6 +46,7 @@ export default {
           "~assets/scss/variables.scss",
           "~assets/scss/base.scss",
           "~assets/scss/layout.scss",
+          "~assets/scss/makeRes.scss",
           "~assets/scss/buttons.scss"
       ]
   },
@@ -63,5 +66,6 @@ export default {
     */
     extend (config, ctx) {
     }
+   
   }
 }

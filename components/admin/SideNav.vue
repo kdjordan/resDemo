@@ -40,7 +40,6 @@
             </ul>
         </div>
     </div> 
-        
 </template>
 <script>
 import { mapGetters } from 'vuex';
@@ -52,22 +51,15 @@ export default {
         },
         toggleSubMenu(ev) {
             this.$store.commit('sidenav/toggleSubMenu', ev);
-            // this.$store.commit('admin/setIndicator', ev.target.id);
         },
     },
     computed: {
         ...mapGetters({
-            getIndicator: 'admin/getIndicator'
-        }),
-        getUsers() {
-            return this.$store.state.sidenav.usersMenu;
-        },
-        getHomes() {
-            return this.$store.state.sidenav.homesMenu;
-        },
-        getKeepers() {
-            return this.$store.state.sidenav.keepersMenu;
-        }
+            getIndicator: 'admin/getIndicator',
+            getUsers: 'sidenav/getUsersMenu',
+            getHomes: 'sidenav/getHomesMenu',
+            getKeepers: 'sidenav/getKeepersMenu'
+        })
     }
 }
 </script>
@@ -104,10 +96,6 @@ export default {
         width: 100%;
         position: relative;
         top: 4rem;  
-}
-
-span {
-    pointer-events: none;
 }
 
 .nav {
@@ -147,6 +135,7 @@ span {
 
         &--icon {
             float: right;
+                pointer-events: none;
 
             &:hover {
                 color: white;

@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div class="inner_container">
       <CircleText title="Edit User" />
     <form  @submit.prevent="updateUser" class="form-container">
@@ -26,6 +26,7 @@
 
 
 <script>
+
 import CircleText from '@/components/UI/CircleText'
 import Messages from '@/components/UI/Messages'
 import FormInput from '@/components/UI/FormInput'

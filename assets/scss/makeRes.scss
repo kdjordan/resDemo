@@ -1,0 +1,83 @@
+.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, 
+.flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, 
+.flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, 
+.flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, 
+.flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, 
+.flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, 
+.flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+    background: $color1;
+    border-color: $color1;
+
+    &:hover {
+        background: $color1;
+        border-color: #569ff7;
+    }
+}
+
+.flatpickr-day.flatpickr-disabled {
+    background: $color2;
+    color: white;
+    &:hover {
+        background: $color2;
+    }
+}
+
+.make-res {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 25px;
+    
+
+    &__title {
+        color: $color1;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+    }
+
+    &__form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &__input-box {
+        display: flex;
+        align-items: baseline;
+
+        &:not(:last-child) {
+            margin-bottom: .65rem;
+        }
+    }
+
+    &__input-box label {
+        width: 5rem;
+        text-transform: uppercase;
+        font-size: 1.3rem;
+        margin-right: 1rem;
+        color: $colorG;
+        
+    }
+
+    &__input-field {
+        outline: none;
+        border: none;
+        padding: .3rem;
+        border-bottom: 1px solid $colorG;
+        background-color: transparent;
+        transition: all .3s;
+
+        &:focus {
+            border-bottom: 2px solid rgba($color1, .9);
+            outline: none;
+        }
+    }
+
+}
+.m-top-2 {
+    margin-top: 2rem;
+}
+
+.flatpickr-input[readonly] {
+    display: none;
+}

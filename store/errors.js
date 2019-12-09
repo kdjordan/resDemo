@@ -10,6 +10,10 @@ export const state = () => ({
     homesErrorMssg: '',
     roleError: false,
     roleErrorMssg: '',
+    guestEmptyError: false,
+    guestEmptyErrorMssg: '',
+    phoneEmptyError: false,
+    phoneEmptyErrorMssg: '',
     initUserNameError: true,
     initPasswordError: true,
     initHomesError: true,
@@ -32,7 +36,6 @@ export const getters  = {
         }
     },
     getErrorMssg(state) {
-        
         if(state.userNameError){
             return state.userNameErrorMssg;
         } else if(state.passwordError){
@@ -43,6 +46,13 @@ export const getters  = {
             return state.homesErrorMssg;
         } else if(state.adminError) {
             return state.adminErrorMssg;
+        } else if(state.guestEmptyError) {
+            return state.guestEmptyErrorMssg;
+        } else if(state.phoneEmptyError) {
+            return state.phoneEmptyErrorMssg;
+
+
+
         } else {return ''}
     },
     getUserNameError(state) {
@@ -53,6 +63,12 @@ export const getters  = {
     },
     getRoleError(state) {
         return state.roleError;
+    },
+    getGuestEmptyError(state) {
+        return state.guestEmptyError;
+    },
+    getPhoneEmptyError(state) {
+        return state.phoneEmptyError;
     },
     getHomesError(state) {
         return state.homesError;

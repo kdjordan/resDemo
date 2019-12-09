@@ -1,15 +1,15 @@
 <template>
-  <div class="header">
-      <div class="header__content">
-          <div class="header__content--logo">
-              <div class="header__content--logo-circle">
-                  <span class="header__content--logo-circle-AMC" >AMC</span>
+  <div class="admin-header">
+      <div class="admin-header__content">
+          <div class="admin-header__content--logo">
+              <div class="admin-header__content--logo-circle">
+                  <span class="admin-header__content--logo-circle-AMC" >AMC</span>
               </div>
-              <div class="header__content--logo-text">
-                  Vacation Rentals
+              <div class="admin-header__content--logo-text">
+                  Vacation Rentals :: Admin
               </div>
           </div>
-          <div class="header__content--content">
+          <div class="admin-header__content--content">
               HOME
           </div>
       </div>
@@ -23,7 +23,7 @@ export default {
 </script>
 
 <style lang="scss">
-.header {
+.admin-header {
     height: 8rem;
     background: $colorWhite;
     box-shadow: 7px 0 60px rgba(0,0,0,.05);

@@ -1,5 +1,5 @@
 <template>
-  <div class="inner_container">
+<div class="inner_container">
     <CircleText title="Add Keeper" />
     <form  @submit.prevent="addKeeper" class="form-container">
 

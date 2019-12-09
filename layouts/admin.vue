@@ -1,16 +1,15 @@
 <template>
   <div>
       <Header />
-      <no-ssr>
         <SideNav />
-      </no-ssr>
       <Nuxt />
   </div>
 </template>
 
 <script>
+
+import Header from '@/components/admin/AdminHeader'
 import SideNav from '@/components/admin/SideNav'
-import Header from '@/components/admin/Header'
 export default {
     components: {
         SideNav,

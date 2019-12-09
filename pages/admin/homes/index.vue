@@ -1,5 +1,5 @@
-<template>
-  <div class="inner_container">
+<template>  
+<div class="inner_container">
     <CircleText title="Add Home" />
     <form  @submit.prevent="addHome" class="form-container">
 
@@ -9,7 +9,7 @@
         </div>
         <div class="right-item">
             <input type="text" 
-            v-model.trim="homeName"
+                    v-model.trim="homeName"
                     id="homeName"
                     placeholder="Enter Home Name"> 
         </div>
@@ -50,6 +50,7 @@
 import CircleText from '@/components/UI/CircleText'
 import Buttons from '@/components/UI/AdminButtons'
 import Messages from '@/components/UI/Messages'
+
 import { mapGetters } from 'vuex'
 import utilities from '@/assets/js/utilities.js'
 

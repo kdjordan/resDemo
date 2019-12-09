@@ -1,5 +1,5 @@
 <template>
-  <div class="inner_container">
+    <div class="inner_container">
     <CircleText title="Edit Home" />
     <form  @submit.prevent="updateHome" class="form-container">
 
@@ -13,8 +13,6 @@
                     id="homeName"
                     :placeholder="getQueriedHomeName"> 
         </div>
-        
-        <!-- {{getQueriedHomeName}} -->
     </div>
 
     <div class="flex-items__spaced">
