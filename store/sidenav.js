@@ -103,7 +103,7 @@ export const state = () => ({
  
  export const actions = {
     getMenusData ({ commit }) {
-        return  this.$axios.$get('getMenuData')
+        return this.$axios.$get('getMenuData')
         .then((res) => {
            res['users'].forEach(el => {
                commit('addUser', el);

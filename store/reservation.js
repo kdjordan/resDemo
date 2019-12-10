@@ -1,7 +1,8 @@
 export const state = () => ({
     queriedHome: [],
     disabledDates: [{from: "2019-12-25",to: "2019-12-26"},{from: "2019-12-28",to: "2019-12-29"}],
-    userId: null
+    userId: '5de8642c5f528290b0f95fc3',
+    userActiveHomes: []
     
 });
 
@@ -14,7 +15,10 @@ export const getters = {
     }, 
     getCurrRes(state) {
         return state.currRes
-    } 
+    },
+    getUserId(state) {
+        return state.userId
+    }
 }
 
 export const mutations = {
@@ -26,11 +30,24 @@ export const mutations = {
     },
     setDisabledDates(state, payload) {
         state.disabledDates = payload;
+    },
+    setUserActiveHomes(state, payload) {
+        state.userActiveHomes = payload;
     }
 
 }
 
 
 export const actions = {
-
+    makeReservation(_, payload) {
+        console.log(payload)
+        return new Promise((resolve, reject) => {
+            this.$axios.$post(`/makeReservation/${state.userId}`)
+            .then((res) => {
+                console.log(res)
+            }).catch((e) => {
+                console.log(e)
+            });
+        })
+    }
 }

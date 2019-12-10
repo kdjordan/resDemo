@@ -7,7 +7,7 @@
             </div>
             <div class="container__bottom">
                 <div class="container__bottom--left">
-                    <MakeResForm />
+                    <MakeResForm :homeId="this.$route.params.id"/>
                 </div>
                 <div class="container__bottom--right">
                     <ResList />

@@ -92,8 +92,32 @@ export const actions = {
             this.commit('userRole/resetRole');
             this.commit('users/resetUser');
             this.commit('errors/resetErrors');
-            
+    },
+    initMakeRes({ dispatch }, payload) {
 
+        return new Promise((resolve, reject) => {
+            let userHomes = [];
+            let homesWithId = []
+            dispatch('getUserData', payload)
+                .then((data) => {
+                    data.homesArray.forEach(el => {
+                        userHomes.push(el)
+                    })
+                }).catch((e) => {
+                    console.log(e)
+                })
+            this.$axios.$get('getMenuData')
+                .then((data) => {
+                    data['homes'].forEach(el => {
+                        homesWithId.push(el);
+                    })
+                }).catch(() => {
+
+                });
+            let userActiveHomesList = utilities.makeActiveUsersHomeList(userHomes, homesWithId);
+            
+            
+        })
     }
 
 };

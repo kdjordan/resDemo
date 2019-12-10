@@ -89,6 +89,20 @@ exports.makeTFArray = (homeName, allUsers) => {
 
 }
 
+exports.makeActiveUsersHomeList = (homeNamesArr, allHomesArr) => {
+    console.log(homeNamesArr)
+    // console.log(allHomesArr)
+    // let returnArr = [];
+   
+    homeNamesArr.forEach(home => {
+        console.log(home)
+    })
+
+
+   console.log('exiting')
+    // console.log(returnArr)
+}
+
 exports.test = () => {
     console.log('test working')
 }
