@@ -38,13 +38,8 @@ export const mutations = {
         state.disabledDates = payload;
     },
     updateDisabledDates(state, payload) {
-        console.log('upadating disabled dates')
-        console.log(payload)
-
         let update = {from: payload.dates.split('to')[0], to: payload.dates.split('to')[1]};
         state.disabledDates.push(update)
-        return;
-
     },
     deleteDisabledDate(state, payload) {
         state.disabledDates.forEach(res => {
