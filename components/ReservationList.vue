@@ -48,6 +48,7 @@
 import res from '@/assets/js/data.js'
 
 export default {
+    props:['homeId'],
     data() {
         return {
             theRes: res.sampleData.currentRes1,
@@ -68,6 +69,9 @@ export default {
                 this.theRes = res.sampleData.currentRes2;
             } 
         }
+    },
+    mounted() {
+
     }
 }
 </script>   

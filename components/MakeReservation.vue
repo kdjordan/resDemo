@@ -22,12 +22,13 @@
                 <Messages />
 
             <div class="right-item__indicator--edit">
-                <button class="btn btn-primary" :disabled="getInitError">reserve</button>
+                <button class="btn btn-primary" :disabled="getErrors">reserve</button>
             </div>
       </div>
-            <!-- phone:: {{this.$store.state.errors.initPhoneError}}
-            cal:: {{this.$store.state.errors.initCalendarError}}
-            guest:: {{this.$store.state.errors.initGuestError}} -->
+            {{this.$store.state.reservation.userActiveHomes[0]}}<hr > 
+            dates:{{dates == null}}
+            dates:{{phone == ''}}
+            dates:{{guest == ''}}
         </form>
     </div>
 </template>
@@ -54,76 +55,63 @@ export default {
                 mode: "range",
                 dateFormat: "Y-m-d",
                 disable: this.$store.state.reservation.disabledDates
-            }
+            },
+            phoneError: false,
+            guestError: false
         }
     },
     computed: {
         ...mapGetters({
-            getInitError: 'errors/getResInitErrorState',
-            getGuestError: 'errors/getGuestEmptyError',
-            phoneError: 'errors/getPhoneEmptyError',
-            guestError: 'errors/getGuestEmptyError',
             userId: 'reservation/getUserId',
             disabledDates: 'reservation/getDisabledDates'
-        })
-    },
-    watch: {
-        dates() {
-             if(this.dates != null) { this.$store.commit('errors/setInitCalendarErrorFalse'); }
-            if(this.dates == null) {
-                this.$store.commit('errors/setCalendarEmptyError', {status: true, mssg: 'You Must Select Dates'});
+        }),
+        getErrors() {
+            if(this.dates == null || this.guest == '' || this.phone == '') {
+                return true;
             } else {
-                this.$store.commit('errors/setCalendarEmptyError', {status: false, mssg: ''});
-            }
-        },
-        guest() {
-            if(this.guest != '') { this.$store.commit('errors/setInitGuestErrorFalse'); }
-            if(this.guest == '') {
-                this.$store.commit('errors/setGuestEmptyError', {status: true, mssg: 'You Must Provide a Guest'});
-            } else {
-                this.$store.commit('errors/setGuestEmptyError', {status: false, mssg: ''});
-            }
-        },
-        phone() {
-            if(this.phoone != '') { this.$store.commit('errors/setInitPhoneErrorFalse'); }
-            if(this.phone == '') {
-                this.$store.commit('errors/setPhoneEmptyError', {status: true, mssg: 'You Must Provide a Phone #'});
-            } else {
-                this.$store.commit('errors/setPhoneEmptyError', {status: false, mssg: ''});
+                return false;
             }
         }
     },
     methods: {
         makeRes() {
-            if(this.checkFields() == true) {
+            if(this.checkForm()) {
                 this.$store.dispatch('reservation/makeReservation', {
-                    
                     dates: this.dates,
                     guest: this.guest,
                     phone: this.phone,
                 }).then((res) => {
-                    console.log(res)
-                }).catch((e) => {
-                    console.log(e)
+                    if(res == 'success') {
+                         this.$store.commit('errors/setAdminError', {status: false, mssg: ''})
+                        this.dates = null;
+                        this.guest = '';
+                        this.phone = '';
+                    } else {
+                        this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Making Reservation'})
+                    }
+                }).catch(() => {
+                        
                 });
             }
         },
-        checkFields() {
-            console.log('checking')
-            if(this.dates == null) {
-                this.$store.commit('errors/setAdminError', {status: true, mssg: 'No Date Selected'});
-                return false;
-            } else if (this.guest == '') {
-                this.$store.commit('errors/setGuestEmptyError', {status: true, mssg: 'No Guest Selected'});
-                return false;
-            } else {
-                return true;
-            }
-
+        checkForm() {
+               if(!this.dates.includes('to')) {
+                   this.$store.commit('errors/setAdminError', {status: true, mssg: 'Improper Date Selection'})
+                   return false;
+               } else if(this.guest == ''){
+                   this.$store.commit('errors/setAdminError', {status: true, mssg: 'Guest name Required'})
+                   guestError = true;
+                   return false;
+               } else if(this.phone == '') {
+                   this.$store.commit('errors/setAdminError', {status: true, mssg: 'Phone # Required'})
+                   phoneError = true;
+                   return false;
+               } else {
+                   return true;
+               }
         }
     },
     mounted() {
-            this.$store.commit('errors/resetErrors');
             this.$store.dispatch('admin/initMakeRes', this.$store.state.reservation.userId)
             //based on homesArray - gert active Homes
 
@@ -142,5 +130,8 @@ export default {
 <style lang="scss">
 .full-width {
     width: 100%;
+}
+.disabled {
+    background: white;
 }
 </style>

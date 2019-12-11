@@ -91,7 +91,6 @@ export const actions = {
             this.commit('userHomes/resetQueriedHome');
             this.commit('userRole/resetRole');
             this.commit('users/resetUser');
-            this.commit('errors/resetErrors');
     },
     initMakeRes({ dispatch }, payload) {
 
@@ -111,10 +110,14 @@ export const actions = {
                     data['homes'].forEach(el => {
                         homesWithId.push(el);
                     })
-                }).catch(() => {
-
-                });
+               
             let userActiveHomesList = utilities.makeActiveUsersHomeList(userHomes, homesWithId);
+            this.commit('reservation/setUserActiveHomes', userActiveHomesList)
+            }).catch((e) => {
+                console.log(e)
+            });
+                
+            // 
             
             
         })

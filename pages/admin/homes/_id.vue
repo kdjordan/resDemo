@@ -121,7 +121,6 @@ export default {
   },
   mounted() {
       this.$store.commit('admin/setIndicator', 'Edit Home')
-      this.$store.commit('errors/resetErrors');
       this.$store.dispatch('admin/initAddUser')
       this.$store.dispatch('admin/getHomeData', this.$route.params.id)
       .then(() => {

@@ -82,8 +82,7 @@ export default {
     },
     mounted() {
       this.$store.commit('admin/setIndicator', 'Edit User')
-        this.$store.commit('errors/resetErrors');
-        this.$store.dispatch('admin/getUserData', this.$route.params.id)
+      this.$store.dispatch('admin/getUserData', this.$route.params.id)
         .then(() => {
           this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'User Loaded'})
         }).catch((e) => {

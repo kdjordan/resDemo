@@ -90,17 +90,15 @@ exports.makeTFArray = (homeName, allUsers) => {
 }
 
 exports.makeActiveUsersHomeList = (homeNamesArr, allHomesArr) => {
-    console.log(homeNamesArr)
-    // console.log(allHomesArr)
-    // let returnArr = [];
-   
-    homeNamesArr.forEach(home => {
-        console.log(home)
+    let returnArr = [];
+    homeNamesArr.forEach(homeName => {
+        allHomesArr.forEach(home => {
+            if(homeName == home.homeName){
+                returnArr.push(home)
+            }
+        })
     })
-
-
-   console.log('exiting')
-    // console.log(returnArr)
+    return returnArr;
 }
 
 exports.test = () => {

@@ -53,8 +53,7 @@ export const actions = {
                         this.commit('userHomes/addNewUserHomesUserList', {...data, homesArray: payload.homesArray, isActive: true})
                         this.commit('sidenav/addUser', {_id: data._id, userName:data.userName, homesArray: payload.homesArray })
                         this.dispatch('notifications/doNotification', {status: true, mssg: 'User Added'});
-                        this.dispatch('admin/initAddUser')
-                        this.commit('errors/resetErrors')
+                        // this.dispatch('admin/initAddUser')
                         resolve('success')
                     }
                 })
