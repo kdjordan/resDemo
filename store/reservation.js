@@ -1,3 +1,5 @@
+import utilities from '@/assets/js/utilities.js'
+
 export const state = () => ({
     queriedHome: [],
     disabledDates: [],
@@ -36,21 +38,30 @@ export const mutations = {
         state.disabledDates = payload;
     },
     updateDisabledDates(state, payload) {
-        console.log('called updating')
+        console.log('upadating disabled dates')
         console.log(payload)
+
         let update = {from: payload.dates.split('to')[0], to: payload.dates.split('to')[1]};
-        console.log(update)
         state.disabledDates.push(update)
+        return;
 
     },
     deleteDisabledDate(state, payload) {
-        state.disabledDates.splice( state.disabledDates.indexOf(payload), 1 );
+        state.disabledDates.forEach(res => {
+            if(res.from.trim() == payload.from) {
+                state.disabledDates.splice( state.disabledDates.indexOf(res), 1 );
+            }
+        })
     },
     updateReservations(state, payload){
         state.reservations.push(payload)
     },
     deleteReservation(state, payload) {
-        state.reservations.splice( state.reservations.indexOf('res'), 1 );
+        state.reservations.forEach(res => {
+            if (res._id == payload) {
+                state.reservations.splice( state.reservations.indexOf(res), 1 );
+            }
+        })
     }
 
 }
@@ -61,13 +72,14 @@ export const actions = {
         return new Promise((resolve, reject) => {
             this.$axios.$post
             (`/makeReservation/${state.userId}`, {...payload, homeId: state.userActiveHomes[0]._id})
-            .then((res) => {
+            .then((data) => {
                 this.dispatch('notifications/doNotification', {status: true, mssg: 'Reservation Made'});
                 
-                commit('updateDisabledDates', {dates: payload.resDates})
-
-                //TODO::::::update reservation
-                commit('updateReservation', res)
+                //update disabled dates for cal display
+                commit('updateDisabledDates', {dates: payload.dates})
+                
+                //update reservation in UI
+                commit('updateReservations', data)
                 resolve('success')  
             }).catch((e) => {
                 reject(e);
@@ -76,9 +88,9 @@ export const actions = {
     },
     deleteReservation({ commit }, payload) {
         return this.$axios.$post(`deleteReservation/${payload._id}`)
-        .then((res) => {
-            commit('deleteReservation', res)
-            commit('deleteDisabledDate', {from: payload.start, to:payload.end})
+        .then((data) => {
+            commit('deleteReservation', data)
+            commit('deleteDisabledDate', {from: payload.start.trim(), to:payload.end.trim()})
         }).catch((e) => {
             console.log(e)
         });

@@ -101,7 +101,4 @@ exports.makeActiveUsersHomeList = (homeNamesArr, allHomesArr) => {
     return returnArr;
 }
 
-exports.test = () => {
-    console.log('test working')
-}
 

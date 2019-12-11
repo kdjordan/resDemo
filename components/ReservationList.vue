@@ -16,7 +16,10 @@
                         <template>
                             <tr>
                                 <td>{{res.madeBy}}</td>
+                                
+                                
                                 <td>{{res.madeFor}}</td>
+                                <input type='text' v-if="editActive" :placeholder="`${res.madeBy}`">
                                 <td>{{res.start}}</td>
                                 <td>{{res.end}}</td>
                                 <td>{{res.phone}}</td>
@@ -41,7 +44,7 @@
                         </div>
                     </div>
                 </div>
-                {{getAllRes}}
+                {{getDisRes}}
         </div>
 </template>
 
@@ -54,7 +57,8 @@ export default {
     data() {
         return {
             theRes: res.sampleData.currentRes1,
-            paginationIndex: 1
+            paginationIndex: 1,
+            editActive: true
         
         }
     },
@@ -66,7 +70,9 @@ export default {
     },
     methods: {
         deleteRes(res) {
-            this.$store.dispatch('reservation/deleteReservation', res)
+            if(confirm(`Are You Sure you Want to Delete Res ${res._id}`)){
+                this.$store.dispatch('reservation/deleteReservation', res)
+            }
         },
         pageForward() {
             console.log(this.theRes)
