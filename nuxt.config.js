@@ -47,6 +47,7 @@ export default {
           "~assets/scss/base.scss",
           "~assets/scss/layout.scss",
           "~assets/scss/makeRes.scss",
+          "~assets/scss/resList.scss",
           "~assets/scss/buttons.scss"
       ]
   },

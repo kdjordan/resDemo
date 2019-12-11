@@ -93,7 +93,6 @@ export const actions = {
             this.commit('users/resetUser');
     },
     initMakeRes({ dispatch }, payload) {
-
         return new Promise((resolve, reject) => {
             let userHomes = [];
             let homesWithId = []
@@ -120,6 +119,29 @@ export const actions = {
             // 
             
             
+        })
+    },
+    initGetRes({context}, payload) {
+        return new Promise((resolve, reject) => {
+            this.$axios.$get('/getReservations/5d92cd781c9d4400004c897a')
+            .then((res) => {
+                console.log(res)
+                res.forEach(el => {
+                    this.commit('reservation/updateDisabledDates', {_id: el._id, dates: el.resDates});
+                    this.commit('reservation/updateReservations', {
+                        _id: el._id,
+                        homeName: 'sunriver',
+                        madeBy: 'user1',
+                        madeFor: el.guest,
+                        phone: el.phone,
+                        start: el.resDates.split('to')[0],
+                        end: el.resDates.split('to')[1]
+                    })
+                })
+                // console.log(res)
+            }).catch((e) => {
+                console.log(e)
+            });
         })
     }
 

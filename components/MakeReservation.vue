@@ -26,9 +26,6 @@
             </div>
       </div>
             {{this.$store.state.reservation.userActiveHomes[0]}}<hr > 
-            dates:{{dates == null}}
-            dates:{{phone == ''}}
-            dates:{{guest == ''}}
         </form>
     </div>
 </template>
@@ -63,7 +60,7 @@ export default {
     computed: {
         ...mapGetters({
             userId: 'reservation/getUserId',
-            disabledDates: 'reservation/getDisabledDates'
+            disabledDates: 'reservation/getDisabledDates',
         }),
         getErrors() {
             if(this.dates == null || this.guest == '' || this.phone == '') {
