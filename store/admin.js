@@ -126,7 +126,7 @@ export const actions = {
         .then((res) => {
             res.forEach(el => {
                 this.commit('reservation/updateDisabledDates', {dates: el.resDates});
-                this.commit('reservation/updateReservations', {
+                this.commit('reservation/setReservations', {
                     _id: el._id,
                     homeName: 'sunriver',
                     madeBy: 'user1',

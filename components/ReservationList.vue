@@ -17,22 +17,22 @@
                             <tr>
                                 <td>{{res.madeBy}}</td>
 
-                                <td v-if="editActive && editResId == res._id">
-                                    <input type='text'  :placeholder="`${res.madeFor}`" v-model="updatedMadeFor" class="update-input">
+                                <td v-if="editActive && updatedResId == res._id">
+                                    <input type='text'  :placeholder="`${res.madeFor}`" v-model="updatedGuest" class="update-input">
                                 </td>
                                 <td v-else>{{res.madeFor}}</td>
 
-                                <td v-if="editActive && editResId == res._id">
+                                <td v-if="editActive && updatedResId == res._id">
                                     <input type='text'  :placeholder="`${res.start.trim()}`" v-model="updatedStart" class="update-input">
                                 </td>
                                 <td v-else>{{res.start.trim()}}</td>
 
-                                <td v-if="editActive && editResId == res._id">
+                                <td v-if="editActive && updatedResId == res._id">
                                     <input type='text'  :placeholder="`${res.end.trim()}`" v-model="updatedEnd" class="update-input">
                                 </td>
                                 <td v-else>{{res.end.trim()}}</td>
 
-                                <td v-if="editActive && editResId == res._id">
+                                <td v-if="editActive && updatedResId == res._id">
                                     <input type='text'  :placeholder="`${res.phone}`" v-model="updatedPhone" class="update-input">
                                 </td>
                                 <td v-else>{{res.phone}}</td>
@@ -59,7 +59,7 @@
                     </div>
                     <button class="btn btn-primary" v-if="editActive" @click="commitUpdateRes">UPDATE</button>
                 </div>
-                {{updatedMadeFor}}
+                ::{{getAllRes}}
         </div>
 </template>
 
@@ -74,12 +74,11 @@ export default {
             theRes: res.sampleData.currentRes1,
             paginationIndex: 1,
             editActive: false,
-            editResId: '',
-            updatedMadeFor: '',
+            updatedResId: '',
+            updatedGuest: '',
             updatedPhone: '',
             updatedStart: '',
             updatedEnd: ''
-        
         }
     },
     computed: {
@@ -90,13 +89,26 @@ export default {
     },
     methods: {
         updateRes(res){
-            this.editResId = res._id;
+            // console.log(res)
             this.editActive = !this.editActive;
-            
+
+            this.updatedResId = res._id;
+            this.updatedGuest = res.madeFor;
+            this.updatedPhone = res.phone;
+            this.updatedStart = res.start.trim();
+            this.updatedEnd = res.end.trim();
             
         },
         commitUpdateRes() {
             this.editActive = false;
+            let updateObj = {
+                res_id: this.updatedResId,
+                guest: this.updatedGuest,
+                phone: this.updatedPhone,
+                start: this.updatedStart,
+                end: this.updatedEnd
+            }
+            this.$store.dispatch('reservation/updateReservation', updateObj)
 
         },
         deleteRes(res) {
