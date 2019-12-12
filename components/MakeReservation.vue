@@ -5,7 +5,7 @@
         <form @submit.prevent="makeRes" class="make-res__form">
             <div class="make-res__input-box">
                 
-                <flat-pickr v-model="dates" :config="config"></flat-pickr>
+                <flat-pickr v-model="dates" :config="config" @on-change="toggleAdminError"></flat-pickr>
             
             </div>
             
@@ -71,6 +71,9 @@ export default {
         }
     },
     methods: {
+        toggleAdminError() {
+            this.$store.commit('errors/setAdminError', {status: false, mssg: ''})
+        },
         makeRes() {
             if(this.checkForm()) {
                 this.$store.dispatch('reservation/makeReservation', {

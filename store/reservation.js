@@ -54,7 +54,7 @@ export const mutations = {
         // state.disabledDates = payload;
     },
     setDisabledDates(state, payload) {
-        let update = {from: payload.dates.split('to')[0], to: payload.dates.split('to')[1]};
+        let update = {from: payload.dates.split('to')[0].trim(), to: payload.dates.split('to')[1].trim()};
         state.disabledDates.push(update)
     },
     deleteDisabledDate(state, payload) {
@@ -97,7 +97,6 @@ export const actions = {
         return new Promise((resolve, reject) => {
             this.$axios.$post(`/updateReservation/${payload.res_id}`, payload)
             .then((data) => {
-                console.log(data)
                 
                 //update reservation List UI
                 commit('updateReservation', {

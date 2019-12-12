@@ -95,8 +95,9 @@ export default {
         })
     },
     methods: {
+        //** FN : toggles active fields and updates any input from user to local state
+        //**    : also resets local state when a new reservation is made live
         updateRes(res){
-            // console.log(res)
             this.editActive = !this.editActive;
 
             this.updatedResId = res._id;
@@ -104,8 +105,8 @@ export default {
             this.updatedPhone = res.phone;
             this.updatedStart = res.start.trim();
             this.updatedEnd = res.end.trim();
+
             if (this.editActive == false) {
-                console.log('updatiing')
                 this.updatedResId = ''
                 this.updatedGuest = ''
                 this.updatedPhone = ''
@@ -114,7 +115,10 @@ export default {
             }
             
         },
+        //** FN : checks for date errors (range and malformed) and submits dispatches 
+        //**    : updated res to module for axios call
         commitUpdateRes() {
+        
             this.$store.commit('reservation/setOGresDates', this.updatedResId)
             
             if(!(this.checkValidDate(this.updatedStart) && this.checkValidDate(this.updatedEnd))) {
@@ -141,16 +145,20 @@ export default {
            
 
         },
+         //** FN : checks for bad date formatting
+        //** RTTN : boolean -> true means error has occured
         checkValidDate(dateToCheck){
             const date = new Date(dateToCheck.split('-')[0], (+(dateToCheck.split('-')[1])-1), dateToCheck.split('-')[2])
             const isValidDate = (Boolean(+date) && date.getDate() == dateToCheck.split('-')[2])
             return isValidDate
         },
+        //** FN : checks for overlap, and if start date > end date 
+        //** RTTN : boolean -> true means error has occured, overlapping dates entered
         checkResDates(start, end, from, to){
             let newStart = new Date(from.replace(/-/g, '\/'));
             let newEnd= new Date(to.replace(/-/g, '\/'));
 
-            if(newStart > newEnd) {
+            if(newStart > newEnd || newStart < new Date()) {
                 console.log('here')
                 return true;
             }
@@ -170,11 +178,13 @@ export default {
                     return false;
                 }
         },
+        //** FN : dispatches delete fn to module for axios call
         deleteRes(res) {
             if(confirm(`Are You Sure you Want to Delete Res ${res._id}`)){
                 this.$store.dispatch('reservation/deleteReservation', res)
             }
         },
+        //** FN : handles pagination
         pageForward() {
             console.log(this.theRes)
             if(this.theRes == res.sampleData.currentRes3){
@@ -188,6 +198,7 @@ export default {
             } 
         }
     },
+    //** FN : initiate module store with home reservations and assiign userId to state
     mounted() {
         this.$store.dispatch('admin/initGetRes', this.$store.state.reservation.userId)
     }
