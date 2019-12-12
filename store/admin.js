@@ -125,7 +125,7 @@ export const actions = {
         this.$axios.$get('/getReservations/5d92cd781c9d4400004c897a')
         .then((res) => {
             res.forEach(el => {
-                this.commit('reservation/updateDisabledDates', {dates: el.resDates});
+                this.commit('reservation/setDisabledDates', {dates: el.resDates});
                 this.commit('reservation/setReservations', {
                     _id: el._id,
                     homeName: 'sunriver',

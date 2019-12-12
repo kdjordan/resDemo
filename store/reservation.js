@@ -7,7 +7,8 @@ export const state = () => ({
     disabledDates: [],
     userId: '5de8642c5f528290b0f95fc3',
     userActiveHomes: [],
-    reservations: []
+    reservations: [],
+    OGresDates: ''
     
 });
 
@@ -23,10 +24,17 @@ export const getters = {
     },
     getUserId(state) {
         return state.userId
+    },
+    getOGresDates(state) {
+        return state.OGresDates;
     }
 }
 
 export const mutations = {
+    setOGresDates(state, payload) {
+        let theRes = state.reservations.filter(res => res._id == payload)
+        state.OGresDates = {from: theRes[0].start, to: theRes[0].end}
+    },
     setUserActiveHomes(state, payload) {
         state.userActiveHomes = payload;
     },
@@ -36,10 +44,16 @@ export const mutations = {
     setQueriedHome(state, payload) {
         state.queriedHome = payload
     },
-    setDisabledDates(state, payload) {
-        state.disabledDates = payload;
-    },
     updateDisabledDates(state, payload) {
+        state.disabledDates.forEach(date => {
+            if (date.from.trim() == payload.ogStart && date.to.trim() == payload.ogEnd) {
+                date.from = payload.from;
+                date.to = payload.to;
+            }
+        })
+        // state.disabledDates = payload;
+    },
+    setDisabledDates(state, payload) {
         let update = {from: payload.dates.split('to')[0], to: payload.dates.split('to')[1]};
         state.disabledDates.push(update)
     },
@@ -82,8 +96,8 @@ export const actions = {
     updateReservation({ commit, dispatch }, payload){
         return new Promise((resolve, reject) => {
             this.$axios.$post(`/updateReservation/${payload.res_id}`, payload)
-            .then(() => {
-
+            .then((data) => {
+                console.log(data)
                 
                 //update reservation List UI
                 commit('updateReservation', {
@@ -97,6 +111,9 @@ export const actions = {
                 })
 
                 //update cal UI
+                commit('updateDisabledDates', { from: payload.start, to: payload.end, 
+                                                ogStart: data.resDates.split('to')[0].trim(),
+                                                ogEnd: data.resDates.split('to')[1].trim() })
                 
             }).catch((e) => {
                 console.log(e)
@@ -111,7 +128,7 @@ export const actions = {
                 this.dispatch('notifications/doNotification', {status: true, mssg: 'Reservation Made'});
                 
                 //update disabled dates for cal display
-                commit('updateDisabledDates', {dates: payload.dates})
+                commit('setDisabledDates', {dates: payload.dates})
                 
                 //update reservation in UI
                 commit('setReservations', data)

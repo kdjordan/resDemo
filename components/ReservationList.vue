@@ -23,12 +23,16 @@
                                 <td v-else>{{res.madeFor}}</td>
 
                                 <td v-if="editActive && updatedResId == res._id">
-                                    <input type='text'  :placeholder="`${res.start.trim()}`" v-model="updatedStart" class="update-input">
+                                    <input type='text'  :placeholder="`${res.start.trim()}`" 
+                                            v-model="updatedStart" :class="{'input-error' : dateError}" 
+                                            class="update-input" @focus="dateError = false">
                                 </td>
                                 <td v-else>{{res.start.trim()}}</td>
 
                                 <td v-if="editActive && updatedResId == res._id">
-                                    <input type='text'  :placeholder="`${res.end.trim()}`" v-model="updatedEnd" class="update-input">
+                                    <input type='text'  :placeholder="`${res.end.trim()}`" 
+                                            v-model="updatedEnd" :class="{'input-error' : dateError}" 
+                                            class="update-input" @focus="dateError = false">
                                 </td>
                                 <td v-else>{{res.end.trim()}}</td>
 
@@ -57,9 +61,9 @@
                             &gt;&gt;
                         </div>
                     </div>
-                    <button class="btn btn-primary" v-if="editActive" @click="commitUpdateRes">UPDATE</button>
+                    <button class="btn btn-primary" v-if="editActive" @click="commitUpdateRes" :disabled="dateError">UPDATE</button>
                 </div>
-                ::{{getAllRes}}
+                <!-- ::{{getDisRes}} -->
         </div>
 </template>
 
@@ -71,6 +75,8 @@ export default {
     props:['homeId'],
     data() {
         return {
+
+            dateError: false,
             theRes: res.sampleData.currentRes1,
             paginationIndex: 1,
             editActive: false,
@@ -84,7 +90,8 @@ export default {
     computed: {
         ...mapGetters({
             getAllRes: 'reservation/getReservations',
-            getDisRes: 'reservation/getDisabledDates'
+            getDisRes: 'reservation/getDisabledDates',
+            getOG: 'reservation/getOGresDates'
         })
     },
     methods: {
@@ -97,19 +104,71 @@ export default {
             this.updatedPhone = res.phone;
             this.updatedStart = res.start.trim();
             this.updatedEnd = res.end.trim();
+            if (this.editActive == false) {
+                console.log('updatiing')
+                this.updatedResId = ''
+                this.updatedGuest = ''
+                this.updatedPhone = ''
+                this.updatedStart = ''
+                this.updatedEnd = ''
+            }
             
         },
         commitUpdateRes() {
-            this.editActive = false;
-            let updateObj = {
-                res_id: this.updatedResId,
-                guest: this.updatedGuest,
-                phone: this.updatedPhone,
-                start: this.updatedStart,
-                end: this.updatedEnd
+            this.$store.commit('reservation/setOGresDates', this.updatedResId)
+            
+            if(!(this.checkValidDate(this.updatedStart) && this.checkValidDate(this.updatedEnd))) {
+                this.dateError = true;
+                return;
             }
-            this.$store.dispatch('reservation/updateReservation', updateObj)
+            if(!(this.checkResDates(this.getOG.from.trim(), this.getOG.to.trim(), this.updatedStart, this.updatedEnd))){
+                //good to go
+                this.editActive = false;
+                let updateObj = {
+                    res_id: this.updatedResId,
+                    guest: this.updatedGuest,
+                    phone: this.updatedPhone,
+                    start: this.updatedStart,
+                    end: this.updatedEnd
+                }
+                this.$store.dispatch('reservation/updateReservation', updateObj)
+            } else {
+                //error with overlapping dates
+                this.dateError = true;
+                return;
+            }
 
+           
+
+        },
+        checkValidDate(dateToCheck){
+            const date = new Date(dateToCheck.split('-')[0], (+(dateToCheck.split('-')[1])-1), dateToCheck.split('-')[2])
+            const isValidDate = (Boolean(+date) && date.getDate() == dateToCheck.split('-')[2])
+            return isValidDate
+        },
+        checkResDates(start, end, from, to){
+            let newStart = new Date(from.replace(/-/g, '\/'));
+            let newEnd= new Date(to.replace(/-/g, '\/'));
+
+            if(newStart > newEnd) {
+                console.log('here')
+                return true;
+            }
+
+            let datesToCheck = this.getDisRes.filter(res => (res.from.trim()!= start) && (res.to.trim() != end))
+            let conflict = 0;
+            datesToCheck.forEach(date => {
+                let disDateStart = new Date(date.from.trim().replace(/-/g, '\/'));
+                let disDateEnd = new Date(date.to.trim().replace(/-/g, '\/'));
+                if( disDateEnd  >=  newStart  &&    disDateStart <= newEnd) {
+                    conflict++;
+                }
+            }) 
+                if(conflict > 0) {
+                    return true
+                } else {
+                    return false;
+                }
         },
         deleteRes(res) {
             if(confirm(`Are You Sure you Want to Delete Res ${res._id}`)){
