@@ -5,7 +5,7 @@
         <form @submit.prevent="makeRes" class="make-res__form">
             <div class="make-res__input-box">
                 
-                <flat-pickr v-model="dates" :config="config" @on-change="toggleAdminError"></flat-pickr>
+                <flat-pickr v-model="dates" :config="config" @on-change="removeDateError"></flat-pickr>
             
             </div>
             
@@ -25,7 +25,7 @@
                 <button class="btn btn-primary" :disabled="getErrors">reserve</button>
             </div>
       </div>
-            {{activeHomes}}<hr> <br />
+            {{activeHomes}}
         </form>
     </div>
 </template>
@@ -65,6 +65,7 @@ export default {
             activeHomes: 'reservation/getActiveUserHomes'
 
         }),
+        //** FN : makes button inactive if any errors are noticed
         getErrors() {
             if(this.dates == null || (this.guest == '' || this.guest == null) || 
                 (this.phone == '' || this.phone == null) || (this.dates == null || this.adminError)) {
@@ -75,6 +76,7 @@ export default {
         }
     },
     watch: {
+        //** FN : throws error if guest input is empty, also removes it if not
         guest() {
             if(this.guest == '') {
                 this.$store.commit('errors/setGuestError', {status: true, mssg: 'Guest is Empty'})
@@ -82,6 +84,7 @@ export default {
                 this.$store.commit('errors/setGuestError', {status: false, mssg: ''})
             }
         },
+        //** FN : throws error if phone input is empty, also removes it if not
         phone() {
             if(this.phone == '') {
                 this.$store.commit('errors/setPhoneError', {status: true, mssg: 'Phone is Empty'})
@@ -91,9 +94,13 @@ export default {
         },
     },
     methods: {
-        toggleAdminError() {
+        //** FN : removes dateError state if user has begun to address date error 
+        removeDateError() {
             this.$store.commit('errors/setAdminError', {status: false, mssg: ''})
         },
+        //** FN : checks to make sure fields are complete
+        //**    : if good, dispathces data to module for axios call to DB
+        //**    : after successfull insertion, resets reservation state for another entry
         makeRes() {
             if(this.checkForm()) {
                 this.$store.dispatch('reservation/makeReservation', {
@@ -114,6 +121,10 @@ export default {
                 });
             }
         },
+        //** FN    : checks to make sure dates are within range and formatted properly
+        //**       : also checks to make sure phone and guest are present
+        //** CALLS : date validation helper functions
+        //** RTRN  : boolean true if everythins is good to go, false if error present
         checkForm() {
             
             if(!this.dates.includes('to') || !this.dates.length == 24 || this.checkDates()) {
@@ -131,6 +142,8 @@ export default {
                 return true;
             }
         },
+        //** FN   : checks dates to make sure they are NOT in the past
+        //** RTRN : boolean true if dates are good
         checkDates() {
             if(new Date(this.dates.split('to')[0].trim().replace(/-/g, '\/')) < new Date() || 
                 new Date(this.dates.split('to')[1].trim().replace(/-/g, '\/')) < new Date()) {
@@ -140,14 +153,19 @@ export default {
             }
         }
     },
-      async mounted() {
-        try{
-            let ans = await this.$store.dispatch('admin/initMakeRes', this.$store.state.reservation.userId);
-            console.log(ans)
-        } catch (e) {
-            console.log(e)
+    //** FN : sets up store with data needed for new reservations
+    //**    : need user data and home data for rendering unavailable dates
+    async mounted() {
+    try{
+        let data = await this.$store.dispatch('admin/getUserData', this.$store.state.reservation.userId)
+        let ans = await this.$store.dispatch('admin/initMakeRes', data.homesArray);
+        if(ans == 'error') {
+            this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Loading User'})
         }
+    } catch (e) {
+        console.log(e)
     }
+}
 }
 </script>
 <style lang="scss">

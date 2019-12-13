@@ -78,7 +78,6 @@
 </template>
 
 <script>
-import res from '@/assets/js/data.js'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -93,7 +92,6 @@ export default {
             notification: '',
 
             dateError: false,
-            theRes: res.sampleData.currentRes1,
             paginationIndex: 1,
             editActive: false,
             updatedResId: '',
@@ -143,7 +141,7 @@ export default {
             }
             
         },
-        //** FN : checks for date errors (range and format) and submits dispatches 
+        //** FN : checks for date errors (range and format) and dispatches update iif all good
         //**    : updated res to module for axios call 
         commitUpdateRes() {
             console.log((`${this.updatedStart} to ${this.updatedEnd}`.length))
@@ -267,9 +265,10 @@ export default {
     //** FN : initiate module store with home reservations and assign userId to state
     async mounted() {
         try{
-            await this.$store.dispatch('admin/initGetRes', this.$store.state.reservation.userId)
-            this.loadingError = false;
-            
+            let ans = await this.$store.dispatch('admin/initGetRes', this.$store.state.reservation.userId)            
+            if(ans != 'success') {
+                this.loadingError = true;
+            }
         } catch (e) {
             console.log(e)
         }

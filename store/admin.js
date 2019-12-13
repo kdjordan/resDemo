@@ -9,8 +9,6 @@ export const getters = {
         return state.indicator
     }
 }
-
-
 export const mutations = {
     setIndicator(state, payload) {
         state.indicator = payload
@@ -94,29 +92,18 @@ export const actions = {
     },
     initMakeRes({ dispatch }, payload) {
         return new Promise((resolve, reject) => {
-            let userHomes = [];
             let homesWithId = []
-            dispatch('getUserData', payload)
-                .then((data) => {
-                    data.homesArray.forEach(el => {
-                        userHomes.push(el)
-                    })
-                }).catch((e) => {
-                    console.log(e)
-                })
             this.$axios.$get('getMenuData')
                 .then((data) => {
                     data['homes'].forEach(el => {
                         homesWithId.push(el);
                     })
-               
-            let userActiveHomesList = utilities.makeActiveUsersHomeList(userHomes, homesWithId);
+            let userActiveHomesList = utilities.makeActiveUsersHomeList(payload, homesWithId);
             this.commit('reservation/setUserActiveHomes', userActiveHomesList)
             resolve('success')
-            
             }).catch((e) => {
                 console.log(e)
-                reject('errror')
+                reject('error')
             });
         })
     },
