@@ -112,36 +112,39 @@ export const actions = {
                
             let userActiveHomesList = utilities.makeActiveUsersHomeList(userHomes, homesWithId);
             this.commit('reservation/setUserActiveHomes', userActiveHomesList)
+            resolve('success')
+            
             }).catch((e) => {
                 console.log(e)
+                reject('errror')
             });
-                
-            // 
-            
-            
         })
     },
     initGetRes(_, payload) {
+        return new Promise((resolve, reject) => {
             this.$axios.$get('/getReservations/5d92cd781c9d4400004c897a')
-            .then((res) => {
-                res.forEach(el => {
-                    this.commit('reservation/setDisabledDates', {dates: el.resDates});
-                    this.commit('reservation/setReservations', {
-                        _id: el._id,
-                        homeName: 'sunriver',
-                        madeBy: 'user1',
-                        madeFor: el.guest,
-                        phone: el.phone,
-                        start: el.resDates.split('to')[0],
-                        end: el.resDates.split('to')[1]
-                    })
-                })  
+            .then((res) => {            
+                    res.forEach(el => {
+                        this.commit('reservation/setReservations', {
+                            _id: el._id,
+                            homeName: 'sunriver',
+                            madeBy: 'user1',
+                            madeFor: el.guest,
+                            phone: el.phone,
+                            start: el.resDates.split('to')[0],
+                            end: el.resDates.split('to')[1]
+                        })
+                        this.commit('reservation/setDisabledDates', {dates: el.resDates});
+                    })  
                 this.commit('reservation/setPagedReservations', 0)
+                resolve('success')
+                
             }).catch((e) => {
                 this.commit('errors/setAdminError', {status: true, mssg: 'Error Loading Home'})
+                reject('error')
             });
+
+        })
     }
-
-
 };
 

@@ -25,8 +25,7 @@
                 <button class="btn btn-primary" :disabled="getErrors">reserve</button>
             </div>
       </div>
-            {{activeHomes}}<hr > 
-            {{guest}}
+            {{activeHomes}}<hr> <br />
         </form>
     </div>
 </template>
@@ -116,7 +115,8 @@ export default {
             }
         },
         checkForm() {
-            if(!this.dates.includes('to') || this.dates.length != 24) {
+            
+            if(!this.dates.includes('to') || !this.dates.length == 24 || this.checkDates()) {
                 this.$store.commit('errors/setAdminError', {status: true, mssg: 'Improper Date Selection'})
                 return false;
             } else if(this.guest == ''){
@@ -130,14 +130,24 @@ export default {
             } else {
                 return true;
             }
+        },
+        checkDates() {
+            if(new Date(this.dates.split('to')[0].trim().replace(/-/g, '\/')) < new Date() || 
+                new Date(this.dates.split('to')[1].trim().replace(/-/g, '\/')) < new Date()) {
+                    return true;
+            } else {
+                return false;
+            }
         }
     },
-     
-    mounted() {
-        this.$store.dispatch('admin/initMakeRes', this.$store.state.reservation.userId);
+      async mounted() {
+        try{
+            let ans = await this.$store.dispatch('admin/initMakeRes', this.$store.state.reservation.userId);
+            console.log(ans)
+        } catch (e) {
+            console.log(e)
         }
-
-
+    }
 }
 </script>
 <style lang="scss">

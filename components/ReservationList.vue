@@ -45,7 +45,7 @@
                                 <td v-else>{{res.phone}}</td>
 
                                 <td>
-                                    <div class="cur-res__icon-box">
+                                    <div class="cur-res__icon-box" v-if="new Date(res.start.trim().replace(/-/g, '\/')) > new Date()">
                                         <div class="cur-res__icon-box--edit" @click="updateRes(res)">&radic;</div>
                                         <div class="cur-res__icon-box--delete" @click="deleteRes(res)">&minus;</div>
                                     </div>
@@ -73,7 +73,7 @@
                         </transition>
                     <button class="btn btn-primary" v-if="editActive" @click="commitUpdateRes" :disabled="dateError">UPDATE</button>
                 </div>
-                ::{{getPagedRes}}
+                <!-- ::{{getAllRes}} -->
         </div>
 </template>
 
@@ -103,8 +103,6 @@ export default {
             updatedEnd: '',
 
             pageIndex: 0
-
-            
         }
     },
     computed: {
@@ -116,9 +114,10 @@ export default {
         }),
     },
     watch: {
+         //** FN : watches dateError and throws error if dateError == true
         dateError() {
             if(this.dateError) {
-                this.setNotification({type: 'error', status: true, mssg: 'Date Problem'})
+                this.setNotification({type: 'error', status: true, mssg: 'Date Error'})
             }
         }
     },
@@ -135,6 +134,7 @@ export default {
             this.updatedEnd = res.end.trim();
 
             if (this.editActive == false) {
+                this.dateError = false,
                 this.updatedResId = ''
                 this.updatedGuest = ''
                 this.updatedPhone = ''
@@ -143,16 +143,18 @@ export default {
             }
             
         },
-        //** FN : checks for date errors (range and malformed) and submits dispatches 
-        //**    : updated res to module for axios call
+        //** FN : checks for date errors (range and format) and submits dispatches 
+        //**    : updated res to module for axios call 
         commitUpdateRes() {
-        
+            console.log((`${this.updatedStart} to ${this.updatedEnd}`.length))
             this.$store.commit('reservation/setOGresDates', this.updatedResId)
             
-            if(!(this.checkValidDate(this.updatedStart) && this.checkValidDate(this.updatedEnd))) {
+            if(!(this.checkValidDate(this.updatedStart) && this.checkValidDate(this.updatedEnd)) 
+                || (`${this.updatedStart} to ${this.updatedEnd}`.length) != 24) {
                 this.dateError = true;
                 return;
             }
+            
             if(!(this.checkResDates(this.getOG.from.trim(), this.getOG.to.trim(), this.updatedStart, this.updatedEnd))){
                 //good to go
                 this.editActive = false;
@@ -167,6 +169,7 @@ export default {
                 this.setNotification({type: '', status: true, mssg: 'Success'})
             } else {
                 //error with overlapping dates
+                console.log('fail point overlap')
                 this.dateError = true;
                 return;
             }
@@ -179,6 +182,7 @@ export default {
         checkValidDate(dateToCheck){
             const date = new Date(dateToCheck.split('-')[0], (+(dateToCheck.split('-')[1])-1), dateToCheck.split('-')[2])
             const isValidDate = (Boolean(+date) && date.getDate() == dateToCheck.split('-')[2])
+            console.log('throwing ' + isValidDate)
             return isValidDate
         },
         //** FN : checks for overlap, and if start date > end date 
@@ -210,11 +214,18 @@ export default {
         deleteRes(res) {
             if(confirm(`Are You Sure you Want to Delete Res ${res._id}`)){
                 this.$store.dispatch('reservation/deleteReservation', res)
-                
-                this.setNotification({type: '', status: true, mssg: 'Success'})
+                .then((res) => {
+                    if(res == 'success') {
+                        this.setNotification({type: '', status: true, mssg: 'Success'})
+                    } else {
+                        this.setNotification({type: 'error', status: true, mssg: 'Error Deleting'})    
+                    }
+                }).catch(() => {
+                    this.setNotification({type: 'error', status: true, mssg: 'Error Deleting'})
+                })
             }
         },
-        //** FN : handles pagination
+        //** FN : handles pagination forward
         pageForward() {
             if (this.pageIndex == Math.floor(this.getAllRes.length / 5)){
                 this.pageIndex = 0;
@@ -224,6 +235,7 @@ export default {
             this.$store.commit('reservation/setPagedReservations',this.pageIndex)
             
         },
+        //** FN : handles pagination back
         pageBack() {
             if (this.pageIndex == 0){
                 this.pageIndex = Math.floor(this.getAllRes.length / 5)
@@ -252,7 +264,7 @@ export default {
             },2000)
         },
     },
-    //** FN : initiate module store with home reservations and assiign userId to state
+    //** FN : initiate module store with home reservations and assign userId to state
     async mounted() {
         try{
             await this.$store.dispatch('admin/initGetRes', this.$store.state.reservation.userId)

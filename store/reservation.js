@@ -22,10 +22,9 @@ export const getters = {
         return newArr;
     },
     getPagedReservations(state) {
-        console.log('going out')
-        console.log(state.pagedReservations.length)
+        // console.log('going out')
+        // console.log(state.pagedReservations.length)
         return state.pagedReservations;
-        return returnArr
     },
     getUserId(state) {
         return state.userId
@@ -40,13 +39,10 @@ export const getters = {
 
 export const mutations = {
     setPagedReservations(state, payload) {
-        console.log('called')
-        console.log(payload)
-        
+       
         let data = [...state.reservations]
         let index = payload * 5;
         let returnArr = []
-        console.log(index)
         for(let i = index ; (i < index + 5 && i < state.reservations.length) ; i++){
             returnArr.push(data[i])
         }
@@ -55,6 +51,10 @@ export const mutations = {
     },
     setReservations(state, payload){
         state.reservations.push(payload)
+        state.numPages = state.reservations.length / 5
+    },
+    setReservationFirst(state, payload){
+        state.reservations.unshift(payload)
         state.numPages = state.reservations.length / 5
     },
     setOGresDates(state, payload) {
@@ -147,13 +147,14 @@ export const actions = {
             this.$axios.$post
             (`/makeReservation/${state.userId}`, {...payload, homeId: state.userActiveHomes[0]._id})
             .then((data) => {
+                resolve('success')  
                 this.dispatch('notifications/doNotification', {status: true, mssg: 'Reservation Made'});
                 
                 //update disabled dates for cal display
                 commit('setDisabledDates', {dates: payload.dates})
                 
                 //update reservation in UI
-                commit('setReservations', data)
+                commit('setReservationFirst', data)
                 this.commit('reservation/setPagedReservations', 0)
                 resolve('success')  
             }).catch((e) => {
@@ -167,8 +168,10 @@ export const actions = {
             commit('deleteReservation', data)
             commit('deleteDisabledDate', {from: payload.start.trim(), to:payload.end.trim()})
             this.commit('reservation/setPagedReservations', 0)
+            return 'success'
         }).catch((e) => {
             console.log(e)
+            return 'error'
         });
     }
 }
