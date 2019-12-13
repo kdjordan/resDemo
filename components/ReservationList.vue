@@ -1,6 +1,9 @@
 <template>
       <div class="cur-res">
             <div class="cur-res__title">All Current Reservations</div>
+            <div v-if="loadingError" class="error" style="text-align: center;">
+                                LOADING ERROR
+                                </div>       
                 <table class="cur-res__results">
                         <thead class="cur-res__results--title">
                         <tr>
@@ -12,7 +15,7 @@
                             <th>&nbsp;</th>
                         </tr>
                         </thead>
-                        <tbody class="cur-res__results--body" v-for="(res, index) in getAllRes" :key="index"> 
+                        <tbody class="cur-res__results--body" v-for="(res, index) in getPagedRes" :key="index"> 
                         <template>
                             <tr>
                                 <td>{{res.madeBy}}</td>
@@ -54,16 +57,23 @@
                 </table>
                 <div class="pagination">
                     <div class="pagination__box">
-                        <div class="pagination__box--icon">
+                        <div class="pagination__box--icon" @click="pageBack">
                             &lt;&lt;
                         </div>
                         <div class="pagination__box--icon" @click="pageForward">
                             &gt;&gt;
                         </div>
                     </div>
+                   
+                    <transition name="fade" mode="out-in">
+                            <p v-if="resError" class="btn error">{{error}}</p>
+                        </transition>
+                        <transition name="fade" mode="out-in">
+                            <p v-if="resNotification" class="btn success">{{notification}}</p>
+                        </transition>
                     <button class="btn btn-primary" v-if="editActive" @click="commitUpdateRes" :disabled="dateError">UPDATE</button>
                 </div>
-                <!-- ::{{getDisRes}} -->
+                ::{{getPagedRes}}
         </div>
 </template>
 
@@ -75,6 +85,12 @@ export default {
     props:['homeId'],
     data() {
         return {
+            loadingError: false,
+            resError: false,
+            error: '',
+            resNotification: false,
+            noteType: 'error',
+            notification: '',
 
             dateError: false,
             theRes: res.sampleData.currentRes1,
@@ -84,19 +100,31 @@ export default {
             updatedGuest: '',
             updatedPhone: '',
             updatedStart: '',
-            updatedEnd: ''
+            updatedEnd: '',
+
+            pageIndex: 0
+
+            
         }
     },
     computed: {
         ...mapGetters({
             getAllRes: 'reservation/getReservations',
             getDisRes: 'reservation/getDisabledDates',
-            getOG: 'reservation/getOGresDates'
-        })
+            getPagedRes: 'reservation/getPagedReservations',
+            getOG: 'reservation/getOGresDates',
+        }),
+    },
+    watch: {
+        dateError() {
+            if(this.dateError) {
+                this.setNotification({type: 'error', status: true, mssg: 'Date Problem'})
+            }
+        }
     },
     methods: {
         //** FN : toggles active fields and updates any input from user to local state
-        //**    : also resets local state when a new reservation is made live
+        //**    : also resets local state when new active fields are made live
         updateRes(res){
             this.editActive = !this.editActive;
 
@@ -136,6 +164,7 @@ export default {
                     end: this.updatedEnd
                 }
                 this.$store.dispatch('reservation/updateReservation', updateObj)
+                this.setNotification({type: '', status: true, mssg: 'Success'})
             } else {
                 //error with overlapping dates
                 this.dateError = true;
@@ -146,20 +175,19 @@ export default {
 
         },
          //** FN : checks for bad date formatting
-        //** RTTN : boolean -> true means error has occured
+        //** RTRN : boolean -> true means error has occured
         checkValidDate(dateToCheck){
             const date = new Date(dateToCheck.split('-')[0], (+(dateToCheck.split('-')[1])-1), dateToCheck.split('-')[2])
             const isValidDate = (Boolean(+date) && date.getDate() == dateToCheck.split('-')[2])
             return isValidDate
         },
         //** FN : checks for overlap, and if start date > end date 
-        //** RTTN : boolean -> true means error has occured, overlapping dates entered
+        //** RTRN : boolean -> true means error has occured, overlapping dates entered
         checkResDates(start, end, from, to){
             let newStart = new Date(from.replace(/-/g, '\/'));
             let newEnd= new Date(to.replace(/-/g, '\/'));
 
             if(newStart > newEnd || newStart < new Date()) {
-                console.log('here')
                 return true;
             }
 
@@ -182,30 +210,65 @@ export default {
         deleteRes(res) {
             if(confirm(`Are You Sure you Want to Delete Res ${res._id}`)){
                 this.$store.dispatch('reservation/deleteReservation', res)
+                
+                this.setNotification({type: '', status: true, mssg: 'Success'})
             }
         },
         //** FN : handles pagination
         pageForward() {
-            console.log(this.theRes)
-            if(this.theRes == res.sampleData.currentRes3){
-                this.theRes = res.sampleData.currentRes1;
-            } else
-            if(this.theRes == res.sampleData.currentRes2){
-                this.theRes = res.sampleData.currentRes3;
-            } else
-            if(this.theRes == res.sampleData.currentRes1){
-                this.theRes = res.sampleData.currentRes2;
-            } 
-        }
+            if (this.pageIndex == Math.floor(this.getAllRes.length / 5)){
+                this.pageIndex = 0;
+            } else {
+                this.pageIndex++;
+            }
+            this.$store.commit('reservation/setPagedReservations',this.pageIndex)
+            
+        },
+        pageBack() {
+            if (this.pageIndex == 0){
+                this.pageIndex = Math.floor(this.getAllRes.length / 5)
+            } else {
+                this.pageIndex--;
+            }
+            this.$store.commit('reservation/setPagedReservations',this.pageIndex)
+        },
+        //** FN : handles errors and notifications
+        //**      can't use our global one here since Make Reservation component
+        //**      is using it
+        setNotification(obj) {
+            if(obj.type == 'error') {
+                this.resError = obj.status;
+                this.error = obj.mssg;
+            } else {
+                this.resNotification = obj.status;
+                this.notification = obj.mssg;
+            }
+            setTimeout(() => {
+                this.dateError = false;
+                this.resNotification = false;
+                this.notification = '';
+                this.resError = false;
+                this.error = '';
+            },2000)
+        },
     },
     //** FN : initiate module store with home reservations and assiign userId to state
-    mounted() {
-        this.$store.dispatch('admin/initGetRes', this.$store.state.reservation.userId)
+    async mounted() {
+        try{
+            await this.$store.dispatch('admin/initGetRes', this.$store.state.reservation.userId)
+            this.loadingError = false;
+            
+        } catch (e) {
+            console.log(e)
+        }
     }
 }
 </script>   
 
 <style lang="scss">
+.btn.success{
+    border: 1px solid $color1;
+}
 .update-input {
     width: 8rem;
     border: 1px solid $color1;

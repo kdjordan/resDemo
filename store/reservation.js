@@ -1,6 +1,3 @@
-import utilities from '@/assets/js/utilities.js'
-import { ESRCH } from 'constants';
-
 
 export const state = () => ({
     queriedHome: [],
@@ -8,6 +5,7 @@ export const state = () => ({
     userId: '5de8642c5f528290b0f95fc3',
     userActiveHomes: [],
     reservations: [],
+    pagedReservations: [],
     OGresDates: ''
     
 });
@@ -20,17 +18,45 @@ export const getters = {
         return state.disabledDates;
     }, 
     getReservations(state) {
-        return state.reservations;
+        let newArr =  state.reservations
+        return newArr;
+    },
+    getPagedReservations(state) {
+        console.log('going out')
+        console.log(state.pagedReservations.length)
+        return state.pagedReservations;
+        return returnArr
     },
     getUserId(state) {
         return state.userId
     },
     getOGresDates(state) {
         return state.OGresDates;
+    },
+    getActiveUserHomes(state) {
+        return state.userActiveHomes;
     }
 }
 
 export const mutations = {
+    setPagedReservations(state, payload) {
+        console.log('called')
+        console.log(payload)
+        
+        let data = [...state.reservations]
+        let index = payload * 5;
+        let returnArr = []
+        console.log(index)
+        for(let i = index ; (i < index + 5 && i < state.reservations.length) ; i++){
+            returnArr.push(data[i])
+        }
+        state.pagedReservations = returnArr;
+        
+    },
+    setReservations(state, payload){
+        state.reservations.push(payload)
+        state.numPages = state.reservations.length / 5
+    },
     setOGresDates(state, payload) {
         let theRes = state.reservations.filter(res => res._id == payload)
         state.OGresDates = {from: theRes[0].start, to: theRes[0].end}
@@ -63,9 +89,6 @@ export const mutations = {
                 state.disabledDates.splice( state.disabledDates.indexOf(res), 1 );
             }
         })
-    },
-    setReservations(state, payload){
-        state.reservations.push(payload)
     },
     updateReservation(state, payload) {
         state.reservations.forEach(res => {
@@ -131,6 +154,7 @@ export const actions = {
                 
                 //update reservation in UI
                 commit('setReservations', data)
+                this.commit('reservation/setPagedReservations', 0)
                 resolve('success')  
             }).catch((e) => {
                 reject(e);
@@ -142,6 +166,7 @@ export const actions = {
         .then((data) => {
             commit('deleteReservation', data)
             commit('deleteDisabledDate', {from: payload.start.trim(), to:payload.end.trim()})
+            this.commit('reservation/setPagedReservations', 0)
         }).catch((e) => {
             console.log(e)
         });

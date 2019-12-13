@@ -81,6 +81,7 @@ export default {
       this.$store.commit('admin/setIndicator', 'Edit Keeper')
         this.$store.dispatch('admin/getUserData', this.$route.params.id)
         .then(() => {
+          console.log('back')
           this.$store.dispatch('notifications/doNotification', {status: true, mssg: 'Keeper Loaded'})
         }).catch((e) => {
           console.log(e);

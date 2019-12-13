@@ -10,6 +10,10 @@ export const state = () => ({
     homesErrorMssg: '',
     roleError: false,
     roleErrorMssg: '',
+    guestError: false,
+    guestErrorMssg: '',
+    phoneError: false,
+    phoneErrorMssg: '',
     initUserNameError: true,
     initPasswordError: true,
     initHomesError: true,
@@ -20,8 +24,8 @@ export const getters  = {
     getErrorState(state) {
         if(state.passwordError || state.userNameError 
             || state.roleError || state.homesError 
-            || state.adminError|| state.guestEmptyError
-            || state.phoneEmptyError) {
+            || state.adminError|| state.guestError
+            || state.phoneError) {
             return true;
         } else {
             return false;
@@ -46,7 +50,14 @@ export const getters  = {
             return state.homesErrorMssg;
         } else if(state.adminError) {
             return state.adminErrorMssg;
+        } else if(state.guestError) {
+            return state.guestErrorMssg;
+        } else if(state.phoneError) {
+            return state.phoneErrorMssg;
         }  else {return ''}
+    },
+    getAdminError(state) {
+        return state.adminError;
     },
     getUserNameError(state) {
         return state.userNameError;
@@ -59,6 +70,12 @@ export const getters  = {
     },
     getHomesError(state) {
         return state.homesError;
+    },
+    getPhoneError(state) {
+        return state.phoneError;
+    },
+    getGuestError(state) {
+        return state.guestError;
     },
     getUserNameErrorMssg(state) {
         if(state.userNameError) {
@@ -92,6 +109,14 @@ export const mutations = {
     setRoleError(state, payload) {
         state.roleErrorMssg = payload.mssg;
         state.roleError = payload.status
+    },
+    setPhoneError(state, payload) {
+        state.phoneErrorMssg = payload.mssg;
+        state.phoneError = payload.status
+    },
+    setGuestError(state, payload) {
+        state.guestErrorMssg = payload.mssg;
+        state.guestError = payload.status
     },
     setInitUserNameFalse(state) {
        state.initUserNameError = false;

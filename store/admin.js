@@ -121,26 +121,27 @@ export const actions = {
             
         })
     },
-    initGetRes({context}, payload) {
-        this.$axios.$get('/getReservations/5d92cd781c9d4400004c897a')
-        .then((res) => {
-            res.forEach(el => {
-                this.commit('reservation/setDisabledDates', {dates: el.resDates});
-                this.commit('reservation/setReservations', {
-                    _id: el._id,
-                    homeName: 'sunriver',
-                    madeBy: 'user1',
-                    madeFor: el.guest,
-                    phone: el.phone,
-                    start: el.resDates.split('to')[0],
-                    end: el.resDates.split('to')[1]
-                })
-            })
-            // console.log(res)
-        }).catch((e) => {
-            console.log(e)
-        });
+    initGetRes(_, payload) {
+            this.$axios.$get('/getReservations/5d92cd781c9d4400004c897a')
+            .then((res) => {
+                res.forEach(el => {
+                    this.commit('reservation/setDisabledDates', {dates: el.resDates});
+                    this.commit('reservation/setReservations', {
+                        _id: el._id,
+                        homeName: 'sunriver',
+                        madeBy: 'user1',
+                        madeFor: el.guest,
+                        phone: el.phone,
+                        start: el.resDates.split('to')[0],
+                        end: el.resDates.split('to')[1]
+                    })
+                })  
+                this.commit('reservation/setPagedReservations', 0)
+            }).catch((e) => {
+                this.commit('errors/setAdminError', {status: true, mssg: 'Error Loading Home'})
+            });
     }
+
 
 };
 
