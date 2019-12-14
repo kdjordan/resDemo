@@ -6,14 +6,15 @@
             text-align: center;
             margin-bottom: 2rem;
             text-transform: uppercase;
+            font-size: 2rem;
         }
 
     &__results {
         border-bottom: 1px solid $colorG;
         border-collapse: collapse;
-        color: $colorG;
+        color: $colorGdark;
         width: 100%;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         text-align: center;
 
         
@@ -29,10 +30,10 @@
         }   
         
         & td {
-            padding: 1.2rem 0;
+            padding: 1rem 0;
             border-bottom: 1px solid $colorG;
             
-            color: $colorG;
+            color: $colorGdark;
         }
 
     }
@@ -47,9 +48,9 @@
             background: $color1;
             cursor: pointer;
             border-radius: 50%;
-            width: 2.1rem;
-            height: 2.1rem;
-            line-height: 2.1rem;
+            width: 3rem;
+            height: 3rem;
+            line-height: 3rem;
             transition: all .4s;
 
             &:hover {
@@ -62,9 +63,9 @@
             background: $color2;
             cursor: pointer;
             border-radius: 50%;
-            width: 2.1rem;
-            height: 2.1rem;
-            line-height: 2.1rem;
+            width: 3rem;
+            height: 3rem;
+            line-height: 3rem;
             transition: all .4s;
 
             &:hover {

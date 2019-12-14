@@ -22,10 +22,10 @@
                 <Messages />
 
             <div class="right-item__indicator--edit">
-                <button class="btn btn-primary" :disabled="getErrors">reserve</button>
+                <button class="btn btn-primary btn-lrg" :disabled="getErrors">reserve</button>
             </div>
       </div>
-            {{activeHomes}}
+            <!-- {{activeHomes}} -->
         </form>
     </div>
 </template>

@@ -8,6 +8,10 @@
     text-align: center;
     border:none;
     outline: none;
+
+    &-lrg {
+      width: 11rem;
+    }
     
     &-primary{
       background: $color1;

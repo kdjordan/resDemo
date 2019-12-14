@@ -41,7 +41,7 @@ export default {
     background: white;
     max-width: 120rem;
     margin: 0 auto;
-    padding-top: 15rem;
+    padding-top: 7rem;
     display: flex;
     flex-direction: column;
     align-items: top;
@@ -55,7 +55,7 @@ export default {
         margin: 0 auto;
         width: 100%;
         align-items: top;
-        margin-top: 4rem;
+        margin-top: 7rem;
 
         &--left {
             display: flex;

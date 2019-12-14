@@ -1,36 +1,49 @@
 import utilities from '@/assets/js/utilities.js'
 
 export const state = () => ({
-    indicator: 'Welcome'
+    indicator: 'Welcome',
+    token: '',
+    isAdmin: false,
+    
 })
 
 export const getters = {
     getIndicator(state) {
         return state.indicator
-    }
+    },
+    getToken(state){
+        return state.token;
+    },
+    getIsAdmin(state) {
+        return state.isAdmin;
+    },
 }
 export const mutations = {
     setIndicator(state, payload) {
         state.indicator = payload
-    }
+    },
+    setIsAdmin(state, payload) {
+        state.isAdmin = payload;
+    },
+    setToken(state, payload) {
+        state.token = payload;
+    },
 }
 
 export const actions = {
-    loginUser(vuexContext, authData) {
-        return new Promise((rersolve, reject) => {
+    loginUser({ commit }, authData) {
+        console.log('incoming')
+        return new Promise((resolve, reject) => {
             this.$axios.$post('login', authData)
             .then((res) => {
-                const admin = false;
                 if(res.data.role == 'admin') {
-                    admin = true;
+                    commit('setIsAdmin', true)
+                    commit('settToken', res.data.token)
                 } 
-                const payload = {
-                    token: res.data.token,
-                    isAdmin: admin
-                }
-                vuexContext.commit('setUserState', payload);
+                resolve('success')
             }).catch((e) => {
-                return Promise.reject(e.response.status);
+                console.log(e)
+                reject('error')
                 
             });
         });

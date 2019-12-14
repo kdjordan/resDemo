@@ -1,8 +1,6 @@
 import bcrypt from 'bcryptjs';
 
 export const state = () => ({
-    token: '',
-    isAdmin: false,
     ogUserName: '',
     updatedName: '',
     updatedPassword: ''

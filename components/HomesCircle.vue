@@ -22,12 +22,14 @@ export default {
 .circle-img {
     border-radius: 50%;
     border: .4rem solid $color1;
-    height: 20rem;
-    width: 20rem;
+    height: 30rem;
+    width: 30rem;
 
     &__title {
        margin-top: 2rem;
        text-transform: uppercase;
+       border-bottom: 2px solid $color1;
+       width: 90%;
     }
 }
 </style>

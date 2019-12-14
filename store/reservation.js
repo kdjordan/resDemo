@@ -23,8 +23,6 @@ export const getters = {
         return newArr;
     },
     getPagedReservations(state) {
-        // console.log('going out')
-        // console.log(state.pagedReservations.length)
         return state.pagedReservations;
     },
     getUserId(state) {

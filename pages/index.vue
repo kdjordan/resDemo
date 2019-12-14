@@ -14,7 +14,7 @@
                 <input type="text" v-model="username" class="login__form--input"  placeholder="username">
                 <input type="text" v-model="password" class="login__form--input"  placeholder="password">
                 <div>
-                    <button class="login__btn">SUBMIT</button>
+                    <button class="btn btn-primary">SUBMIT</button>
                 </div>
             </form>
         </div> 

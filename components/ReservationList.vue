@@ -73,7 +73,7 @@
                         </transition>
                     <button class="btn btn-primary" v-if="editActive" @click="commitUpdateRes" :disabled="dateError">UPDATE</button>
                 </div>
-                ::{{getAllRes.length}}
+                <!-- ::{{getAllRes.length}} -->
         </div>
 </template>
 
@@ -119,6 +119,8 @@ export default {
                 this.setNotification({type: 'error', status: true, mssg: 'Date Error'})
             }
         },
+        //** FN : watches for a new Reservation being made in makeRes component
+        //**    : if we have a new res - call flashRes() to highlight new res in list
         getAddedResFlag(){
             if(this.getAddedResFlag == true) {
                 this.flashNewRes();
@@ -274,10 +276,12 @@ export default {
                 this.error = '';
             },2000)
         },
+         //** FN : adds flash class to the most recent reservation made
+         //**    : state is watched in this file and passed from makeRes component
         flashNewRes() {
             setTimeout(() => {
                 this.$store.commit('reservation/setAddedResFlag', false)
-            },200)
+            },500)
         }
     },
     //** FN : initiate module store with home reservations and assign userId to state
@@ -310,9 +314,6 @@ export default {
         color: white;
     }
 }
-
-
-    
 .flash  {
     transition: all .4s;
 
