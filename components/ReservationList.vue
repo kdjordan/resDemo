@@ -15,7 +15,7 @@
                             <th>&nbsp;</th>
                         </tr>
                         </thead>
-                        <tbody class="cur-res__results--body" v-for="(res, index) in getPagedRes" :key="index"> 
+                        <tbody :class="{'flash' : getAddedResFlag}" class="cur-res__results--body" v-for="(res, index) in getPagedRes" :key="index"> 
                         <template>
                             <tr>
                                 <td>{{res.madeBy}}</td>
@@ -73,7 +73,7 @@
                         </transition>
                     <button class="btn btn-primary" v-if="editActive" @click="commitUpdateRes" :disabled="dateError">UPDATE</button>
                 </div>
-                <!-- ::{{getAllRes}} -->
+                ::{{getAllRes.length}}
         </div>
 </template>
 
@@ -84,6 +84,7 @@ export default {
     props:['homeId'],
     data() {
         return {
+            flash: false,
             loadingError: false,
             resError: false,
             error: '',
@@ -92,7 +93,6 @@ export default {
             notification: '',
 
             dateError: false,
-            paginationIndex: 1,
             editActive: false,
             updatedResId: '',
             updatedGuest: '',
@@ -109,6 +109,7 @@ export default {
             getDisRes: 'reservation/getDisabledDates',
             getPagedRes: 'reservation/getPagedReservations',
             getOG: 'reservation/getOGresDates',
+            getAddedResFlag: 'reservation/getAddedResFlag',
         }),
     },
     watch: {
@@ -116,6 +117,11 @@ export default {
         dateError() {
             if(this.dateError) {
                 this.setNotification({type: 'error', status: true, mssg: 'Date Error'})
+            }
+        },
+        getAddedResFlag(){
+            if(this.getAddedResFlag == true) {
+                this.flashNewRes();
             }
         }
     },
@@ -141,7 +147,7 @@ export default {
             }
             
         },
-        //** FN : checks for date errors (range and format) and dispatches update iif all good
+        //** FN : checks for date errors (range and format) and dispatches update if all good
         //**    : updated res to module for axios call 
         commitUpdateRes() {
             console.log((`${this.updatedStart} to ${this.updatedEnd}`.length))
@@ -225,17 +231,24 @@ export default {
         },
         //** FN : handles pagination forward
         pageForward() {
+            let totalPages = Math.ceil(this.getAllRes.length / 5);
+
             if (this.pageIndex == Math.floor(this.getAllRes.length / 5)){
                 this.pageIndex = 0;
+            } else if (this.pageIndex == totalPages-1 && (this.getAllRes.length % 5 == 0)) {
+                this.pageIndex = 0;   
             } else {
                 this.pageIndex++;
             }
-            this.$store.commit('reservation/setPagedReservations',this.pageIndex)
-            
+            this.$store.commit('reservation/setPagedReservations',this.pageIndex) 
         },
         //** FN : handles pagination back
         pageBack() {
-            if (this.pageIndex == 0){
+            let totalPages = Math.ceil(this.getAllRes.length / 5);
+
+            if ((this.pageIndex == 0)&& (this.getAllRes.length % 5 == 0)){
+                this.pageIndex = Math.floor(this.getAllRes.length / 5) - 1
+            } else if (this.pageIndex == 0) {
                 this.pageIndex = Math.floor(this.getAllRes.length / 5)
             } else {
                 this.pageIndex--;
@@ -261,6 +274,11 @@ export default {
                 this.error = '';
             },2000)
         },
+        flashNewRes() {
+            setTimeout(() => {
+                this.$store.commit('reservation/setAddedResFlag', false)
+            },200)
+        }
     },
     //** FN : initiate module store with home reservations and assign userId to state
     async mounted() {
@@ -292,4 +310,19 @@ export default {
         color: white;
     }
 }
+
+
+    
+.flash  {
+    transition: all .4s;
+
+     &:nth-child(2) > tr {
+        background: $color3;
+        & > td{
+            color: white;
+        }
+     }
+}
+
+
 </style>

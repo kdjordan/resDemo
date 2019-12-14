@@ -1,5 +1,6 @@
 
 export const state = () => ({
+    addedResFlag: false,
     queriedHome: [],
     disabledDates: [],
     userId: '5de8642c5f528290b0f95fc3',
@@ -34,12 +35,17 @@ export const getters = {
     },
     getActiveUserHomes(state) {
         return state.userActiveHomes;
+    },
+    getAddedResFlag(state) {
+        return state.addedResFlag
     }
 }
 
 export const mutations = {
+    setAddedResFlag(state, payload) {
+        state.addedResFlag = payload;   
+    },
     setPagedReservations(state, payload) {
-       
         let data = [...state.reservations]
         let index = payload * 5;
         let returnArr = []
@@ -47,7 +53,7 @@ export const mutations = {
             returnArr.push(data[i])
         }
         state.pagedReservations = returnArr;
-        
+        return state.pagedReservations;
     },
     setReservations(state, payload){
         state.reservations.push(payload)
@@ -155,6 +161,7 @@ export const actions = {
                 
                 //update reservation in UI
                 commit('setReservationFirst', data)
+                commit('setAddedResFlag', true)
                 this.commit('reservation/setPagedReservations', 0)
                 resolve('success')  
             }).catch((e) => {
