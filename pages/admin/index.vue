@@ -1,8 +1,8 @@
 <template>
 <div>
-  <no-ssr>
+  <client-only>
     <SideNav />
-  </no-ssr>
+  </client-only>
   <div class="inner_container">
       <h1>Admin Index</h1>    
   </div>

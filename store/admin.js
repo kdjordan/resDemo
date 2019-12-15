@@ -2,7 +2,7 @@ import utilities from '@/assets/js/utilities.js'
 
 export const state = () => ({
     indicator: 'Welcome',
-    token: '',
+    token: null,
     isAdmin: false,
     
 })
@@ -17,6 +17,10 @@ export const getters = {
     getIsAdmin(state) {
         return state.isAdmin;
     },
+    isAuthenticated(state) {
+        return state.token != null;
+    }
+
 }
 export const mutations = {
     setIndicator(state, payload) {
@@ -28,25 +32,49 @@ export const mutations = {
     setToken(state, payload) {
         state.token = payload;
     },
+    clearToken(state) {
+       state.token = null;
+    }
 }
 
 export const actions = {
-    loginUser({ commit }, authData) {
-        console.log('incoming')
+    loginUser({ commit, dispatch }, authData) {
         return new Promise((resolve, reject) => {
             this.$axios.$post('login', authData)
             .then((res) => {
-                if(res.data.role == 'admin') {
-                    commit('setIsAdmin', true)
-                    commit('settToken', res.data.token)
-                } 
-                resolve('success')
+                console.log(res)
+                if(res == 'invalid') {
+                    resolve('invaild')
+                } else {
+                    if(res.role == 'admin') {
+                        commit('setIsAdmin', true)
+                    } 
+                    // if(process.client) {
+                    //     localStorage.setItem('token', res.token)
+                    //     localStorage.setItem('tokenExpiration', new Date().getTime() + res.expires * 1000)
+                    //     console.log(localStorage)
+                    // }
+                    // commit('setToken', res.token)
+                    // dispatch('setLogoutTimer', res.expires * 1000)
+                    resolve('success')
+                }
             }).catch((e) => {
                 console.log(e)
                 reject('error')
                 
             });
         });
+    },
+    initAuth({commit}) {
+        console.log('initAuth called')
+        const token = localStorage.getItem('token');
+        const expirationDate = localStorage.getItem('tokenExpiration');
+
+        if(new Date() > expirationDate || !token){
+            return;
+        } 
+        commit('setToken', token)
+        
     },
     getUserData({ dispatch }, payload) {
         return new Promise((resolve, reject) => {
@@ -145,6 +173,12 @@ export const actions = {
             });
 
         })
+    },
+    setLogoutTimer({ commit }, duration) {
+        setTimeout(() => {
+            console.log('clearing token')
+            commit('clearToken')
+        }, duration)
     }
 };
 

@@ -11,11 +11,14 @@
         </div>
         <div class="login__form">
             <form @submit.prevent="loginUser">
-                <input type="text" v-model="username" class="login__form--input"  placeholder="username">
-                <input type="text" v-model="password" class="login__form--input"  placeholder="password">
+
+                <input type="text" v-model="username" class="login__form--input"  placeholder="username" @focus="removeError">
+                <input type="text" v-model="password" class="login__form--input"  placeholder="password" @focus="removeError">
+                
                 <div>
                     <button class="btn btn-primary">SUBMIT</button>
                 </div>
+                <nuxt-link to="/admin" style="color:black;">Admin</nuxt-link>
             </form>
         </div> 
     </section>
@@ -23,6 +26,7 @@
 </template>
 
 <script>
+import DOMPurify from 'dompurify'
 export default {
     data() {
         return {
@@ -33,24 +37,56 @@ export default {
         }
     },
     methods: {
-        loginUser() {
-            this.$store.dispatch('admin/loginUser', {
-                username: this.username,
-                password: this.password
-            }).then((res) => {
-                console.log('in success for some reason')
-                // this.$router.push('/admin');
-            }).catch((e) => {
-                console.log(e);
-                if(e == 401) {
-                    this.isError = true;
-                    this.errorMessage = 'Invalid Login Credentails'
-                }
-            });
+        removeError() {
+            this.isError = false;
+            this.errorMessage = '';
         },
-    removeError() {
-        this.isError = false;
-    }
+        loginUser() {
+            if(this.checkForm()) {
+                this.$store.dispatch('admin/loginUser', {
+                    userName: DOMPurify.sanitize(this.username.trim()),
+                    password: DOMPurify.sanitize(this.password.trim())
+                }).then((res) => {
+                    if(res == 'invalid') {
+                        this.isError = true;
+                        this.errorMessage = 'Invalid Login Credentials'
+                    } else {
+                        console.log('success')
+                        console.log(this.$store.state.admin.token)
+                    }
+                    
+                    
+                    // this.$router.push('/admin');
+                }).catch((e) => {
+                    console.log(e);
+                    if(e == 401) {
+                        this.isError = true;
+                        this.errorMessage = 'Invalid Login Credentials'
+                    } else {
+                         this.isError = true;
+                        this.errorMessage = 'Not Working'
+                    }
+                });
+            }
+        },
+        checkForm() {
+            if(typeof(this.username) != 'string' || this.username.length < 6 || !this.username.match(/^[0-9a-zA-Z]+$/)) {
+                this.isError = true;
+                this.errorMessage = 'UserName Error'
+                return false;
+            }
+
+            if(typeof(this.password) != 'string' || this.password.length < 8 || !this.password.match(/^[0-9a-zA-Z]+$/)) {
+                this.isError = true;
+                this.errorMessage = 'Password Error'
+                return false;
+            }
+
+            return true;
+        },
+        removeError() {
+            this.isError = false;
+        }
     },
     computed: {
         getErrorMessage() {
@@ -128,6 +164,8 @@ export default {
 
     &__error {
         margin-top: 1rem;
+        width: 50%;
+        margin: 0 auto;
     }
 }
 

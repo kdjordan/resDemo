@@ -11,6 +11,7 @@
 import Header from '@/components/admin/AdminHeader'
 import SideNav from '@/components/admin/SideNav'
 export default {
+  middleware: ['auth','auth-admin'],
     components: {
         SideNav,
         Header
