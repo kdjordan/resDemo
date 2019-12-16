@@ -129,7 +129,27 @@ export const mutations = {
      },
     setInitRoleFalse(state) {
         state.initRoleError = false;
-     }
+     },
+    resetErrors(state) {
+        state.adminError = false;
+        state.adminErrorMssg = '';
+        state.userNameError = false;
+        state.userNameErrorMssg = '';
+        state.passwordError = false;
+        state.passwordErrorMssg = '';
+        state.homesError = false;
+        state.homesErrorMssg = '';
+        state.roleError = false;
+        state.roleErrorMssg = '';
+        state.guestError = false;
+        state.guestErrorMssg = '';
+        state.phoneError = false;
+        state.phoneErrorMssg = '';
+        state.initUserNameError = true;
+        state.initPasswordError =true;
+        state.initHomesError = true;
+        state.initRoleError = true;
+    }
 };
 
 export const actions = {

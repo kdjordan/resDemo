@@ -1,6 +1,6 @@
 <template>
   <div>
-      <Header :userName="this.$route.params.id"/>
+      <Header :userName="getUserName"/>
         <div class="container">
             <div class="container__top">
                 <CircleImg imageUrl="sunriver-sm.png" alt="sunriver home" homeName="Sunriver"/>
@@ -13,9 +13,9 @@
                     <ResList />
                 </div>
             </div>
-
+        {{activeHomes}}
       </div>
-    
+        
   </div>
 </template>
 
@@ -24,6 +24,7 @@ import Header from '@/components/Header'
 import CircleImg from '@/components/HomesCircle'
 import ResList from '@/components/ReservationList'
 import MakeResForm from '@/components/MakeReservation'
+import { mapGetters } from 'vuex'
 
 export default {
     components: {
@@ -32,6 +33,38 @@ export default {
         ResList,
         MakeResForm
 
+    },
+    computed: {
+        ...mapGetters({
+            getUserName: 'auth/getUserName',
+            getIsAdmin: 'auth/getIsAdmin',
+            activeHomes: 'reservation/getActiveUserHomes'
+        })
+    },
+    async mounted() {
+         try{
+             
+             console.log('incoming params')
+             console.log(this.$route.params.id) //this is homeId !!
+
+            //set user data from 
+            let data = await this.$store.dispatch('admin/getUserData', this.$store.getters['auth/getUserId'])
+            let sol = await this.$store.dispatch('admin/initMakeRes', data.homesArray);
+            console.log('user data :: ')
+            console.log(data)
+
+
+            
+            let ans = await this.$store.dispatch('admin/initGetRes', this.$store.state.reservation.userId)            
+            console.log('active homes :: ')
+            console.log(this.activeHomes)
+
+            if(ans != 'success') {
+                this.loadingError = true;
+            }
+        } catch (e) {
+            console.log(e)
+        }
     }
 }
 

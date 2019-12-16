@@ -1,7 +1,9 @@
 <template>
   <div>
       <Header />
+      <client-only>
         <SideNav />
+      </client-only>
       <Nuxt />
   </div>
 </template>
@@ -11,7 +13,7 @@
 import Header from '@/components/admin/AdminHeader'
 import SideNav from '@/components/admin/SideNav'
 export default {
-  middleware: ['auth','auth-admin'],
+  middleware: ['auth-admin'],
     components: {
         SideNav,
         Header

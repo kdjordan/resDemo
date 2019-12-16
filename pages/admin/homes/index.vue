@@ -11,7 +11,7 @@
             <input type="text" 
                     v-model.trim="homeName"
                     id="homeName"
-                    placeholder="Enter Home Name"> 
+                    placeholder="Enter Home Name" class="input"> 
         </div>
     </div>
       <div class="flex-items__spaced">

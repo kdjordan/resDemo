@@ -155,17 +155,19 @@ export default {
     },
     //** FN : sets up store with data needed for new reservations
     //**    : need user data and home data for rendering unavailable dates
-    async mounted() {
-    try{
-        let data = await this.$store.dispatch('admin/getUserData', this.$store.state.reservation.userId)
-        let ans = await this.$store.dispatch('admin/initMakeRes', data.homesArray);
-        if(ans == 'error') {
-            this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Loading User'})
-        }
-    } catch (e) {
-        console.log(e)
-    }
-}
+//     async mounted() {
+//     try{
+//         console.log('grabbing')
+//         console.log(this.$store.state.auth.user_Id)
+//         let data = await this.$store.dispatch('admin/getUserData', this.$store.getters['auth/getUserId'])
+//         let ans = await this.$store.dispatch('admin/initMakeRes', data.homesArray);
+//         if(ans == 'error') {
+//             this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Loading User'})
+//         }
+//     } catch (e) {
+//         console.log(e)
+//     }
+// }
 }
 </script>
 <style lang="scss">

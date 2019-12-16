@@ -1,8 +1,6 @@
 <template>
 <div>
-  <client-only>
-    <SideNav />
-  </client-only>
+  
   <div class="inner_container">
       <h1>Admin Index</h1>    
   </div>
@@ -15,7 +13,7 @@ export default {
   components: {
     SideNav
   },
-    layout: 'adminLayout'
+    layout: 'admin'
 
 }
 </script>

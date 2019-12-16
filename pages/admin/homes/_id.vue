@@ -11,7 +11,7 @@
             <input type="text" 
             v-model.trim="homeName"
                     id="homeName"
-                    :placeholder="getQueriedHomeName"> 
+                    :placeholder="getQueriedHomeName" class="input"> 
         </div>
     </div>
 

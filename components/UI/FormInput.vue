@@ -7,13 +7,13 @@
         <input :type="type" 
                 v-model.trim="updatedName"
                 :id="id"
-                :placeholder="getOGuserName"> 
+                :placeholder="getOGuserName" class="input"> 
     </div>
     <div v-else class="right-item">
         <input :type="type" 
                 v-model.trim="updatedPassword"
                 :id="id"
-                :placeholder="placeholder"> 
+                :placeholder="placeholder" class="input"> 
     </div>
     <!-- {{getQueriedHomeName}} -->
     

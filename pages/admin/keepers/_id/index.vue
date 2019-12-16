@@ -7,7 +7,7 @@
               :errorValidator="getUserNameError"/>
 
       <FormInput  type="password" label="Password" labelFor="password" id="password"
-              placeholder="Enter New or Leave Blank" :errorValidator="getPasswordError"/>
+              placeholder="ENTER NEW OR LEAVE BLANK" :errorValidator="getPasswordError"/>
 
       <UserHomes />
 

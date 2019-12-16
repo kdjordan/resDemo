@@ -48,11 +48,13 @@ input[type='radio']{
   cursor: pointer;
 }
 
-::placeholder {
+.input::placeholder {
   font-size: 1.2rem;
   letter-spacing: 1px;
   font-weight: 300;
   opacity: 1;
+  text-align: left;
+  text-transform: none;
 }
 
 label {

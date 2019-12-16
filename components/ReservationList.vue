@@ -285,16 +285,17 @@ export default {
         }
     },
     //** FN : initiate module store with home reservations and assign userId to state
-    async mounted() {
-        try{
-            let ans = await this.$store.dispatch('admin/initGetRes', this.$store.state.reservation.userId)            
-            if(ans != 'success') {
-                this.loadingError = true;
-            }
-        } catch (e) {
-            console.log(e)
-        }
-    }
+    // async mounted() {
+    //     try{
+    //         console.log(this.$store.state.reservation.userActiveHomes)
+    //         let ans = await this.$store.dispatch('admin/initGetRes', this.$store.state.reservation.userId)            
+    //         if(ans != 'success') {
+    //             this.loadingError = true;
+    //         }
+    //     } catch (e) {
+    //         console.log(e)
+    //     }
+    // }
 }
 </script>   
 

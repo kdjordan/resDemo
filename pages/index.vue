@@ -18,22 +18,42 @@
                 <div>
                     <button class="btn btn-primary">SUBMIT</button>
                 </div>
-                <nuxt-link to="/admin" style="color:black;">Admin</nuxt-link>
+                
+                <nuxt-link to="/admin/users" style="color:black;">Admin</nuxt-link><br />
+                <nuxt-link to="/auth/" style="color:black;">Reservations</nuxt-link>
+                
             </form>
         </div> 
+        ::{{getUserName}}<br/>
+        ::{{getUserId}}
     </section>
   </div>
 </template>
 
 <script>
 import DOMPurify from 'dompurify'
+import { mapGetters } from 'vuex'
+
 export default {
+    layout: 'login',
     data() {
         return {
             username: '',
             password: '',
-            errorMessage: 'temp',
+            errorMessage: '',
             isError: false
+        }
+    },
+    computed: {
+        ...mapGetters({
+            getUserName : 'auth/getUserName',
+            getUserId : 'auth/getUserId',
+            getIsAdmin : 'auth/getIsAdmin',
+            activeHomes: 'reservation/getActiveUserHomes'
+            
+        }),
+        getErrorMessage() {
+            return this.errorMessage;
         }
     },
     methods: {
@@ -43,7 +63,7 @@ export default {
         },
         loginUser() {
             if(this.checkForm()) {
-                this.$store.dispatch('admin/loginUser', {
+                this.$store.dispatch('auth/loginUser', {
                     userName: DOMPurify.sanitize(this.username.trim()),
                     password: DOMPurify.sanitize(this.password.trim())
                 }).then((res) => {
@@ -51,11 +71,10 @@ export default {
                         this.isError = true;
                         this.errorMessage = 'Invalid Login Credentials'
                     } else {
-                        console.log('success')
-                        console.log(this.$store.state.admin.token)
+                        console.log('====')
+                        console.log(this.activeHomes)
+                        this.$router.push(`/auth/${this.getUserId}`)
                     }
-                    
-                    
                     // this.$router.push('/admin');
                 }).catch((e) => {
                     console.log(e);
@@ -87,12 +106,8 @@ export default {
         removeError() {
             this.isError = false;
         }
-    },
-    computed: {
-        getErrorMessage() {
-            return this.errorMessage;
-        }
     }
+    
 
 }
 </script>
@@ -132,7 +147,7 @@ export default {
             font-size: 1.6rem;
             font-weight: 300;
             border: none;
-            border-bottom: 2px solid $colorG;
+            border-bottom: 1px solid $color1;
             display: block;
             padding-bottom: .5rem;
             margin: 3rem 0;
@@ -150,6 +165,7 @@ export default {
         color: #fff;
         transition: all .4s;
         cursor: pointer;
+        
     }
 
     &__btn:focus {

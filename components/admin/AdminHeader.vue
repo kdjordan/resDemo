@@ -10,14 +10,20 @@
               </div>
           </div>
           <div class="admin-header__content--content">
-              HOME
+              <nuxt-link :to="'/auth/' + `${getUserId}`" style="color: green;">HOME</nuxt-link>
           </div>
       </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
+    computed: {
+        ...mapGetters({
+            getUserId: 'auth/getUserId'
+        })
+    }
 
 }
 </script>
