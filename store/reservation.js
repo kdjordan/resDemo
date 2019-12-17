@@ -1,10 +1,9 @@
 
 export const state = () => ({
     addedResFlag: false,
-    queriedHome: [],
-    disabledDates: [],
-    userId: '5de8642c5f528290b0f95fc3',
     userActiveHomes: [],
+    activeHome: [],
+    disabledDates: [],
     reservations: [],
     pagedReservations: [],
     OGresDates: ''
@@ -12,8 +11,17 @@ export const state = () => ({
 });
 
 export const getters = {
-    getQueriedHome(state) {
-        return state.queriedHome;
+    getActiveHome(state) {
+        return state.activeHome;
+    },
+    getActiveHomes(state) {
+        return state.userActiveHomes;
+    },
+    getActiveHomeName(state) {
+        return state.activeHome.homeName;
+    },
+    getActiveHomeId(state) {
+        return state.activeHome._id;
     },
     getDisabledDates(state) {
         return state.disabledDates;
@@ -24,9 +32,6 @@ export const getters = {
     },
     getPagedReservations(state) {
         return state.pagedReservations;
-    },
-    getUserId(state) {
-        return state.userId
     },
     getOGresDates(state) {
         return state.OGresDates;
@@ -68,11 +73,14 @@ export const mutations = {
     setUserActiveHomes(state, payload) {
         state.userActiveHomes = payload;
     },
-    setUserId(state, payload) {
-        state.userId = payload;
+    setUserActiveHome(state, payload) {
+        state.activeHomes = payload;
     },
-    setQueriedHome(state, payload) {
-        state.queriedHome = payload
+    setUserName(state, payload) {
+        state.userName = payload;
+    },
+    setActiveHome(state, payload) {
+        state.activeHome = payload
     },
     updateDisabledDates(state, payload) {
         state.disabledDates.forEach(date => {
@@ -81,7 +89,6 @@ export const mutations = {
                 date.to = payload.to;
             }
         })
-        // state.disabledDates = payload;
     },
     setDisabledDates(state, payload) {
         let update = {from: payload.dates.split('to')[0].trim(), to: payload.dates.split('to')[1].trim()};
@@ -94,7 +101,7 @@ export const mutations = {
             }
         })
     },
-    updateReservation(state, payload) {
+    updateReservationList(state, payload) {
         state.reservations.forEach(res => {
             if (res._id == payload._id) {
                 res._id = payload._id;
@@ -114,22 +121,29 @@ export const mutations = {
                 state.reservations.splice( state.reservations.indexOf(res), 1 );
             }
         })
+    },
+    resetReservationState(state){
+        console.log('resetting res state')
+        state.addedResFlag = false;
+        state.disabledDates = [];
+        state.reservations = [];
+        state.pagedReservations = [];
+        state.OGresDates = '';
+        state.activeHome = [];
     }
 
 }
 
-
 export const actions = {
-    updateReservation({ commit, dispatch }, payload){
-        return new Promise((resolve, reject) => {
+    updateReservation({ commit, getters }, payload){
+        // return new Promise((resolve, reject) => {
             this.$axios.$post(`/updateReservation/${payload.res_id}`, payload)
             .then((data) => {
-                
                 //update reservation List UI
-                commit('updateReservation', {
+                commit('updateReservationList', {
                     _id: payload.res_id,
-                    homename: 'sunriver',
-                    madeBy: 'user1',
+                    homename: getters['getActiveHomeName'],
+                    madeBy: this.getters['auth/getUserName'],
                     madeFor: payload.guest,
                     phone: payload.phone,
                     start: payload.start,
@@ -144,14 +158,14 @@ export const actions = {
             }).catch((e) => {
                 console.log(e)
             });
-        })
+        // })
     },
-    makeReservation({ state, commit }, payload) {
+    makeReservation({ state, commit, getters }, payload) {
+        
         return new Promise((resolve, reject) => {
             this.$axios.$post
-            (`/makeReservation/${state.userId}`, {...payload, homeId: state.userActiveHomes[0]._id})
+            (`/makeReservation/${getters['getActiveHomeId']}`, payload)
             .then((data) => {
-                resolve('success')  
                 this.dispatch('notifications/doNotification', {status: true, mssg: 'Reservation Made'});
                 
                 //update disabled dates for cal display

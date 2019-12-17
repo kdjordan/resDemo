@@ -3,7 +3,7 @@
       <Header :userName="getUserName"/>
         <div class="container">
             <div class="container__top">
-                <CircleImg imageUrl="sunriver-sm.png" alt="sunriver home" homeName="Sunriver"/>
+                <CircleImg :imageUrl="activeHome.URL || 'sunriver-sm.png'" alt="sunriver home" :homeName="activeHome.homeName"/>
             </div>
             <div class="container__bottom">
                 <div class="container__bottom--left">
@@ -13,7 +13,7 @@
                     <ResList />
                 </div>
             </div>
-        {{activeHomes}}
+        {{activeHome}}
       </div>
         
   </div>
@@ -38,30 +38,31 @@ export default {
         ...mapGetters({
             getUserName: 'auth/getUserName',
             getIsAdmin: 'auth/getIsAdmin',
-            activeHomes: 'reservation/getActiveUserHomes'
+            activeHomes: 'reservation/getActiveUserHomes',
+            activeHome: 'reservation/getActiveHome',
+            getLoggedIn: 'auth/getLoggedIn'
         })
     },
     async mounted() {
          try{
              
-             console.log('incoming params')
-             console.log(this.$route.params.id) //this is homeId !!
+            if(this.$route.params.id != 'undefined') {
 
-            //set user data from 
-            let data = await this.$store.dispatch('admin/getUserData', this.$store.getters['auth/getUserId'])
-            let sol = await this.$store.dispatch('admin/initMakeRes', data.homesArray);
-            console.log('user data :: ')
-            console.log(data)
+                //setActiveUserHome to param.id
+                let activeHome = this.activeHomes.filter(home => home._id == this.$route.params.id)
+    
+                this.$store.commit('reservation/resetReservationState')
+                console.log(activeHome[0])
+                this.$store.commit('reservation/setActiveHome', activeHome[0])
+                let ans = await this.$store.dispatch('admin/initGetRes', activeHome[0]._id)            
+                if(ans != 'success') {
+                    this.loadingError = true;
+                }
 
-
-            
-            let ans = await this.$store.dispatch('admin/initGetRes', this.$store.state.reservation.userId)            
-            console.log('active homes :: ')
-            console.log(this.activeHomes)
-
-            if(ans != 'success') {
-                this.loadingError = true;
             }
+            // console.log('active homes :: ')
+            // console.log(this.activeHomes)
+
         } catch (e) {
             console.log(e)
         }

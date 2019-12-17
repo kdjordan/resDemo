@@ -10,7 +10,7 @@
               </div>
           </div>
           <div class="admin-header__content--content">
-              <nuxt-link :to="'/auth/' + `${getUserId}`" style="color: green;">HOME</nuxt-link>
+              <nuxt-link :to="'/auth/' + `${getActiveHome._id}`" style="color: green;">HOME</nuxt-link>
           </div>
       </div>
   </div>
@@ -21,7 +21,7 @@ import { mapGetters } from 'vuex'
 export default {
     computed: {
         ...mapGetters({
-            getUserId: 'auth/getUserId'
+            getActiveHome: 'reservation/getActiveHome'
         })
     }
 

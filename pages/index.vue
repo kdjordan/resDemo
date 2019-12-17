@@ -25,7 +25,8 @@
             </form>
         </div> 
         ::{{getUserName}}<br/>
-        ::{{getUserId}}
+        ::{{getUserId}}<br />
+        ::{{getActiveHomeId}}
     </section>
   </div>
 </template>
@@ -48,8 +49,7 @@ export default {
         ...mapGetters({
             getUserName : 'auth/getUserName',
             getUserId : 'auth/getUserId',
-            getIsAdmin : 'auth/getIsAdmin',
-            activeHomes: 'reservation/getActiveUserHomes'
+            getActiveHomeId : 'reservation/getActiveHomeId'
             
         }),
         getErrorMessage() {
@@ -71,11 +71,8 @@ export default {
                         this.isError = true;
                         this.errorMessage = 'Invalid Login Credentials'
                     } else {
-                        console.log('====')
-                        console.log(this.activeHomes)
-                        this.$router.push(`/auth/${this.getUserId}`)
+                        this.$router.push(`/auth/${this.getActiveHomeId}`);
                     }
-                    // this.$router.push('/admin');
                 }).catch((e) => {
                     console.log(e);
                     if(e == 401) {

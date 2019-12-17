@@ -9,7 +9,7 @@
         </div>
         <div class="header__right">
             <li v-for="(home, index) in activeHomes" :key="index">
-                <nuxt-link class="home-link" to="" >{{home.homeName}}</nuxt-link>
+                <nuxt-link class="home-link" :to="`/auth/${home._id}`" @click="test">{{home.homeName}}</nuxt-link>
             </li>
             
             <div class="header__right--profile">
@@ -43,7 +43,9 @@ export default {
             activeHomes: 'reservation/getActiveUserHomes'
         }),
         getInital() {
-            return this.getUserName.split('')[0].toUpperCase();
+            if(this.getUserName) {
+                return this.getUserName.split('')[0].toUpperCase();
+            } else return '?'
         }
     },
     methods: {
@@ -51,6 +53,9 @@ export default {
             console.log('loggin out')
             this.$store.dispatch('auth/logoutUser')
             this.$router.push('/')
+        },
+        test() {
+            console.log('running')
         }
     }
     

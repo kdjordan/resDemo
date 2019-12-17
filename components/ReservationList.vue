@@ -73,7 +73,7 @@
                         </transition>
                     <button class="btn btn-primary" v-if="editActive" @click="commitUpdateRes" :disabled="dateError">UPDATE</button>
                 </div>
-                <!-- ::{{getAllRes.length}} -->
+                ::{{getDisRes}}
         </div>
 </template>
 
@@ -152,7 +152,6 @@ export default {
         //** FN : checks for date errors (range and format) and dispatches update if all good
         //**    : updated res to module for axios call 
         commitUpdateRes() {
-            console.log((`${this.updatedStart} to ${this.updatedEnd}`.length))
             this.$store.commit('reservation/setOGresDates', this.updatedResId)
             
             if(!(this.checkValidDate(this.updatedStart) && this.checkValidDate(this.updatedEnd)) 
@@ -188,7 +187,6 @@ export default {
         checkValidDate(dateToCheck){
             const date = new Date(dateToCheck.split('-')[0], (+(dateToCheck.split('-')[1])-1), dateToCheck.split('-')[2])
             const isValidDate = (Boolean(+date) && date.getDate() == dateToCheck.split('-')[2])
-            console.log('throwing ' + isValidDate)
             return isValidDate
         },
         //** FN : checks for overlap, and if start date > end date 

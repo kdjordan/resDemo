@@ -71,7 +71,7 @@ export const actions = {
             this.commit('userRole/resetRole');
             this.commit('users/resetUser');
     },
-    initMakeRes({ dispatch }, payload) {
+    initMakeRes(_, payload) {
         return new Promise((resolve, reject) => {
             let homesWithId = []
             this.$axios.$get('getMenuData')
@@ -79,9 +79,15 @@ export const actions = {
                     data['homes'].forEach(el => {
                         homesWithId.push(el);
                     })
-            let userActiveHomesList = utilities.makeActiveUsersHomeList(payload, homesWithId);
-            this.commit('reservation/setUserActiveHomes', userActiveHomesList)
-            resolve('success')
+                let userActiveHomesList = utilities.makeActiveUsersHomeList(payload, homesWithId);
+                if(userActiveHomesList.length > 0){
+                    this.commit('reservation/setUserActiveHomes', userActiveHomesList)
+                    this.commit('reservation/setActiveHome', userActiveHomesList[0])
+                    resolve(userActiveHomesList[0])
+                    
+                } else {
+                    resolve('no active homes')
+                }
             }).catch((e) => {
                 console.log(e)
                 reject('error')
@@ -90,13 +96,22 @@ export const actions = {
     },
     initGetRes(_, payload) {
         return new Promise((resolve, reject) => {
-            this.$axios.$get('/getReservations/5d92cd781c9d4400004c897a')
-            .then((res) => {            
+            console.log('get res')
+            console.log(payload)
+            //reset all res data
+            
+            this.$axios.$get(`/getReservations/${payload}`)
+            .then((res) => {  
+                if(res == 'none') {
+                    console.log('empty')
+                    resolve('none')
+                } else {
+                    console.log('here')
                     res.forEach(el => {
                         this.commit('reservation/setReservations', {
                             _id: el._id,
-                            homeName: 'sunriver',
-                            madeBy: 'user1',
+                            homeName: payload.homeName,
+                            madeBy: el.madeBy,
                             madeFor: el.guest,
                             phone: el.phone,
                             start: el.resDates.split('to')[0],
@@ -104,8 +119,9 @@ export const actions = {
                         })
                         this.commit('reservation/setDisabledDates', {dates: el.resDates});
                     })  
-                this.commit('reservation/setPagedReservations', 0)
-                resolve('success')
+                    this.commit('reservation/setPagedReservations', 0)
+                    resolve('success')
+                }          
                 
             }).catch((e) => {
                 this.commit('errors/setAdminError', {status: true, mssg: 'Error Loading Home'})
