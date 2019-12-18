@@ -25,8 +25,8 @@
                 <button class="btn btn-primary btn-lrg" :disabled="getErrors">reserve</button>
             </div>
       </div>
-                        <!-- {{getUserName}}  -->
-                    {{disabledDates}}
+
+            <div style="display:none">{{disabledDates}}</div>
         </form>
     </div>
 </template>
@@ -159,10 +159,9 @@ export default {
     },
     //** FN : sets up store with data needed for new reservations
     //**    : need user data and home data for rendering unavailable dates
-beforeUpdate() {
-    this.config.disable = this.$store.getters['reservation/getDisabledDates']
-    console.log(this.$store.getters['reservation/getDisabledDates'])
-}
+    beforeUpdate() {
+        this.config.disable = this.$store.getters['reservation/getDisabledDates']
+    }
 }
 </script>
 <style lang="scss">

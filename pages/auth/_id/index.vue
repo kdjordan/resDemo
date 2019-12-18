@@ -13,7 +13,6 @@
                     <ResList />
                 </div>
             </div>
-        {{activeHome}}
       </div>
         
   </div>
@@ -27,6 +26,7 @@ import MakeResForm from '@/components/MakeReservation'
 import { mapGetters } from 'vuex'
 
 export default {
+    transition: 'fade',
     components: {
         Header,
         CircleImg,
@@ -45,24 +45,19 @@ export default {
     },
     async mounted() {
          try{
-             
             if(this.$route.params.id != 'undefined') {
-
                 //setActiveUserHome to param.id
                 let activeHome = this.activeHomes.filter(home => home._id == this.$route.params.id)
     
                 this.$store.commit('reservation/resetReservationState')
-                console.log(activeHome[0])
+    
                 this.$store.commit('reservation/setActiveHome', activeHome[0])
                 let ans = await this.$store.dispatch('admin/initGetRes', activeHome[0]._id)            
                 if(ans != 'success') {
                     this.loadingError = true;
                 }
-
             }
-            // console.log('active homes :: ')
-            // console.log(this.activeHomes)
-
+           
         } catch (e) {
             console.log(e)
         }

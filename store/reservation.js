@@ -122,8 +122,7 @@ export const mutations = {
             }
         })
     },
-    resetReservationState(state){
-        console.log('resetting res state')
+    resetReservationState(state) {
         state.addedResFlag = false;
         state.disabledDates = [];
         state.reservations = [];
@@ -161,7 +160,6 @@ export const actions = {
         // })
     },
     makeReservation({ state, commit, getters }, payload) {
-        
         return new Promise((resolve, reject) => {
             this.$axios.$post
             (`/makeReservation/${getters['getActiveHomeId']}`, payload)

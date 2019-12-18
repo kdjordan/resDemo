@@ -45,9 +45,21 @@
                                 <td v-else>{{res.phone}}</td>
 
                                 <td>
+                                    <!-- <td>{{res.madeBy}}</td> -->
                                     <div class="cur-res__icon-box" v-if="new Date(res.start.trim().replace(/-/g, '\/')) > new Date()">
-                                        <div class="cur-res__icon-box--edit" @click="updateRes(res)">&radic;</div>
-                                        <div class="cur-res__icon-box--delete" @click="deleteRes(res)">&minus;</div>
+                                    
+                                        <template v-if="getUserName == res.madeBy">
+                                            <div class="cur-res__icon-box--edit"  @click="updateRes(res)">&radic;</div>
+                                            <div class="cur-res__icon-box--delete noedit" @click="updateRes(res)">&minus;</div>
+                                        </template>
+                                        <template v-else>
+                                            <div class="cur-res__icon-box--edit noedit"  
+                                                    style="background: #F5F5F5;color:black" 
+                                                    @click="updateRes(res)">&radic;</div>
+                                            <div class="cur-res__icon-box--delete noedit"
+                                                    style="background: #F5F5F5;color:black" 
+                                                    @click="deleteRes(res)">&minus;</div>
+                                        </template>            
                                     </div>
                                     
                                 </td>
@@ -73,7 +85,7 @@
                         </transition>
                     <button class="btn btn-primary" v-if="editActive" @click="commitUpdateRes" :disabled="dateError">UPDATE</button>
                 </div>
-                ::{{getDisRes}}
+                {{getUserName}}
         </div>
 </template>
 
@@ -105,13 +117,18 @@ export default {
     },
     computed: {
         ...mapGetters({
+            getUserName: 'auth/getUserName',
             getAllRes: 'reservation/getReservations',
             getDisRes: 'reservation/getDisabledDates',
             getPagedRes: 'reservation/getPagedReservations',
             getOG: 'reservation/getOGresDates',
             getAddedResFlag: 'reservation/getAddedResFlag',
         }),
+         checkEditAbility() {
+        return true
+         }
     },
+
     watch: {
          //** FN : watches dateError and throws error if dateError == true
         dateError() {
@@ -313,6 +330,12 @@ export default {
         color: white;
     }
 }
+.noedit {
+    pointer-events: none;
+    background: $colorG;
+
+}
+
 .flash  {
     transition: all .4s;
 

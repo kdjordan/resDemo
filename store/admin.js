@@ -96,17 +96,11 @@ export const actions = {
     },
     initGetRes(_, payload) {
         return new Promise((resolve, reject) => {
-            console.log('get res')
-            console.log(payload)
-            //reset all res data
-            
             this.$axios.$get(`/getReservations/${payload}`)
             .then((res) => {  
                 if(res == 'none') {
-                    console.log('empty')
                     resolve('none')
                 } else {
-                    console.log('here')
                     res.forEach(el => {
                         this.commit('reservation/setReservations', {
                             _id: el._id,

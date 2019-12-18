@@ -67,12 +67,17 @@ export const actions = {
                     this.commit('reservation/resetReservationState')
                     //need to set up userActiveHomes
                     dispatch('setReservationState', res)
-                    commit('setUser', res)
-                    commit('setLoggedIn',)
-                    commit('setToken', res.token)
-                    if(res.role == 'admin') {
-                        commit('setIsAdmin', true)
-                    } 
+                        .then(() => {
+                            commit('setUser', res)
+                            commit('setLoggedIn',)
+                            commit('setToken', res.token)
+                            if(res.role == 'admin') {
+                                commit('setIsAdmin', true)
+                            } 
+                            resolve('success')
+                        }).catch(() => {
+
+                        });
         //set localStorage for persistence
                     if(process.client) {
                         localStorage.setItem('token', res.token)
@@ -86,7 +91,7 @@ export const actions = {
                     }
                     dispatch('setLogoutTimer', res.expires * 1000)
                     //respond with activehome #1
-                    resolve('success')
+                    
                 }
             }).catch((e) => {
                 console.log(e)
@@ -104,6 +109,7 @@ export const actions = {
             if(ans != 'success') {
                 this.loadingError = true;
             }
+            return
         } catch(err) {
             console.log(err)
         }
