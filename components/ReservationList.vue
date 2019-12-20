@@ -93,7 +93,6 @@
 import { mapGetters } from 'vuex'
 
 export default {
-    props:['homeId'],
     data() {
         return {
             flash: false,

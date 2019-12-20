@@ -16,12 +16,16 @@
                 <div class="header__right--profile--circle" @click="dropDownActive = !dropDownActive">
                     <div>{{getInital}}</div> 
                 </div> 
-                <div class="header__right--profile" :class="{'dropdown': dropDownActive}">
-                    <nuxt-link v-if="getIsAdmin == 'true'" to="/admin/users" class="dropdown__link">ADMIN</nuxt-link>
-                    <div @click="logout" class="dropdown__link">LOGOUT</div>
+                <div  v-if="dropDownActive">
+                    <template>
+                        <div class="dropdown">
+                            <nuxt-link v-if="getIsAdmin == 'true'" to="/admin/users" class="dropdown__link">ADMIN</nuxt-link><br />>
+                            <nuxt-link to="/auth/keeper/99" class="dropdown__link">keeper</nuxt-link>
+                            <div @click="logout" class="dropdown__link">LOGOUT</div>
+                        </div>
+                    </template>
                 </div>    
             </div>
-            
         </div> 
   </div>
 </template>
@@ -80,15 +84,18 @@ export default {
         margin-right: 2rem;
 
         &--profile {
-            display: flex;
-            flex-direction: column;
+            // display: flex;
+            // flex-direction: column;
 
             &--circle {
                 cursor: pointer;
+                // position: fixed;
+                // top: 2rem;
+                // right: 2rem;
+                // margin-top: 4rem;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin-left: 3rem;
                 font-size: 3rem;
                 background: white;
                 color: $color1;
@@ -96,24 +103,36 @@ export default {
                 height: 4rem;
                 width: 4rem;
                 line-height: 4rem;
+                transition: all .4s;
+
+                &:hover {
+                    background: $color3;
+                    color: white;
+                }
             }
 
         }
     }
 }
 .dropdown {
-    // display: none;
-    z-index: 2;
     position: absolute;
-    top: 7rem;
-    right: 2rem;
-    padding: 2rem;
+    top: 8rem;
+    right: 1rem;
+    overflow: hidden;
+    z-index: 2;
     background: white;
     
 
     &__link {
         cursor: pointer;
         color: $color1;
+        margin: .2rem 0;
+        transition: all .4s;
+
+        &:hover {
+            color: $color3;
+            border-bottom: 1px solid $color3;
+        }
     }
 }
 .home-link {

@@ -49,7 +49,7 @@ export default {
             align-items: center;
             justify-content: center;
             height: 8rem;
-            width: 25rem;
+            width: 30rem;
 
             &-circle {
                 display: flex;
