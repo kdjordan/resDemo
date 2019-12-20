@@ -45,12 +45,13 @@
                                 <td v-else>{{res.phone}}</td>
 
                                 <td>
-                                    <!-- <td>{{res.madeBy}}</td> -->
+                                    
                                     <div class="cur-res__icon-box" v-if="new Date(res.start.trim().replace(/-/g, '\/')) > new Date()">
                                     
                                         <template v-if="getUserName == res.madeBy">
+                                            <!-- <td>{{res.madeBy}}::{{getUserName}}</td> -->
                                             <div class="cur-res__icon-box--edit"  @click="updateRes(res)">&radic;</div>
-                                            <div class="cur-res__icon-box--delete noedit" @click="updateRes(res)">&minus;</div>
+                                            <div class="cur-res__icon-box--delete" @click="deleteRes(res)">&minus;</div>
                                         </template>
                                         <template v-else>
                                             <div class="cur-res__icon-box--edit noedit"  
@@ -85,7 +86,6 @@
                         </transition>
                     <button class="btn btn-primary" v-if="editActive" @click="commitUpdateRes" :disabled="dateError">UPDATE</button>
                 </div>
-                {{getUserName}}
         </div>
 </template>
 
@@ -123,10 +123,7 @@ export default {
             getPagedRes: 'reservation/getPagedReservations',
             getOG: 'reservation/getOGresDates',
             getAddedResFlag: 'reservation/getAddedResFlag',
-        }),
-         checkEditAbility() {
-        return true
-         }
+        })
     },
 
     watch: {
@@ -298,19 +295,7 @@ export default {
                 this.$store.commit('reservation/setAddedResFlag', false)
             },500)
         }
-    },
-    //** FN : initiate module store with home reservations and assign userId to state
-    // async mounted() {
-    //     try{
-    //         console.log(this.$store.state.reservation.userActiveHomes)
-    //         let ans = await this.$store.dispatch('admin/initGetRes', this.$store.state.reservation.userId)            
-    //         if(ans != 'success') {
-    //             this.loadingError = true;
-    //         }
-    //     } catch (e) {
-    //         console.log(e)
-    //     }
-    // }
+    }
 }
 </script>   
 

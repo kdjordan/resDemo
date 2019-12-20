@@ -1,6 +1,13 @@
 <template>
   <div>
-    <section class="login">
+    <div v-if="loading" class="loading" >
+        <div class="lds-dual-ring">
+            <!-- <div><div></div></div> -->
+        </div>
+
+    </div>
+    <div v-else>
+    <section  v-if="!loading" class="login">
         <div class="login__top">
             <img src="@/assets/img/sunriver-sm.png" class="login__top--img">
             <div class="login__top--title">AMC</div>
@@ -18,16 +25,14 @@
                 <div>
                     <button class="btn btn-primary">SUBMIT</button>
                 </div>
-                
-                <nuxt-link to="/admin/users" style="color:black;">Admin</nuxt-link><br />
-                <nuxt-link to="/auth/" style="color:black;">Reservations</nuxt-link>
-                
             </form>
         </div> 
-        ::{{getUserName}}<br/>
+        <!-- ::{{getUserName}}<br/>
         ::{{getUserId}}<br />
-        ::{{getActiveHomeId}}
+        ::{{getActiveHomeId}} -->
+        
     </section>
+    </div>
   </div>
 </template>
 
@@ -39,6 +44,7 @@ export default {
     layout: 'login',
     data() {
         return {
+            loading: true,
             username: '',
             password: '',
             errorMessage: '',
@@ -79,8 +85,8 @@ export default {
                         this.isError = true;
                         this.errorMessage = 'Invalid Login Credentials'
                     } else {
-                         this.isError = true;
-                        this.errorMessage = 'Not Working'
+                        this.isError = true;
+                        this.errorMessage = e
                     }
                 });
             }
@@ -103,90 +109,25 @@ export default {
         removeError() {
             this.isError = false;
         }
-    }
-    
+    },
+    mounted() {
+        this.loading = true;
+        setTimeout(() => {
+            this.$store.dispatch('auth/getLocalStorage')
+            .then((res) => {
+                if(res == 'error'){
+                    this.loading = false;
+                } else {
+                    this.$router.push(`/auth/${res}`);
+                }
+            }).catch((e) => {
+                 this.isError = true;
+                this.errorMessage = e
+                this.loading = false;
+            });
+
+        }, 900)
+    }    
 
 }
 </script>
-
-<style lang="scss">
-.login {
-    text-align: center;
-    color: $color1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-
-    &__top {
-        margin-bottom: 2rem;
-        &--img {
-            width: 25%;
-            border-radius: 50%;
-            border: 5px solid $color1;
-            margin-bottom: 2rem;
-        }
-        &--title {
-            font-size: 4rem;
-        }
-        &--subtitle {
-            font-size: 2rem;
-            text-transform: uppercase;
-        }
-    }
-
-    &__form {
-        width: 20rem;
-
-        &--input {
-            width: 100%;
-            font-size: 1.6rem;
-            font-weight: 300;
-            border: none;
-            border-bottom: 1px solid $color1;
-            display: block;
-            padding-bottom: .5rem;
-            margin: 3rem 0;
-
-        }
-        &--input:focus {
-            outline: none;
-        }
-    }
-
-    &__btn {
-        padding: 1rem 2rem;
-        border-radius: 10px;
-        background: $color1;
-        color: #fff;
-        transition: all .4s;
-        cursor: pointer;
-        
-    }
-
-    &__btn:focus {
-        outline: none;
-    }
-    &__btn:active,
-    &__btn:hover {
-        
-        background: transparent;
-        color: $color1;
-    }
-
-    &__error {
-        margin-top: 1rem;
-        width: 50%;
-        margin: 0 auto;
-    }
-}
-
-input::placeholder {
-    font-size: 1.2rem;
-    text-transform: uppercase;
-    letter-spacing: 5px;
-    text-align: center;
-}
-
-</style>

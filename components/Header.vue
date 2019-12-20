@@ -9,7 +9,7 @@
         </div>
         <div class="header__right">
             <li v-for="(home, index) in activeHomes" :key="index">
-                <nuxt-link class="home-link" :to="`/auth/${home._id}`" @click="test">{{home.homeName}}</nuxt-link>
+                <nuxt-link class="home-link" :to="`/auth/${home._id}`">{{home.homeName}}</nuxt-link>
             </li>
             
             <div class="header__right--profile">
@@ -21,7 +21,7 @@
                     <div @click="logout" class="dropdown__link">LOGOUT</div>
                 </div>    
             </div>
-            <!-- {{activeHomes}} -->
+            
         </div> 
   </div>
 </template>
@@ -40,7 +40,7 @@ export default {
             getIsAdmin: 'auth/getIsAdmin',
             getUserName: 'auth/getUserName',
             getHomesArray: 'auth/getHomesArray',
-            activeHomes: 'reservation/getActiveUserHomes'
+            activeHomes: 'reservation/getActiveHomes'
         }),
         getInital() {
             if(this.getUserName) {
@@ -53,9 +53,6 @@ export default {
             console.log('loggin out')
             this.$store.dispatch('auth/logoutUser')
             this.$router.push('/')
-        },
-        test() {
-            console.log('running')
         }
     }
     

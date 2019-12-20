@@ -48,16 +48,15 @@ export default {
             if(this.$route.params.id != 'undefined') {
                 //setActiveUserHome to param.id
                 let activeHome = this.activeHomes.filter(home => home._id == this.$route.params.id)
-    
                 this.$store.commit('reservation/resetReservationState')
     
                 this.$store.commit('reservation/setActiveHome', activeHome[0])
                 let ans = await this.$store.dispatch('admin/initGetRes', activeHome[0]._id)            
                 if(ans != 'success') {
+                    console.log(ans)
                     this.loadingError = true;
                 }
-            }
-           
+            } 
         } catch (e) {
             console.log(e)
         }

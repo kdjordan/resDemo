@@ -28,6 +28,7 @@
 
             <div style="display:none">{{disabledDates}}</div>
         </form>
+        <!-- {{token}} -->
     </div>
 </template>
 
@@ -64,7 +65,8 @@ export default {
             phoneError: 'errors/getPhoneError',
             guestError: 'errors/getGuestError',
             adminError: 'errors/getAdminError',
-            activeHomes: 'reservation/getActiveUserHomes'
+            activeHomes: 'reservation/getActiveUserHomes',
+            token: 'auth/getToken'
 
         }),
         //** FN : makes button inactive if any errors are noticed
@@ -104,6 +106,7 @@ export default {
         //**    : if good, dispathces data to module for axios call to DB
         //**    : after successfull insertion, resets reservation state for another entry
         makeRes() {
+            console.log('here')
             if(this.checkForm()) {
                 this.$store.dispatch('reservation/makeReservation', {
                     dates: this.dates,
@@ -120,8 +123,8 @@ export default {
                     } else {
                         this.$store.commit('errors/setAdminError', {status: true, mssg: 'Error Making Reservation'})
                     }
-                }).catch(() => {
-                        
+                }).catch((e) => {
+                    console.log(e)
                 });
             }
         },

@@ -136,23 +136,27 @@ export const mutations = {
 export const actions = {
     updateReservation({ commit, getters }, payload){
         // return new Promise((resolve, reject) => {
-            this.$axios.$post(`/updateReservation/${payload.res_id}`, payload)
+            this.$axios.$post(`/updateReservation/${payload.res_id}`, {...payload, token: this.getters['auth/getToken']})
             .then((data) => {
-                //update reservation List UI
-                commit('updateReservationList', {
-                    _id: payload.res_id,
-                    homename: getters['getActiveHomeName'],
-                    madeBy: this.getters['auth/getUserName'],
-                    madeFor: payload.guest,
-                    phone: payload.phone,
-                    start: payload.start,
-                    end: payload.end
-                })
-
-                //update cal UI
-                commit('updateDisabledDates', { from: payload.start, to: payload.end, 
-                                                ogStart: data.resDates.split('to')[0].trim(),
-                                                ogEnd: data.resDates.split('to')[1].trim() })
+                if(data == 'Invalid Token') {
+                    this.dispatch('auth/logoutUser')
+                } else {
+                    //update reservation List UI
+                    commit('updateReservationList', {
+                        _id: payload.res_id,
+                        homename: getters['getActiveHomeName'],
+                        madeBy: this.getters['auth/getUserName'],
+                        madeFor: payload.guest,
+                        phone: payload.phone,
+                        start: payload.start,
+                        end: payload.end
+                    })
+    
+                    //update cal UI
+                    commit('updateDisabledDates', { from: payload.start, to: payload.end, 
+                                                    ogStart: data.resDates.split('to')[0].trim(),
+                                                    ogEnd: data.resDates.split('to')[1].trim() })
+                }
                 
             }).catch((e) => {
                 console.log(e)
@@ -162,30 +166,38 @@ export const actions = {
     makeReservation({ state, commit, getters }, payload) {
         return new Promise((resolve, reject) => {
             this.$axios.$post
-            (`/makeReservation/${getters['getActiveHomeId']}`, payload)
+            (`/makeReservation/${getters['getActiveHomeId']}`, {...payload, token: this.getters['auth/getToken']})
             .then((data) => {
-                this.dispatch('notifications/doNotification', {status: true, mssg: 'Reservation Made'});
-                
-                //update disabled dates for cal display
-                commit('setDisabledDates', {dates: payload.dates})
-                
-                //update reservation in UI
-                commit('setReservationFirst', data)
-                commit('setAddedResFlag', true)
-                this.commit('reservation/setPagedReservations', 0)
-                resolve('success')  
+                if(data == 'Invalid Token') {
+                    this.dispatch('auth/logoutUser')
+                } else {
+                    this.dispatch('notifications/doNotification', {status: true, mssg: 'Reservation Made'});
+                    
+                    //update disabled dates for cal display
+                    commit('setDisabledDates', {dates: payload.dates});
+                    
+                    //update reservation in UI
+                    commit('setReservationFirst', data);
+                    commit('setAddedResFlag', true);
+                    this.commit('reservation/setPagedReservations', 0);
+                    resolve('success');  
+                }
             }).catch((e) => {
                 reject(e);
             });
         })
     },
     deleteReservation({ commit }, payload) {
-        return this.$axios.$post(`deleteReservation/${payload._id}`)
+        return this.$axios.$post(`deleteReservation/${payload._id}`, {token: this.getters['auth/getToken']})
         .then((data) => {
-            commit('deleteReservation', data)
-            commit('deleteDisabledDate', {from: payload.start.trim(), to:payload.end.trim()})
-            this.commit('reservation/setPagedReservations', 0)
-            return 'success'
+            if(data == 'Invalid Token') {
+                this.dispatch('auth/logoutUser')
+            } else {
+                commit('deleteReservation', data)
+                commit('deleteDisabledDate', {from: payload.start.trim(), to:payload.end.trim()})
+                this.commit('reservation/setPagedReservations', 0)
+                return 'success'
+            }
         }).catch((e) => {
             console.log(e)
             return 'error'

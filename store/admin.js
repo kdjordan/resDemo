@@ -72,6 +72,7 @@ export const actions = {
             this.commit('users/resetUser');
     },
     initMakeRes(_, payload) {
+        
         return new Promise((resolve, reject) => {
             let homesWithId = []
             this.$axios.$get('getMenuData')

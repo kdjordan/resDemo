@@ -10,7 +10,7 @@
               </div>
           </div>
           <div class="admin-header__content--content">
-              <nuxt-link :to="'/auth/' + `${getActiveHome._id}`" style="color: green;">HOME</nuxt-link>
+              <nuxt-link to="/" style="color: green;">HOME</nuxt-link>
           </div>
       </div>
   </div>

@@ -46,9 +46,11 @@ export default {
           "~assets/scss/variables.scss",
           "~assets/scss/base.scss",
           "~assets/scss/layout.scss",
+          "~assets/scss/login.scss",
           "~assets/scss/makeRes.scss",
           "~assets/scss/resList.scss",
-          "~assets/scss/buttons.scss"
+          "~assets/scss/buttons.scss",
+          "~assets/scss/spinner.scss"
       ]
   },
   /*
@@ -68,5 +70,14 @@ export default {
     extend (config, ctx) {
     }
    
+  },
+  layoutTransition: {
+    name: "fade",
+    mode: "out-in"
+  },
+  /* Page Transitions */
+  pageTransition: {
+    name: "fade",
+    mode: "out-in"
   }
 }

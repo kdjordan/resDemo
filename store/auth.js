@@ -61,37 +61,34 @@ export const actions = {
         return new Promise((resolve, reject) => {
             this.$axios.$post('login', authData)
             .then((res) => {
-                if(res == 'invalid') {
-                    resolve('invalid')
+                if(res.homesArray.length == 0) {
+                    reject('No Active Homes')
                 } else {
                     this.commit('reservation/resetReservationState')
                     //need to set up userActiveHomes
                     dispatch('setReservationState', res)
                         .then(() => {
-                            commit('setUser', res)
-                            commit('setLoggedIn',)
-                            commit('setToken', res.token)
-                            if(res.role == 'admin') {
-                                commit('setIsAdmin', true)
-                            } 
-                            resolve('success')
-                        }).catch(() => {
+                            commit('setUser', res);
+                            commit('setLoggedIn');
+                            commit('setToken', res.token);
 
+                            if(res.role == 'admin') {
+                                commit('setIsAdmin', true);
+                                localStorage.setItem('isAdmin', true);
+                            } 
+
+                            if(process.client) {
+                                localStorage.setItem('userState', JSON.stringify(res));
+                                localStorage.setItem('token', res.token);
+                                localStorage.setItem('tokenExpiration', new Date().getTime() + res.expires * 1000);
+                            }
+                            resolve('success')
+                        }).catch((r) => {
+                            reject(e);
                         });
-        //set localStorage for persistence
-                    if(process.client) {
-                        localStorage.setItem('token', res.token)
-                        localStorage.setItem('tokenExpiration', new Date().getTime() + res.expires * 1000)
-                        localStorage.setItem('userId', res._id)
-                        if(res.role == 'admin'){
-                            localStorage.setItem('isAdmin', true)
-                        } else {
-                            localStorage.setItem('isAdmin', false)
-                        }
-                    }
+        
                     dispatch('setLogoutTimer', res.expires * 1000)
-                    //respond with activehome #1
-                    
+                
                 }
             }).catch((e) => {
                 console.log(e)
@@ -103,14 +100,16 @@ export const actions = {
     async setReservationState({ commit }, payload) {
         try {
             let firstActiveHome = await this.dispatch('admin/initMakeRes', payload.homesArray);
-
             //get reservations for first home in activeHomes
             let ans = await this.dispatch('admin/initGetRes', firstActiveHome._id)
+            console.log(ans)
             if(ans != 'success') {
                 this.loadingError = true;
+                return 'error'
             }
-            return
+            return 'success'
         } catch(err) {
+            return 'noActive'
             console.log(err)
         }
         
@@ -121,16 +120,13 @@ export const actions = {
         commit('resetUser');
         this.commit('reservation/resetReservationState')
         if(process.client){
-            localStorage.removeItem('token')
-            localStorage.removeItem('tokenExpiration')
-            localStorage.removeItem('isAdmin')
-            localStorage.removeItem('userId')  
+            localStorage.clear();
         }
+        $nuxt._router.push('/')
     },
     //called from middelware to protect rereshes 
-    initAuth({ commit, dispatch,state }) {
-        // console.log('initing user')
-        // console.log(localStorage)
+    initAuth({ commit, dispatch }) {
+       
         const token = localStorage.getItem('token');
         const expirationDate = localStorage.getItem('tokenExpiration');
         const isAdmin = localStorage.getItem('isAdmin')
@@ -143,10 +139,33 @@ export const actions = {
         commit('setIsAdmin', isAdmin)
         dispatch('setLogoutTimer', +expirationDate - new Date().getTime())
     },
-    setLogoutTimer({ commit }, duration) {
+    async getLocalStorage({dispatch, commit}) {
+        return new Promise((resolve, reject) => {
+            if(window.localStorage.length > 0) {
+                
+                commit('setUser', JSON.parse(window.localStorage.userState))
+                
+                dispatch('setReservationState', {homesArray: JSON.parse(window.localStorage.userState).homesArray})
+                .then((res) => {
+                    if(res == 'success'){
+                        resolve (this.getters['reservation/getActiveHomeId'])
+                    } else {
+                        reject('error setting reservation state')
+                    }
+                }).catch((e) => {
+                    console.log(e)
+                    reject(e)
+                });
+            } else {
+                resolve('error')
+            }
+
+        })
+    },
+    setLogoutTimer({ dispatch }, duration) {
         setTimeout(() => {
             console.log('clearing token')
-            commit('clearToken')
+            dispatch('logoutUser')
         }, duration)
     }
 

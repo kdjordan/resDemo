@@ -41,8 +41,11 @@ export const actions = {
             //salt and encrypt userPassword before posting to API
             let salt = bcrypt.genSaltSync(10);
             payload.userPassword = bcrypt.hashSync(payload.userPassword, salt)
-            this.$axios.$post(`/addUser/`, payload)
+            this.$axios.$post(`/addUser/`, {...payload, token: this.getters['auth/getToken']})
                 .then((data) => {
+                    if(data == 'Invalid Token') {
+                        this.dispatch('auth/logoutUser')
+                    }
                     if(data.role == 'keeper') {
                         this.commit('sidenav/addKeeper', {_id: data._id, keeperName: data.userName})
                         this.dispatch('notifications/doNotification', {status: true, mssg: 'Keeper Added'})
@@ -63,8 +66,11 @@ export const actions = {
     },
     deleteUser(_, payload) {
         return new Promise((resolve, reject) => {
-            this.$axios.$post(`/deleteUser/${payload._id}`)
+            this.$axios.$post(`/deleteUser/${payload._id}`, {token: this.getters['auth/getToken']})
                 .then((res) => {
+                    if(res == 'Invalid Token') {
+                        this.dispatch('auth/logoutUser')
+                    }
                     if(payload.role == 'keeper') {
                         this.commit('sidenav/removeKeeper', res)
                         this.dispatch('notifications/doNotification', {status: true, mssg: 'Keeper Deleted'})
@@ -91,8 +97,11 @@ export const actions = {
                 let salt = bcrypt.genSaltSync(10);
                 newPayload.userPassword = bcrypt.hashSync(newPayload.userPassword, salt)
             } 
-            this.$axios.$post(`/updateUser/${payload.userid}`, newPayload)
+            this.$axios.$post(`/updateUser/${payload.userid}`, {...newPayload, token: this.getters['auth/getToken']})
                 .then((data) => {
+                    if(data == 'Invalid Token') {
+                        this.dispatch('auth/logoutUser')
+                    }
                     let updateObj = data;
                     if(data.userName == undefined) {
                         updateObj = {

@@ -6,9 +6,13 @@ export const state = () => ({
     queriedHome:[],
     homeUpdateUsersList: []
     
+    
 });
 
 export const getters  = {
+    getActiveHomes(state) {
+        return state.activeHomes
+    },
     getActiveHomesLength(state) {
         let sumLength = state.activeHomes.reduce((length, home) => {
             return home[1] == true ? length+=1 : length
@@ -73,8 +77,11 @@ export const actions = {
             const userUpdateArr = utilities.getActiveUsersHomesArrays(payload.activeUsers, rootState.sidenav.usersMenu)
            
             // before adding newHome to DB make sure active Users of Home are updated and in sync
-            this.$axios.$post('/addHome/', {homeName: payload.homeName, homeUrl: null, activeUsersArr: userUpdateArr})
+            this.$axios.$post('/addHome/', {homeName: payload.homeName, homeUrl: null, activeUsersArr: userUpdateArr, token: this.getters['auth/getToken']})
             .then((res) => {
+                if(res == 'Invalid Token') {
+                    this.dispatch('auth/logoutUser')
+                }
                 this.commit('sidenav/addHome', res);
                 this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Added'});
                 this.commit('userHomes/resetQueriedHome');
@@ -92,11 +99,16 @@ export const actions = {
             dispatch('subtractUserHomeFromArray', {activeUsers: payload.inActiveUsers, homeName: payload.homeName});
             let allUsersUpdate = [...payload.activeUsers, ...payload.inActiveUsers];
             
-            this.$axios.$post((`/updateHome/${payload._id}`), {homeName: payload.homeName, homeUrl: null, activeUsersArr: allUsersUpdate})
+            this.$axios.$post((`/updateHome/${payload._id}`), {homeName: payload.homeName, homeUrl: null, activeUsersArr: allUsersUpdate, token: this.getters['auth/getToken']})
             .then((res) => {
-                this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Updated'});
-                this.commit('sidenav/updateHome', {_id:payload._id, homeName: payload.homeName});
-                resolve('success')
+                if(data == 'Invalid Token') {
+                    this.dispatch('auth/logoutUser')
+                } else {
+                    this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Updated'});
+                    this.commit('sidenav/updateHome', {_id:payload._id, homeName: payload.homeName});
+                    resolve('success')
+
+                }
             }).catch((e) => {
                 console.log(e)
                 reject(e)
@@ -105,13 +117,17 @@ export const actions = {
     },
     deleteHome({ commit }, payload) {
         return new Promise((resolve, reject) => {
-            this.$axios.$post(`/deleteHome/${payload._id}`)
+            this.$axios.$post(`/deleteHome/${payload._id}`, {token: this.getters['auth/getToken']})
             .then((res) => {
-                this.commit('sidenav/removeHome', res);
-                this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Deleted'});
-                console.log('got hrere')
-                commit('resetQueriedHome');
-                resolve('success');
+                if(res == 'Invalid Token') {
+                    this.dispatch('auth/logoutUser')
+                } else {
+                    this.commit('sidenav/removeHome', res);
+                    this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Deleted'});
+                    console.log('got hrere')
+                    commit('resetQueriedHome');
+                    resolve('success');
+                }
             })
             .catch((e) => {
                 console.log(e)
