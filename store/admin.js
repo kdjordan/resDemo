@@ -105,12 +105,16 @@ export const actions = {
                     res.forEach(el => {
                         this.commit('reservation/setReservations', {
                             _id: el._id,
-                            homeName: payload.homeName,
                             madeBy: el.madeBy,
                             madeFor: el.guest,
                             phone: el.phone,
                             start: el.resDates.split('to')[0],
-                            end: el.resDates.split('to')[1]
+                            end: el.resDates.split('to')[1],
+                            cleaned: el.cleaned,
+                            cleanedById: el.cleanedById,
+                            cleanedBy: el.cleanedBy,
+                            cleanedDate: el.cleanedDate,
+                            homeName: payload.homeName
                         })
                         this.commit('reservation/setDisabledDates', {dates: el.resDates});
                     })  

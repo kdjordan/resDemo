@@ -69,13 +69,16 @@ export default {
         },
         loginUser() {
             this.loading = true;
+                console.log('going')
             if(this.checkForm()) {
                 this.$store.dispatch('auth/loginUser', {
                     userName: DOMPurify.sanitize(this.username.trim()),
                     password: DOMPurify.sanitize(this.password.trim())
                 }).then((res) => {
+                    console.log(res)
                     if(res == 'invalid') {
-                        this.isError = true;
+                        this.loading = false;
+                        this.isError = true
                         this.errorMessage = 'Invalid Login Credentials'
                     } else if (res == 'keeper') {
                         this.$router.push(`/auth/keeper/${this.getActiveHomeId}`);
@@ -83,25 +86,26 @@ export default {
                         this.$router.push(`/auth/${this.getActiveHomeId}`);
                     }
                 }).catch((e) => {
-                    console.log(e);
-                    if(e == 401) {
+                        this.loading = false;
                         this.isError = true;
                         this.errorMessage = 'Invalid Login Credentials'
-                    } else {
-                        this.isError = true;
-                        this.errorMessage = e
-                    }
                 });
+            }  else {
+                this.loading = false;
+                this.isError = true;
+                this.errorMessage = 'Problem Loggin In'
             }
         },
         checkForm() {
             if(typeof(this.username) != 'string' || this.username.length < 6 || !this.username.match(/^[0-9a-zA-Z]+$/)) {
+                this.loading = false;
                 this.isError = true;
                 this.errorMessage = 'UserName Error'
                 return false;
             }
 
             if(typeof(this.password) != 'string' || this.password.length < 8 || !this.password.match(/^[0-9a-zA-Z]+$/)) {
+                this.loading = false;
                 this.isError = true;
                 this.errorMessage = 'Password Error'
                 return false;
@@ -114,7 +118,6 @@ export default {
         }
     },
     mounted() {
-        // this.$store.dispatch('auth/logoutUser')
         this.loading = true;
         setTimeout(() => {
             this.$store.dispatch('auth/getLocalStorage')
@@ -124,12 +127,14 @@ export default {
                     return;
                 } else if(res.role == 'user' || res.role == 'admin'){
                     this.$router.push(`/auth/${res.id}`);
+                    return;
                 } else {
                     this.loading = false;
+                    return
                 }
                
             }).catch((e) => {
-                 this.isError = true;
+                this.isError = true;
                 this.errorMessage = e
                 this.loading = false;
             });

@@ -13,13 +13,16 @@
                         <tbody class="cur-res__results--body" v-for="(res, index) in getPagedRes" :key="index"> 
                         <template>
                             <tr>
-                            <td>{{res.start.trim()}}</td>
+                            <td>{{res.start}}</td>
 
-                            <td>{{res.end.trim()}}</td>
+                            <td>{{res.end}}</td>
 
-                            <td>the Date</td>
+                            <td v-if="res.cleaned">{{res.cleanedDate}}</td>
+                            <td v-else></td>
 
-                            <td> <input type="checkbox"  @change="updateRes(res._id)">  </td>
+
+                            <td v-if="res.cleaned">{{res.cleanedBy}}</td>
+                            <td v-else> <input type="checkbox"  @change="updateRes(res._id)">  </td>
                             </tr>
                         </template> 
                         </tbody> 
@@ -41,6 +44,11 @@
         <transition name="fade">
       <button class="btn btn-primary" v-if="checkErrorState" @click="reservationCleaned" :disabled="resError || initError">SUBMIT</button>
         </transition>
+        <!-- {{getAllRes}} -->
+        <!-- <p v-for="(res, index) in getAllRes" :key="index" style="width: 50%; margin: 0 auto;">
+            {{res}}<br />
+
+        </p> -->
       <!-- {{completedRes}}<br />
       {{getUserId}}<br />
       {{getActiveHomeId}}<br />
@@ -111,6 +119,12 @@ methods: {
                     token: this.getToken })
             .then((res) => {
                 console.log(res)
+                if(res) {
+                    this.initError = true;
+                    this.resError = false;
+                    this.errorMessage = '';
+                    this.completedRes = [];
+                }
             }).catch((e) => {
                 console.log(e)
             })

@@ -6,7 +6,11 @@ export const state = () => ({
     disabledDates: [],
     reservations: [],
     pagedReservations: [],
-    OGresDates: ''
+    OGresDates: '',
+    cleaned: '',
+    cleanedById: '',
+    cleanedBy: '',
+    cleanedDate: ''
     
 });
 
@@ -102,18 +106,41 @@ export const mutations = {
         })
     },
     updateReservationList(state, payload) {
+        console.log('updating res')
+        console.log(payload)
         state.reservations.forEach(res => {
             if (res._id == payload._id) {
-                res._id = payload._id;
                 res.homeName = payload.homeName;
                 res.madeBy = payload.madeBy;
                 res.madeFor = payload.madeFor;
                 res.phone = payload.phone;
                 res.start = payload.start;
                 res.end = payload.end;
+
+                res.cleaned = null;
+                res.cleanedById = null;
+                res.cleanedBy = null;
+                res.cleanedDate = null;
             }
         })
         
+    },
+    updateCleanedRes(state,payload) {
+        state.reservations.forEach(res => {
+            if (res._id == payload._id) {
+                res.cleaned = payload.cleaned;
+                res.cleanedById = payload.cleanedById;
+                res.cleanedBy = payload.cleanedBy;
+                res.cleanedDate = payload.cleanedDate;
+
+                res.homeName = res.homeName;
+                res.madeBy = res.madeBy;
+                res.madeFor = res.madeFor;
+                res.phone = res.phone;
+                res.start = res.start;
+                res.end = res.end;
+            }
+        })
     },
     deleteReservation(state, payload) {
         state.reservations.forEach(res => {
@@ -190,6 +217,8 @@ export const actions = {
     deleteReservation({ commit }, payload) {
         return this.$axios.$post(`deleteReservation/${payload._id}`, {token: this.getters['auth/getToken']})
         .then((data) => {
+            console.log('deleting')
+            console.log(data)
             if(data == 'Invalid Token') {
                 this.dispatch('auth/logoutUser')
             } else {
@@ -203,18 +232,24 @@ export const actions = {
             return 'error'
         });
     },
-    reservationCleaned(_, payload){
+    reservationCleaned({ commit }, payload){
         console.log(payload)
-        
+        // debugger
         return this.$axios.$post(`setReservationClean`, payload)
         .then((data) => {
-            console.log(data)
-        }).catch(() => {
-
+            if(data != 'error') {
+                commit('updateCleanedRes', 
+                { _id: payload.resId,
+                  cleaned: true, 
+                  cleanedById: payload.keeperId,
+                  cleanedBy: payload.keeperName, 
+                  cleanedDate: data.cleanedDate.split('T')[0]})
+            }
+            return true
+         
+        }).catch((e) => {
+            console.log(e)
+            return false
         })
-        console.log(payload)
-
-        return true
-
     }
 }

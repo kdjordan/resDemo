@@ -61,9 +61,16 @@ export const mutations = {
 
 export const actions = {
     loginUser({ commit, dispatch }, authData) {
+        console.log('called in auth')
         return new Promise((resolve, reject) => {
             this.$axios.$post('login', authData)
             .then((res) => {
+                console.log('back')
+                console.log(res)
+                if(res == 'invalid') {
+                    reject('invalid')
+                    return;
+                }
                 if(res.homesArray.length == 0) {
                     reject('No Active Homes')
                 } else {
@@ -109,7 +116,6 @@ export const actions = {
             let firstActiveHome = await this.dispatch('admin/initMakeRes', payload.homesArray);
             //get reservations for first home in activeHomes
             let ans = await this.dispatch('admin/initGetRes', firstActiveHome._id)
-            console.log(ans)
             if(ans != 'success') {
                 this.loadingError = true;
                 return 'error'
@@ -154,7 +160,6 @@ export const actions = {
                 
                 dispatch('setReservationState', {homesArray: JSON.parse(window.localStorage.userState).homesArray})
                 .then((res) => {
-                    console.log(getters['getUserRole'])
                     if(getters['getUserRole'] == 'keeper' && res == 'success') {
                         resolve({role: 'keeper', id: this.getters['reservation/getActiveHomeId']})
                     }
@@ -168,7 +173,7 @@ export const actions = {
                     reject(e)
                 });
             } else {
-                resolve('error')
+                resolve('noLocal')
             }
 
         })
