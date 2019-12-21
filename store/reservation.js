@@ -163,7 +163,7 @@ export const actions = {
             });
         // })
     },
-    makeReservation({ state, commit, getters }, payload) {
+    makeReservation({ commit, getters }, payload) {
         return new Promise((resolve, reject) => {
             this.$axios.$post
             (`/makeReservation/${getters['getActiveHomeId']}`, {...payload, token: this.getters['auth/getToken']})
@@ -202,5 +202,19 @@ export const actions = {
             console.log(e)
             return 'error'
         });
+    },
+    reservationCleaned(_, payload){
+        console.log(payload)
+        
+        return this.$axios.$post(`setReservationClean`, payload)
+        .then((data) => {
+            console.log(data)
+        }).catch(() => {
+
+        })
+        console.log(payload)
+
+        return true
+
     }
 }

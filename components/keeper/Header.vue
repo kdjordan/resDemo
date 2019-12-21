@@ -9,7 +9,7 @@
         </div>
 
         <div class="header__right">
-            LOGOUT
+            <div @click="logout">LOGOUT</div>
         </div>
 
   </div>
@@ -17,6 +17,13 @@
 
 <script>
 export default {
+    methods: {
+        logout() {
+            console.log('loggin out')
+            this.$store.dispatch('auth/logoutUser')
+            this.$router.push('/')
+        }
+    }
 
 }
 </script>

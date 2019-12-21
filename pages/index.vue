@@ -68,6 +68,7 @@ export default {
             this.errorMessage = '';
         },
         loginUser() {
+            this.loading = true;
             if(this.checkForm()) {
                 this.$store.dispatch('auth/loginUser', {
                     userName: DOMPurify.sanitize(this.username.trim()),
@@ -76,7 +77,9 @@ export default {
                     if(res == 'invalid') {
                         this.isError = true;
                         this.errorMessage = 'Invalid Login Credentials'
-                    } else {
+                    } else if (res == 'keeper') {
+                        this.$router.push(`/auth/keeper/${this.getActiveHomeId}`);
+                    } else {    
                         this.$router.push(`/auth/${this.getActiveHomeId}`);
                     }
                 }).catch((e) => {
@@ -111,15 +114,20 @@ export default {
         }
     },
     mounted() {
+        // this.$store.dispatch('auth/logoutUser')
         this.loading = true;
         setTimeout(() => {
             this.$store.dispatch('auth/getLocalStorage')
             .then((res) => {
-                if(res == 'error'){
-                    this.loading = false;
+                if(res.role == 'keeper') {
+                    this.$router.push(`/auth/keeper/${res.id}`);
+                    return;
+                } else if(res.role == 'user' || res.role == 'admin'){
+                    this.$router.push(`/auth/${res.id}`);
                 } else {
-                    this.$router.push(`/auth/${res}`);
+                    this.loading = false;
                 }
+               
             }).catch((e) => {
                  this.isError = true;
                 this.errorMessage = e

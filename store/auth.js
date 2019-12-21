@@ -27,6 +27,9 @@ export const getters  = {
     },
     getLoggedIn(state) {
         return state.loggedIn;
+    },
+    getUserRole(state) {
+        return state.role;
     }
 };
 
@@ -81,6 +84,10 @@ export const actions = {
                                 localStorage.setItem('userState', JSON.stringify(res));
                                 localStorage.setItem('token', res.token);
                                 localStorage.setItem('tokenExpiration', new Date().getTime() + res.expires * 1000);
+                            }
+
+                            if(res.role == 'keeper') {
+                                resolve('keeper')
                             }
                             resolve('success')
                         }).catch((r) => {
@@ -139,7 +146,7 @@ export const actions = {
         commit('setIsAdmin', isAdmin)
         dispatch('setLogoutTimer', +expirationDate - new Date().getTime())
     },
-    async getLocalStorage({dispatch, commit}) {
+    async getLocalStorage({dispatch, commit, getters}) {
         return new Promise((resolve, reject) => {
             if(window.localStorage.length > 0) {
                 
@@ -147,8 +154,12 @@ export const actions = {
                 
                 dispatch('setReservationState', {homesArray: JSON.parse(window.localStorage.userState).homesArray})
                 .then((res) => {
+                    console.log(getters['getUserRole'])
+                    if(getters['getUserRole'] == 'keeper' && res == 'success') {
+                        resolve({role: 'keeper', id: this.getters['reservation/getActiveHomeId']})
+                    }
                     if(res == 'success'){
-                        resolve (this.getters['reservation/getActiveHomeId'])
+                        resolve ({role: 'user', id: this.getters['reservation/getActiveHomeId']})
                     } else {
                         reject('error setting reservation state')
                     }

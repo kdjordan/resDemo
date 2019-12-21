@@ -6,10 +6,11 @@
                 <CircleImg :imageUrl="activeHome.URL || 'sunriver-sm.png'" alt="sunriver home" :homeName="activeHome.homeName"/>
             </div>
             <div class="container__bottom--keeper">
-                <p>Reservations</p>
+                <div class="cur-res__title">Reservations</div>
                 <div class="keeper-res">
                     <KeeperResList />
                 </div>
+                
             </div>
         </div>
     </div>
@@ -23,7 +24,6 @@ import KeeperResList from '@/components/keeper/KeeperResList'
 import { mapGetters } from 'vuex'
 
 export default {
-    // 'imageUrl', 'theAlt', 'homeName'
     components: {
         Header,
         CircleImg,
@@ -31,10 +31,9 @@ export default {
     },
     computed: {
         ...mapGetters({
-            // getAllRes: 'reservation/getReservations',
             activeHome: 'reservation/getActiveHome'
-        }),
-
+        })
+        
     },
     mounted() {
         console.log(this.$route.params.id)
@@ -44,6 +43,7 @@ export default {
 
 <style>
 .container__bottom--keeper{
+
     background: white;
     max-width: 120rem;
     margin: 0 auto;
@@ -54,6 +54,7 @@ export default {
     height: 100vh;
     
     margin: 0 auto;
+    margin-top: 2rem;
     width: 100%;
     align-items: top;
 }

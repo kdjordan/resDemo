@@ -124,7 +124,6 @@ export const actions = {
                 } else {
                     this.commit('sidenav/removeHome', res);
                     this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Deleted'});
-                    console.log('got hrere')
                     commit('resetQueriedHome');
                     resolve('success');
                 }
