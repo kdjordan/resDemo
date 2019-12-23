@@ -9,7 +9,8 @@
         </div>
 
         <div class="header__right">
-            <div @click="logout">LOGOUT</div>
+            <div @click="logout" class="link">LOGOUT</div>
+            
         </div>
 
   </div>
@@ -27,7 +28,13 @@ export default {
 
 }
 </script>
+<style lang="scss">
+.link {
+    cursor: pointer;
+    transition: all .4s;
 
-<style>
-
+    &:hover {
+        color: $color3;
+    }
+}
 </style>

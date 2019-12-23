@@ -118,6 +118,7 @@ export default {
         }
     },
     mounted() {
+        // this.$store.dispatch('auth/logoutUser')
         this.loading = true;
         setTimeout(() => {
             this.$store.dispatch('auth/getLocalStorage')

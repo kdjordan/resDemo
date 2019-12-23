@@ -44,7 +44,9 @@ export default {
     styleResources: {
       scss: [
           "~assets/scss/variables.scss",
+          "~assets/scss/header.scss",
           "~assets/scss/base.scss",
+          "~assets/scss/layout.scss",
           "~assets/scss/layout.scss",
           "~assets/scss/login.scss",
           "~assets/scss/makeRes.scss",

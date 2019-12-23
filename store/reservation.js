@@ -243,7 +243,7 @@ export const actions = {
                   cleaned: true, 
                   cleanedById: payload.keeperId,
                   cleanedBy: payload.keeperName, 
-                  cleanedDate: data.cleanedDate.split('T')[0]})
+                  cleanedDate: data.cleanedDate})
             }
             return true
          

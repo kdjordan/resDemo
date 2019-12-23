@@ -101,7 +101,7 @@ export const actions = {
             
             this.$axios.$post((`/updateHome/${payload._id}`), {homeName: payload.homeName, homeUrl: null, activeUsersArr: allUsersUpdate, token: this.getters['auth/getToken']})
             .then((res) => {
-                if(data == 'Invalid Token') {
+                if(res== 'Invalid Token') {
                     this.dispatch('auth/logoutUser')
                 } else {
                     this.dispatch('notifications/doNotification', {status: true, mssg: 'Home Updated'});

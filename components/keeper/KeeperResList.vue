@@ -17,7 +17,7 @@
 
                             <td>{{res.end}}</td>
 
-                            <td v-if="res.cleaned">{{res.cleanedDate}}</td>
+                            <td v-if="res.cleaned">{{res.cleanedDate.split('T')[0]}}</td>
                             <td v-else></td>
 
 
