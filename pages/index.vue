@@ -10,7 +10,7 @@
     <section  v-if="!loading" class="login">
         <div class="login__top">
             <img src="@/assets/img/sunriver-sm.png" class="login__top--img">
-            <div class="login__top--title">AMC</div>
+            <div class="login__top--title">XYZ</div>
             <div class="login__top--subtitle">Vacation Rentals</div>
              <transition name="fade">
                 <div v-show="isError" class="error login__error">{{ getErrorMessage }}</div>

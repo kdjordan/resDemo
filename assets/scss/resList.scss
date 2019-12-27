@@ -1,6 +1,16 @@
 .cur-res {
-    min-width: 60rem;
+    width: 60rem;
+    // max-width: 60rem;
     
+    
+    @media (max-width: $screen-lg-min) {
+        width: 40rem;
+        margin: 0 auto;
+     }
+    @media (max-width: $screen-sm-min) {
+        min-width: 90%;
+        margin: 0 auto;
+     }
     &__title {
             color: $color1;
             text-align: center;
@@ -43,6 +53,10 @@
         align-items:center;
         justify-content: space-evenly;
 
+        // @media (max-width: $screen-sm-min) {
+        //     display: none;
+        //  }
+
         &--edit {
             color: white;
             background: $color1;
@@ -80,7 +94,7 @@
         &  .inactive {
         color: $colorG;
         pointer-events: none;
-         text-decoration: line-through;
+        text-decoration: line-through;
     }
     
         &__box{
@@ -91,6 +105,8 @@
             margin: 0 auto;
             margin-top: 1rem;
             color: $color1;
+
+          
 
             &--icon {
                 transform: scale(1);

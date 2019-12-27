@@ -3,7 +3,7 @@
       <div class="admin-header__content">
           <div class="admin-header__content--logo">
               <div class="admin-header__content--logo-circle">
-                  <span class="admin-header__content--logo-circle-AMC" >AMC</span>
+                  <span class="admin-header__content--logo-circle-AMC" >XYZ</span>
               </div>
               <div class="admin-header__content--logo-text">
                   Vacation Rentals :: Admin

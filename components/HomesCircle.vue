@@ -25,6 +25,11 @@ export default {
     height: 30rem;
     width: 30rem;
 
+     @media (max-width: $screen-sm-min) {
+            height: 20rem;
+            width: 20rem;
+         }
+
     &__title {
        margin-top: 2rem;
        text-transform: uppercase;

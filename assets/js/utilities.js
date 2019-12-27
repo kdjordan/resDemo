@@ -1,4 +1,4 @@
-exports.formatUserForDispatch = (name, password, homes, therole) => {
+export function formatUserForDispatch(name, password, homes, therole) {
       if(name.length < 2 || name == undefined) { 
           name = "";
       }
@@ -36,7 +36,7 @@ exports.formatUserForDispatch = (name, password, homes, therole) => {
       }
 }
 
-exports.checkIfAvailable = (name, arr) => {
+export function checkIfAvailable(name, arr) {
     let nameAvailable = true;
         arr.forEach(user => {
           if (user.keeperName == name || user.userName == name || user.homeName == name) {
@@ -46,7 +46,7 @@ exports.checkIfAvailable = (name, arr) => {
         return nameAvailable;
 }
 
-exports.getActiveUsersHomesArrays = (usersArr, usersMenu) => {
+export function getActiveUsersHomesArrays(usersArr, usersMenu) {
     let usersActiveHomesArr = [];
     usersMenu.forEach(menuUser => {
         usersArr.forEach(user => {
@@ -57,7 +57,7 @@ exports.getActiveUsersHomesArrays = (usersArr, usersMenu) => {
     })
     return usersActiveHomesArr;
 } 
-exports.getUpdateUsersHomesArrays = (usersArr, usersMenu) => {
+export function getUpdateUsersHomesArrays(usersArr, usersMenu) {
     let updateActiveHomesArr = [];
     usersMenu.forEach(menuUser => {
         usersArr.forEach(user => {
@@ -73,7 +73,7 @@ exports.getUpdateUsersHomesArrays = (usersArr, usersMenu) => {
     return updateActiveHomesArr;
 } 
 
-exports.makeTFArray = (homeName, allUsers) => {
+export function makeTFArray(homeName, allUsers) {
     allUsers.forEach(user => {
         user.isActive = false;
     })
@@ -89,7 +89,7 @@ exports.makeTFArray = (homeName, allUsers) => {
 
 }
 
-exports.makeActiveUsersHomeList = (homeNamesArr, allHomesArr) => {
+export function makeActiveUsersHomeList(homeNamesArr, allHomesArr) {
     let returnArr = [];
     homeNamesArr.forEach(homeName => {
         allHomesArr.forEach(home => {

@@ -75,6 +75,10 @@ export default {
     align-items: top;
     height: 100vh;
 
+    @media (max-width: $screen-md-min) {
+            flex-direction: column;
+         }
+
 
     &__bottom {
         display: flex;
@@ -85,10 +89,22 @@ export default {
         align-items: top;
         margin-top: 7rem;
 
+        @media (max-width: $screen-md-min) {
+            flex-direction: column;
+         }
+
         &--left {
             display: flex;
             flex-direction: column;
             align-items: center;
+        }
+
+        &--right {
+            @media (max-width: $screen-md-min) {
+                margin-top: 5rem;
+                flex-direction: column;
+                
+             }
         }
     }
 }

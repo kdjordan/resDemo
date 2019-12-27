@@ -5,9 +5,10 @@ export default function (context) {
     
         if(!context.store.getters['auth/hasToken']) {
             console.log('no token')
+
             context.redirect('/')
         } 
-        // console.log('has a token')
+        console.log('has a token')
        return;
 }
     
