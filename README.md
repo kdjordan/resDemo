@@ -1,4 +1,4 @@
-# amc-vacation-rentals
+# Vacation Rentals App
 
 > Front End of FullStack JS App
 
