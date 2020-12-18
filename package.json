@@ -13,7 +13,7 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
     "bcryptjs": "^2.4.3",
-    "dompurify": "^2.0.7",
+    "dompurify": "^2.0.17",
     "nuxt": "^2.0.0",
     "vue-flatpickr-component": "^8.1.5"
   },
